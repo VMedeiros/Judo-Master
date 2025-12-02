@@ -1,4 +1,4 @@
-# Logs
+## --- Base Logs ---
 logs
 *.log
 npm-debug.log*
@@ -7,18 +7,47 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+## --- Node / Package Artifacts ---
+node_modules/
+*.tsbuildinfo
+
+## --- Angular / Build Output ---
+dist/
+dist-ssr/
+.angular/
+.cache/
+
+## --- Coverage / Reports ---
+coverage/
+.nyc_output/
+
+## --- Environment Files (não versionar segredos) ---
+.env
+.env.*
+.env.local
+.env.*.local
+
+## --- Local custom config ---
 *.local
 
-# Editor directories and files
+## --- OS / Editor ---
 .vscode/*
 !.vscode/extensions.json
-.idea
+!.vscode/settings.json
+.idea/
 .DS_Store
+Thumbs.db
+desktop.ini
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+## --- Misc ---
+*.orig
+*.patch
+*.rej
+
+## --- Lockfiles ---
+# NÃO ignore package-lock.json / pnpm-lock.yaml / yarn.lock para builds reprodutíveis

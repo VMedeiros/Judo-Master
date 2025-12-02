@@ -1,20 +1,80 @@
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+   <h1>🏯 Judô Master</h1>
+   <p>Aplicação Angular para estudo, organização e gerenciamento de técnicas de Judô por faixa.</p>
+   <br/>
 </div>
 
-# Run and deploy your AI Studio app
+## 🎯 Visão Geral
 
-This contains everything you need to run your app locally.
+O **Judô Master** auxilia praticantes e instrutores a acompanhar conteúdos de graduação: técnicas, categorias, descrições, execução e aplicação. A interface permite filtrar, adicionar, editar e remover técnicas, ajustar fonte, tamanho e alternar entre tema claro e escuro com persistência.
 
-View your app in AI Studio: https://ai.studio/apps/drive/1s4PxKL-1-UN78mCVWOizPPBc1y53BQu8
+## 🧪 Tecnologias
 
-## Run Locally
+- **Angular 21** (Standalone Components & Signals)
+- **TypeScript 5**
+- **Tailwind CSS** (utilização de classes utilitárias e modo escuro via classe `dark`)
+- **RxJS** para reatividade em serviços
 
-**Prerequisites:**  Node.js
+## 📁 Estrutura Simplificada
 
+```
+src/
+   app.component.*        # Componente raiz e template
+   assets/judo-data.json  # Dados de faixas e técnicas
+   models/judo.model.ts   # Tipagens (Belt, Technique)
+   services/judo-data.service.ts # Operações CRUD em memória
+```
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## 🔧 Configuração & Execução
+
+Pré-requisito: **Node.js 18+**
+
+```bash
+npm install       # instala dependências
+npm run dev       # inicia servidor de desenvolvimento (porta 3000)
+npm run build     # build produção em dist/
+npm run preview   # servir build de produção
+```
+
+## 🌓 Tema Claro/Escuro
+
+O tema alterna entre claro e escuro através de um toggle nas Configurações. A seleção é persistida em `localStorage` e, na ausência de preferência salva, respeita o `prefers-color-scheme` do sistema. Variáveis CSS e a classe `dark` em `<html>` controlam a paleta.
+
+## ✍️ Funcionalidades Principais
+
+- Listagem de faixas com informações (pré-requisitos, faixa etária)
+- Agrupamento de técnicas por categoria
+- Filtro textual por nome ou tradução
+- Modal de detalhes de técnica
+- CRUD (Adicionar / Editar / Remover) em memória
+- Ajustes de acessibilidade: tamanho e família da fonte
+- Alternância de tema persistente
+
+## 🛠 Scripts
+
+- `npm run dev` – Servidor de desenvolvimento
+- `npm run build` – Build otimizado
+- `npm run preview` – Servir build de produção
+
+## 🚀 Próximas Melhorias (Sugestões)
+
+- Persistência real (API / IndexedDB)
+- Upload de mídia demonstrativa
+- Busca avançada multi-campos
+- Internacionalização (i18n)
+
+## 🤝 Contribuição
+
+1. Faça um fork
+2. Crie uma branch: `git checkout -b feat/minha-melhoria`
+3. Commit: `git commit -m "feat: adiciona ..."`
+4. Push: `git push origin feat/minha-melhoria`
+5. Abra um Pull Request
+
+## 📄 Licença
+
+Definir licença explícita (ex.: MIT). Caso nenhuma seja adicionada, o código permanece sem licença aberta formal.
+
+---
+
+Feito com dedicação para apoiar estudos de Judô. Oss! 🥋
