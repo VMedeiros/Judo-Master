@@ -19,6 +19,23 @@
             "browser": "index.tsx",
             "tsConfig": "tsconfig.json",
             "styles": ["src/styles.css"],
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "assets"
+              },
+              {
+                "glob": "manifest.webmanifest",
+                "input": "src",
+                "output": "/"
+              },
+              {
+                "glob": "ngsw-worker.js",
+                "input": "src",
+                "output": "/"
+              }
+            ],
             "allowedCommonJsDependencies": [
               "xlsx",
               "jspdf",

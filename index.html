@@ -13,6 +13,21 @@
     <meta name="theme-color" content="#c8102e" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Judô Master" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="assets/icons/icon-192x192.png" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="assets/icons/icon-192x192.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="assets/icons/icon-192x192.png"
+    />
     <title>Judô Master - Gerenciamento de Técnicas</title>
     <!-- Preconnect para otimização de fontes -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -58,6 +73,19 @@
           "@angular/common/http": "https://next.esm.sh/@angular/common@^21.0.1/http?external=rxjs",
           "@angular/platform-browser": "https://next.esm.sh/@angular/platform-browser@^21.0.1?external=rxjs"
         }
+      }
+    </script>
+    <script>
+      // Registrar Service Worker para PWA
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("ngsw-worker.js")
+            .then((reg) => console.log("Service Worker registrado:", reg))
+            .catch((err) =>
+              console.log("Erro ao registrar Service Worker:", err)
+            );
+        });
       }
     </script>
   </head>

@@ -57,15 +57,17 @@ npm run deploy
 
 O tema alterna entre claro e escuro através de um toggle nas Configurações. A seleção é persistida em `localStorage` e, na ausência de preferência salva, respeita o `prefers-color-scheme` do sistema. Variáveis CSS e a classe `dark` em `<html>` controlam a paleta.
 
-## ✍️ Funcionalidades Principais
+## 📋 Funcionalidades
 
-- Listagem de faixas com informações (pré-requisitos, faixa etária)
-- Agrupamento de técnicas por categoria
-- Filtro textual por nome ou tradução
-- Modal de detalhes de técnica
-- CRUD (Adicionar / Editar / Remover) em memória
-- Ajustes de acessibilidade: tamanho e família da fonte
-- Alternância de tema persistente
+- ✅ Gerenciamento de técnicas por faixa
+- ✅ Filtro e busca de técnicas
+- ✅ Visualização de vídeos demonstrativos
+- ✅ Exportação para Excel e PDF
+- ✅ Tema claro/escuro com persistência
+- ✅ Seleção de fonte e tamanho
+- ✅ Responsivo (mobile, tablet, desktop)
+- ✅ Acessibilidade (WCAG 2.1 AA)
+- ✅ **PWA - Instalável e funciona offline**
 
 ## 🛠 Scripts
 
