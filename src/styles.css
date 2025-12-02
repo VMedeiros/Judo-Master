@@ -9,14 +9,20 @@
 :root[data-theme='light'] {
   /* Base viva e acessível */
   --color-bg: #ffffff;
-  --color-bg-alt: #fafafa;
-  --color-text: #111827;      /* Gray 900 */
-  --color-text-muted: #6b7280;/* Gray 500 */
-  --color-border: #e5e7eb;    /* Gray 200 */
+  --color-bg-alt: #f3f4f6;    /* Gray 100 para contraste nas cards */
+  --color-text: #0b1220;      /* Mais escuro que Gray 900 */
+  --color-text-muted: #374151;/* Gray 700 para melhor leitura */
+  --color-border: #d1d5db;    /* Gray 300 mais visível */
 
   /* Accent vermelho japonês com alto contraste */
   --color-accent: #c8102e;    /* Japan Red */
   --color-accent-alt: #a10d24;
+
+  /* Secundário (branco & vermelho suave) */
+  --secondary-bg: #ffffff;
+  --secondary-border: #eaeaea;
+  --secondary-accent: #e00022; /* vermelho secundário mais vivo */
+  --secondary-accent-alt: #bb001c;
 
   /* Suporte */
   --success: #16a34a;
@@ -28,13 +34,19 @@
   /* Base escura com contraste elevado */
   --color-bg: #0f141a;
   --color-bg-alt: #17202a;
-  --color-text: #e5e7eb;
-  --color-text-muted: #9ca3af;
+  --color-text: #f3f4f6;
+  --color-text-muted: #d1d5db;
   --color-border: #25303a;
 
   /* Accent adaptado para escuro */
   --color-accent: #ff3347;
   --color-accent-alt: #e3263a;
+
+  /* Secundário adaptado ao dark */
+  --secondary-bg: #1a2027;
+  --secondary-border: #2a333d;
+  --secondary-accent: #ff4050;
+  --secondary-accent-alt: #e83343;
 
   /* Suporte */
   --success: #22c55e;
@@ -64,9 +76,27 @@ body { font-family: inherit; }
 .accent-bg { background-color: var(--color-accent); }
 .accent-bg:hover { background-color: var(--color-accent-alt); }
 
+/* Temas secundários focados no claro (branco & vermelho) */
+.secondary-card {
+  background-color: var(--secondary-bg);
+  border: 1px solid var(--secondary-border);
+  border-radius: 0.75rem;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+.btn-secondary {
+  background-color: var(--secondary-accent);
+  color: #fff;
+  border-color: var(--secondary-accent);
+}
+.btn-secondary:hover { background-color: var(--secondary-accent-alt); }
+.pill-secondary-active {
+  background-color: color-mix(in oklab, var(--secondary-accent) 10%, var(--secondary-bg));
+  border: 1px solid color-mix(in oklab, var(--secondary-accent) 35%, var(--secondary-border));
+}
+
 /* Background decorativo opcional (sol nascente suave) */
 .bg-japan {
-  background-image: radial-gradient(circle at center, rgba(212,0,0,0.12) 0%, rgba(212,0,0,0.08) 30%, transparent 60%);
+  background-image: radial-gradient(circle at center, rgba(212,0,0,0.10) 0%, rgba(212,0,0,0.06) 28%, transparent 58%);
 }
 
 /* Suave transição entre temas */
@@ -102,6 +132,7 @@ html { transition: background-color .3s ease, color .3s ease; }
 }
 .input::placeholder { color: color-mix(in oklab, var(--color-text) 50%, #aaa); }
 .input:focus { outline: 2px solid var(--color-accent); box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-accent) 30%, transparent); }
+.input:focus-visible { outline-width: 3px; }
 
 .btn {
   display: inline-flex;
@@ -114,6 +145,7 @@ html { transition: background-color .3s ease, color .3s ease; }
   transition: transform .06s ease, box-shadow .2s ease, background-color .2s ease;
   cursor: pointer;
 }
+.btn:focus-visible { outline: 3px solid var(--color-accent); outline-offset: 2px; }
 .btn-accent {
   background-color: var(--color-accent);
   color: white;
@@ -128,8 +160,8 @@ html { transition: background-color .3s ease, color .3s ease; }
 
 /* Pills/tabs ativos com vermelho suave e texto nítido */
 .pill-active {
-  background-color: color-mix(in oklab, var(--color-accent) 12%, var(--color-bg-alt));
-  color: var(--color-text);
+  background-color: color-mix(in oklab, var(--color-accent) 18%, #fff);
+  color: #111827;
   border: 1px solid color-mix(in oklab, var(--color-accent) 35%, var(--color-border));
   box-shadow: 0 3px 10px color-mix(in oklab, var(--color-accent) 20%, transparent);
 }
@@ -144,4 +176,77 @@ html { transition: background-color .3s ease, color .3s ease; }
 .header-premium {
   border-bottom: 1px solid var(--color-border);
   backdrop-filter: saturate(1.2) blur(2px);
+}
+
+/* Acessibilidade tipográfica básica */
+html {
+  line-height: 1.5;
+}
+.accessible-heading {
+  color: #0b1220;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+:root[data-theme='dark'] .accessible-heading {
+  color: #f9fafb;
+}
+.high-contrast-text {
+  color: #0b1220;
+}
+:root[data-theme='dark'] .high-contrast-text {
+  color: #f9fafb;
+}
+.brand-subtle {
+  color: #9ca3af; /* Gray 400 para o subtítulo leve no header */
+}
+
+/* Switch de tema acessível */
+.theme-switch {
+  position: relative;
+  display: inline-block;
+  width: 52px;
+  height: 28px;
+}
+.theme-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.theme-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #d1d5db;
+  transition: .3s;
+  border-radius: 28px;
+}
+.theme-slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .3s;
+  border-radius: 50%;
+}
+input:checked + .theme-slider {
+  background-color: var(--color-accent);
+}
+input:checked + .theme-slider:before {
+  transform: translateX(24px);
+}
+.theme-slider:hover {
+  background-color: #9ca3af;
+}
+input:checked + .theme-slider:hover {
+  background-color: var(--color-accent-alt);
+}
+.theme-switch input:focus-visible + .theme-slider {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
 }
