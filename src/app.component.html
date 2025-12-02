@@ -8,12 +8,12 @@
     class="bg-theme-alt shadow-md sticky top-0 z-20 header-premium"
     role="banner"
   >
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16" role="banner">
+    <div class="container mx-auto px-3 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-14 sm:h-16" role="banner">
         <!-- Logo and Title -->
-        <div class="flex items-center space-x-3">
+        <div class="flex items-center space-x-2 sm:space-x-3">
           <svg
-            class="w-10 h-10 accent-text"
+            class="w-8 h-8 sm:w-10 sm:h-10 accent-text"
             viewBox="0 0 64 64"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -34,7 +34,7 @@
               stroke-linejoin="round"
             />
           </svg>
-          <h1 class="text-xl sm:text-2xl accessible-heading">
+          <h1 class="text-lg sm:text-xl lg:text-2xl accessible-heading">
             <span class="accent-text font-serif">Judô</span>
             <span class="font-sans high-contrast-text">Master</span>
           </h1>
@@ -121,7 +121,7 @@
   <!-- MAIN CONTENT -->
   <main
     id="main-content"
-    class="flex-grow container mx-auto p-4 sm:p-6 lg:p-8"
+    class="flex-grow container mx-auto px-3 py-4 sm:p-6 lg:p-8"
     role="main"
   >
     <!-- TABS -->
@@ -190,12 +190,87 @@
         </div>
       </div>
 
-      <div class="flex justify-between items-center mb-4 gap-4 flex-wrap">
-        <h3 class="text-xl font-semibold">Técnicas para Exame</h3>
-        <div class="relative w-full sm:w-64">
-          <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+      <div
+        class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-3"
+      >
+        <h3 class="text-lg sm:text-xl font-semibold">Técnicas para Exame</h3>
+        <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+          <div class="relative flex-1 sm:flex-initial sm:w-64 min-w-0">
+            <span
+              class="absolute inset-y-0 left-0 flex items-center pl-2 sm:pl-3"
+            >
+              <svg
+                class="w-5 h-5 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </span>
+            <input
+              (input)="updateFilter($event)"
+              [value]="filterTerm()"
+              type="search"
+              placeholder="Buscar técnica..."
+              class="input block w-full pl-8 sm:pl-10 pr-3 py-2 text-sm"
+              aria-label="Buscar técnica"
+            />
+          </div>
+          <button
+            type="button"
+            (click)="exportToExcel()"
+            class="btn p-2 sm:px-3 sm:py-2"
+            title="Exportar para Excel"
+            aria-label="Exportar tabela para Excel"
+          >
+            <svg class="w-5 h-5 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none">
+              <rect x="3" y="3" width="18" height="18" rx="2" fill="#217346" />
+              <path
+                d="M14 8L10 16M10 8L14 16"
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+          </button>
+          <button
+            type="button"
+            (click)="exportToPDF()"
+            class="btn p-2 sm:px-3 sm:py-2"
+            title="Exportar para PDF"
+            aria-label="Exportar tabela para PDF"
+          >
+            <svg class="w-5 h-5 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M7 3h7l5 5v11a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z"
+                fill="#D32F2F"
+              />
+              <path d="M14 3v5h5" fill="#B71C1C" />
+              <text
+                x="12"
+                y="15"
+                font-size="6"
+                font-weight="bold"
+                fill="white"
+                text-anchor="middle"
+              >
+                PDF
+              </text>
+            </svg>
+          </button>
+          <button
+            type="button"
+            (click)="openForm('add')"
+            class="btn btn-secondary whitespace-nowrap"
+          >
             <svg
-              class="w-5 h-5 text-gray-400"
+              class="w-5 h-5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -204,38 +279,12 @@
                 stroke-linecap="round"
                 stroke-linejoin="round"
                 stroke-width="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
               />
             </svg>
-          </span>
-          <input
-            (input)="updateFilter($event)"
-            [value]="filterTerm()"
-            type="search"
-            placeholder="Buscar técnica..."
-            class="input block w-full pl-10 pr-3 py-2 sm:text-sm"
-          />
+            <span class="hidden sm:inline ml-2">Adicionar</span>
+          </button>
         </div>
-        <button
-          type="button"
-          (click)="openForm('add')"
-          class="btn btn-secondary"
-        >
-          <svg
-            class="w-5 h-5 mr-2"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-            />
-          </svg>
-          Adicionar
-        </button>
       </div>
 
       <!-- TECHNIQUES LIST -->
@@ -245,7 +294,7 @@
           <h4 class="text-lg font-semibold mb-2 accessible-heading font-serif">
             {{ group.category }}
           </h4>
-          <div class="overflow-x-auto">
+          <div class="overflow-x-auto -mx-4 sm:mx-0 shadow-inner-x">
             <table
               class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 table-fixed table-zebra"
               role="table"
@@ -275,9 +324,9 @@
               <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                 @for (tech of group.techniques; track tech.id) {
                 <tr>
-                  <td class="px-6 py-4">
+                  <td class="px-3 sm:px-6 py-3 sm:py-4">
                     <div
-                      class="text-base font-semibold high-contrast-text break-words font-serif"
+                      class="text-sm sm:text-base font-semibold high-contrast-text break-words font-serif"
                     >
                       {{ tech.name }}
                     </div>
@@ -286,23 +335,27 @@
                     </div>
                   </td>
                   <td
-                    class="px-6 py-4 whitespace-normal text-sm text-theme hidden md:table-cell"
+                    class="px-3 sm:px-6 py-3 sm:py-4 whitespace-normal text-xs sm:text-sm text-theme hidden md:table-cell"
                   >
                     {{ tech.description }}
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div class="flex items-center space-x-1" aria-label="Ações">
+                  <td
+                    class="px-2 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-sm font-medium"
+                  >
+                    <div
+                      class="flex items-center gap-0.5 sm:gap-1"
+                      aria-label="Ações"
+                    >
                       @if(tech.demoUrl && tech.demoUrl !== '#') {
-                      <a
-                        [href]="tech.demoUrl"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <button
+                        (click)="showVideo(tech)"
+                        type="button"
                         title="Demonstração"
-                        class="p-2 rounded-full icon-blue hover:bg-theme-alt transition-colors"
-                        aria-label="Abrir demonstração"
+                        class="p-1.5 sm:p-2 rounded-full icon-blue hover:bg-theme-alt transition-colors"
+                        aria-label="Assistir demonstração"
                       >
                         <svg
-                          class="w-5 h-5"
+                          class="w-4 h-4 sm:w-5 sm:h-5"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -314,16 +367,16 @@
                             d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
                           />
                         </svg>
-                      </a>
+                      </button>
                       } @else {
                       <button
                         disabled
-                        title="Demonstração"
-                        class="p-2 rounded-full text-gray-400 cursor-not-allowed"
+                        title="Demonstração não disponível"
+                        class="p-1.5 sm:p-2 rounded-full text-gray-400 cursor-not-allowed opacity-50"
                         type="button"
                       >
                         <svg
-                          class="w-5 h-5"
+                          class="w-4 h-4 sm:w-5 sm:h-5"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -340,12 +393,12 @@
                       <button
                         (click)="showDetail(tech)"
                         title="Ver Detalhes"
-                        class="p-2 rounded-full icon-indigo hover:bg-theme-alt transition-colors"
+                        class="p-1.5 sm:p-2 rounded-full icon-indigo hover:bg-theme-alt transition-colors"
                         aria-label="Ver detalhes"
                         type="button"
                       >
                         <svg
-                          class="w-5 h-5"
+                          class="w-4 h-4 sm:w-5 sm:h-5"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -367,12 +420,12 @@
                       <button
                         (click)="openForm('edit', tech)"
                         title="Editar"
-                        class="p-2 rounded-full icon-yellow hover:bg-theme-alt transition-colors"
+                        class="p-1.5 sm:p-2 rounded-full icon-yellow hover:bg-theme-alt transition-colors"
                         aria-label="Editar técnica"
                         type="button"
                       >
                         <svg
-                          class="w-5 h-5"
+                          class="w-4 h-4 sm:w-5 sm:h-5"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -388,12 +441,12 @@
                       <button
                         (click)="deleteTechnique(tech)"
                         title="Remover"
-                        class="p-2 rounded-full icon-red hover:bg-theme-alt transition-colors"
+                        class="p-1.5 sm:p-2 rounded-full icon-red hover:bg-theme-alt transition-colors"
                         aria-label="Remover técnica"
                         type="button"
                       >
                         <svg
-                          class="w-5 h-5"
+                          class="w-4 h-4 sm:w-5 sm:h-5"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -427,28 +480,42 @@
   </main>
 
   <!-- FOOTER -->
-  <footer class="bg-theme-alt shadow-inner mt-auto py-4">
+  <footer class="bg-theme-alt shadow-inner mt-auto py-3 sm:py-4">
     <div
-      class="container mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-theme"
+      class="container mx-auto px-3 sm:px-6 lg:px-8 text-center text-xs sm:text-sm text-theme"
     >
-      Judô Master - Criado por Victor Medeiros
+      Judô Master - Criado por
+      <a
+        href="https://www.linkedin.com/in/victormedeiros95/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="accent-text hover:underline font-semibold"
+      >
+        Victor Medeiros
+      </a>
     </div>
   </footer>
 
   <!-- MODAL for Technique Detail -->
   @if (techniqueForDetail(); as tech) {
   <div
-    class="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-4"
+    class="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-3 sm:p-4"
     (click)="closeDetail()"
   >
     <div
       class="card max-w-2xl w-full max-h-[90vh] overflow-y-auto"
       (click)="$event.stopPropagation()"
+      role="dialog"
+      aria-labelledby="detail-title"
+      aria-modal="true"
     >
-      <div class="p-6">
+      <div class="p-4 sm:p-6">
         <div class="flex justify-between items-start">
           <div>
-            <h3 class="text-2xl font-bold accessible-heading">
+            <h3
+              id="detail-title"
+              class="text-xl sm:text-2xl font-bold accessible-heading"
+            >
               {{ tech.name }}
             </h3>
             <p class="text-sm text-theme italic">
@@ -494,18 +561,25 @@
   <!-- MODAL for Technique Form (Add/Edit) -->
   @if (techniqueForForm(); as tech) {
   <div
-    class="fixed inset-0 bg-black bg-opacity-75 z-40 flex items-center justify-center p-4"
+    class="fixed inset-0 bg-black bg-opacity-75 z-40 flex items-center justify-center p-3 sm:p-4"
+    (click)="closeForm()"
   >
     <div
       class="card max-w-2xl w-full max-h-[90vh] overflow-y-auto"
       (click)="$event.stopPropagation()"
+      role="dialog"
+      aria-labelledby="form-title"
+      aria-modal="true"
     >
       <form (submit)="handleSubmit($event)">
-        <div class="p-6">
+        <div class="p-4 sm:p-6">
           <div
             class="flex justify-between items-center pb-3 border-b border-theme"
           >
-            <h3 class="text-xl font-bold accessible-heading">
+            <h3
+              id="form-title"
+              class="text-lg sm:text-xl font-bold accessible-heading"
+            >
               {{
                 formMode() === "add"
                   ? "Adicionar Nova Técnica"
@@ -653,12 +727,20 @@
   <!-- MODAL for Delete Confirmation -->
   @if (techniqueToDelete(); as tech) {
   <div
-    class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+    class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-3 sm:p-4"
+    (click)="cancelDelete()"
   >
-    <div class="card max-w-md w-full" (click)="$event.stopPropagation()">
-      <div class="p-6 text-center">
+    <div
+      class="card max-w-md w-full"
+      (click)="$event.stopPropagation()"
+      role="alertdialog"
+      aria-labelledby="delete-title"
+      aria-describedby="delete-description"
+      aria-modal="true"
+    >
+      <div class="p-4 sm:p-6 text-center">
         <svg
-          class="mx-auto mb-4 w-12 h-12 accent-text"
+          class="mx-auto mb-4 w-10 h-10 sm:w-12 sm:h-12 accent-text"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -672,19 +754,91 @@
             d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
           />
         </svg>
-        <h3 class="mb-5 text-lg font-normal text-theme">
-          Tem certeza que deseja remover a técnica "{{ tech.name }}"?
-        </h3>
-        <button
-          (click)="confirmDelete()"
-          type="button"
-          class="btn btn-accent me-2"
+        <h3
+          id="delete-title"
+          class="mb-5 text-base sm:text-lg font-normal text-theme"
         >
-          Sim, tenho certeza
-        </button>
-        <button (click)="cancelDelete()" type="button" class="btn">
-          Não, cancelar
-        </button>
+          Confirmar remoção
+        </h3>
+        <p id="delete-description" class="mb-5 text-sm sm:text-base text-theme">
+          Tem certeza que deseja remover a técnica "{{ tech.name }}"?
+        </p>
+        <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center">
+          <button
+            (click)="confirmDelete()"
+            type="button"
+            class="btn btn-accent order-2 sm:order-1"
+          >
+            Sim, tenho certeza
+          </button>
+          <button
+            (click)="cancelDelete()"
+            type="button"
+            class="btn order-1 sm:order-2"
+          >
+            Não, cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- MODAL for Video Player -->
+  @if (techniqueForVideo(); as tech) {
+  <div
+    class="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-3 sm:p-4"
+    (click)="closeVideo()"
+  >
+    <div
+      class="card max-w-4xl w-full"
+      (click)="$event.stopPropagation()"
+      role="dialog"
+      aria-labelledby="video-title"
+      aria-modal="true"
+    >
+      <div class="p-4 sm:p-6">
+        <div class="flex justify-between items-center mb-3 sm:mb-4">
+          <div>
+            <h3
+              id="video-title"
+              class="text-lg sm:text-xl font-bold accessible-heading"
+            >
+              {{ tech.name }}
+            </h3>
+            <p class="text-sm text-theme italic">{{ tech.translation }}</p>
+          </div>
+          <button
+            (click)="closeVideo()"
+            type="button"
+            class="p-1 rounded-full hover:bg-theme-alt transition-colors"
+            aria-label="Fechar vídeo"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+        <div class="relative w-full" style="padding-bottom: 56.25%">
+          <iframe
+            [src]="safeVideoUrl()"
+            class="absolute top-0 left-0 w-full h-full rounded-lg"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+            loading="lazy"
+          ></iframe>
+        </div>
       </div>
     </div>
   </div>
