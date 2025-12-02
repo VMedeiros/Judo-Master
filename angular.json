@@ -18,7 +18,18 @@
             },
             "browser": "index.tsx",
             "tsConfig": "tsconfig.json",
-            "styles": ["src/styles.css"]
+            "styles": ["src/styles.css"],
+            "allowedCommonJsDependencies": [
+              "xlsx",
+              "jspdf",
+              "jspdf-autotable",
+              "html2canvas",
+              "canvg",
+              "dompurify",
+              "core-js",
+              "raf",
+              "rgbcolor"
+            ]
           },
           "configurations": {
             "production": {

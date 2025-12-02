@@ -1,11 +1,14 @@
 import { Component, ChangeDetectionStrategy, signal, computed, effect, inject, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DomSanitizer } from '@angular/platform-browser';
 import { JudoDataService } from './services/judo-data.service';
-import { Belt, Technique } from './models/judo.model';
+import { Technique } from './models/judo.model';
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 type FormMode = 'add' | 'edit';
 type FontOption = { name: string; class: string; };
-type FontSizeOption = { name: string; value: number };
 
 @Component({
   selector: 'app-root',
@@ -16,6 +19,7 @@ type FontSizeOption = { name: string; value: number };
 })
 export class AppComponent {
   private dataService = inject(JudoDataService);
+  private sanitizer = inject(DomSanitizer);
 
   // State Signals
   belts = this.dataService.belts;
@@ -28,7 +32,7 @@ export class AppComponent {
   isSettingsOpen = signal(false);
 
   fontSize = signal(16); // base font size in px
-  fontSizeOptions: FontSizeOption[] = [
+  fontSizeOptions = [
     { name: 'Pequeno', value: 14 },
     { name: 'Médio', value: 16 },
     { name: 'Grande', value: 18 },
@@ -46,6 +50,7 @@ export class AppComponent {
   techniqueForForm = signal<Technique | null>(null);
   formMode = signal<FormMode>('add');
   techniqueToDelete = signal<Technique | null>(null);
+  techniqueForVideo = signal<Technique | null>(null);
 
   techniqueCategories = [
     'Fundamentos (Kihon)',
@@ -60,6 +65,28 @@ export class AppComponent {
 
   // Computed Signals
   selectedBelt = computed(() => this.belts()[this.selectedBeltIndex()]);
+
+  safeVideoUrl = computed(() => {
+    const tech = this.techniqueForVideo();
+    if (!tech?.demoUrl) return null;
+
+    let embedUrl = tech.demoUrl;
+
+    // Converter URLs do YouTube para formato embed
+    if (embedUrl.includes('youtube.com/watch?v=')) {
+      const videoId = embedUrl.split('v=')[1]?.split('&')[0];
+      if (videoId) {
+        embedUrl = `https://www.youtube.com/embed/${videoId}`;
+      }
+    } else if (embedUrl.includes('youtu.be/')) {
+      const videoId = embedUrl.split('youtu.be/')[1]?.split('?')[0];
+      if (videoId) {
+        embedUrl = `https://www.youtube.com/embed/${videoId}`;
+      }
+    }
+
+    return this.sanitizer.bypassSecurityTrustResourceUrl(embedUrl);
+  });
 
   groupedTechniques = computed(() => {
     const belt = this.selectedBelt();
@@ -184,6 +211,14 @@ export class AppComponent {
     this.techniqueForDetail.set(null);
   }
 
+  showVideo(technique: Technique): void {
+    this.techniqueForVideo.set(technique);
+  }
+
+  closeVideo(): void {
+    this.techniqueForVideo.set(null);
+  }
+
   openForm(mode: FormMode, technique: Technique | null = null): void {
     this.formMode.set(mode);
     this.techniqueForForm.set(technique ? { ...technique } : {
@@ -203,6 +238,12 @@ export class AppComponent {
   }
 
   saveTechnique(form: HTMLFormElement): void {
+    // Validar formulário antes de processar
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
     const formData = new FormData(form);
     const beltId = this.selectedBelt()?.id;
     if (!beltId) return;
@@ -266,6 +307,9 @@ export class AppComponent {
     if (this.isSettingsOpen()) {
       this.isSettingsOpen.set(false);
     }
+    if (this.techniqueForVideo()) {
+      this.closeVideo();
+    }
   }
 
   // Fechar settings ao clicar fora
@@ -274,6 +318,83 @@ export class AppComponent {
     const target = event.target as HTMLElement;
     if (this.isSettingsOpen() && !target.closest('.settings-container')) {
       this.isSettingsOpen.set(false);
+    }
+  }
+
+  // Export methods
+  exportToExcel(): void {
+    const belt = this.selectedBelt();
+    if (!belt || !belt.techniques.length) {
+      console.warn('Nenhuma técnica disponível para exportar');
+      return;
+    }
+
+    try {
+      const data = belt.techniques.map(tech => ({
+        'Nome': tech.name,
+        'Tradução': tech.translation,
+        'Categoria': tech.category,
+        'Descrição': tech.description,
+        'Execução': tech.execution,
+        'Aplicação': tech.application,
+        'URL Demo': tech.demoUrl
+      }));
+
+      const ws = XLSX.utils.json_to_sheet(data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, belt.name);
+
+      const fileName = `${belt.name.replace(/\s+/g, '_')}_tecnicas.xlsx`;
+      XLSX.writeFile(wb, fileName);
+    } catch (error) {
+      console.error('Erro ao exportar Excel:', error);
+    }
+  }
+
+  exportToPDF(): void {
+    const belt = this.selectedBelt();
+    if (!belt || !belt.techniques.length) {
+      console.warn('Nenhuma técnica disponível para exportar');
+      return;
+    }
+
+    try {
+      const doc = new jsPDF();
+
+      // Header
+      doc.setFontSize(18);
+      doc.text(`Judô Master - ${belt.name}`, 14, 20);
+      doc.setFontSize(10);
+      doc.text(`Faixa Etária: ${belt.ageGroup}`, 14, 28);
+      doc.text(`Pré-requisitos: ${belt.prerequisites}`, 14, 34);
+
+      // Table
+      const tableData = belt.techniques.map(tech => [
+        tech.name,
+        tech.translation,
+        tech.category,
+        tech.description
+      ]);
+
+      autoTable(doc, {
+        startY: 40,
+        head: [['Nome', 'Tradução', 'Categoria', 'Descrição']],
+        body: tableData,
+        theme: 'grid',
+        headStyles: { fillColor: [200, 16, 46] },
+        styles: { fontSize: 8, cellPadding: 2 },
+        columnStyles: {
+          0: { cellWidth: 35 },
+          1: { cellWidth: 35 },
+          2: { cellWidth: 45 },
+          3: { cellWidth: 75 }
+        }
+      });
+
+      const fileName = `${belt.name.replace(/\s+/g, '_')}_tecnicas.pdf`;
+      doc.save(fileName);
+    } catch (error) {
+      console.error('Erro ao exportar PDF:', error);
     }
   }
 }

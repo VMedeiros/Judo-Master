@@ -250,3 +250,86 @@ input:checked + .theme-slider:hover {
   outline: 3px solid var(--color-accent);
   outline-offset: 2px;
 }
+
+/* Scroll horizontal com sombra indicadora em mobile */
+.shadow-inner-x {
+  background:
+    /* Sombra esquerda */
+    linear-gradient(to right, var(--color-bg-alt) 30%, rgba(255, 255, 255, 0)),
+    linear-gradient(to right, rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0) 3%),
+    /* Sombra direita */
+    linear-gradient(to left, var(--color-bg-alt) 30%, rgba(255, 255, 255, 0)),
+    linear-gradient(to left, rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0) 3%);
+  background-position: left center, left center, right center, right center;
+  background-repeat: no-repeat;
+  background-color: var(--color-bg-alt);
+  background-size: 30px 100%, 6px 100%, 30px 100%, 6px 100%;
+  background-attachment: local, scroll, local, scroll;
+}
+
+:root[data-theme='dark'] .shadow-inner-x {
+  background:
+    linear-gradient(to right, var(--color-bg-alt) 30%, rgba(0, 0, 0, 0)),
+    linear-gradient(to right, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0) 3%),
+    linear-gradient(to left, var(--color-bg-alt) 30%, rgba(0, 0, 0, 0)),
+    linear-gradient(to left, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0) 3%);
+  background-position: left center, left center, right center, right center;
+  background-repeat: no-repeat;
+  background-color: var(--color-bg-alt);
+  background-size: 30px 100%, 6px 100%, 30px 100%, 6px 100%;
+  background-attachment: local, scroll, local, scroll;
+}
+
+/* Melhorias para dispositivos móveis */
+@media (max-width: 640px) {
+  /* Reduzir tamanhos de fonte em telas muito pequenas */
+  html {
+    font-size: 14px;
+  }
+  
+  /* Melhorar área de toque em botões */
+  .btn, button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Otimizar tabelas em mobile */
+  table {
+    font-size: 0.875rem;
+  }
+}
+
+/* Melhorar performance com will-change */
+.theme-slider,
+.btn,
+.pill-active {
+  will-change: transform, background-color;
+}
+
+/* Suporte a modo de alto contraste */
+@media (prefers-contrast: high) {
+  .btn {
+    border-width: 2px;
+  }
+  
+  .card {
+    border-width: 2px;
+  }
+  
+  :root[data-theme='light'] {
+    --color-text: #000000;
+    --color-border: #000000;
+  }
+}
+
+/* Reduzir movimento para quem prefere */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
