@@ -16,27 +16,24 @@ type FontSizeOption = { name: string; value: number };
 })
 export class AppComponent {
   private dataService = inject(JudoDataService);
-  
+
   // State Signals
   belts = this.dataService.belts;
   selectedBeltIndex = signal(0);
   filterTerm = signal('');
-  
+
   // UI & Settings Signals
-  isDarkMode = signal(
-    typeof window !== 'undefined' &&
-    window.matchMedia &&
-    window.matchMedia('(prefers-color-scheme: dark)').matches
-  );
+  // Tema (inicializado no construtor para permitir leitura de localStorage)
+  isDarkMode = signal(false);
   isSettingsOpen = signal(false);
-  
+
   fontSize = signal(16); // base font size in px
   fontSizeOptions: FontSizeOption[] = [
     { name: 'Pequeno', value: 14 },
     { name: 'Médio', value: 16 },
     { name: 'Grande', value: 18 },
   ];
-  
+
   fontOptions: FontOption[] = [
     { name: 'Sans-Serif', class: 'font-sans' },
     { name: 'Serifada', class: 'font-serif' },
@@ -49,7 +46,7 @@ export class AppComponent {
   techniqueForForm = signal<Technique | null>(null);
   formMode = signal<FormMode>('add');
   techniqueToDelete = signal<Technique | null>(null);
-  
+
   techniqueCategories = [
     'Fundamentos (Kihon)',
     'Técnicas de Projeção (Nage-waza)',
@@ -74,35 +71,41 @@ export class AppComponent {
     const filteredTechniques = !term
       ? belt.techniques
       : belt.techniques.filter(tech =>
-          tech.name.toLowerCase().includes(term) ||
-          tech.translation.toLowerCase().includes(term)
-        );
+        tech.name.toLowerCase().includes(term) ||
+        tech.translation.toLowerCase().includes(term)
+      );
 
     if (!filteredTechniques.length) {
       return [];
     }
-    
+
     const groups = new Map<string, Technique[]>();
-    
+
     for (const tech of filteredTechniques) {
-        if (!groups.has(tech.category)) {
-            groups.set(tech.category, []);
-        }
-        groups.get(tech.category)!.push(tech);
+      if (!groups.has(tech.category)) {
+        groups.set(tech.category, []);
+      }
+      groups.get(tech.category)!.push(tech);
     }
-    
+
     return Array.from(groups.entries()).map(([category, techniques]) => ({ category, techniques }));
   });
 
   constructor() {
+    // Inicialização de tema com persistência
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      this.isDarkMode.set(stored ? stored === 'dark' : prefersDark);
+    }
+
     effect(() => {
       const root = document.documentElement;
-
-      // Theme
-      if (this.isDarkMode()) {
-        root.classList.add('dark');
-      } else {
-        root.classList.remove('dark');
+      const dark = this.isDarkMode();
+      root.classList.toggle('dark', dark);
+      root.setAttribute('data-theme', dark ? 'dark' : 'light');
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('theme', dark ? 'dark' : 'light');
       }
 
       // Font Size
@@ -127,11 +130,11 @@ export class AppComponent {
   toggleTheme(): void {
     this.isDarkMode.update(value => !value);
   }
-  
+
   toggleSettings(): void {
     this.isSettingsOpen.update(value => !value);
   }
-  
+
   changeFontSize(size: string): void {
     this.fontSize.set(Number(size));
   }
@@ -142,7 +145,7 @@ export class AppComponent {
       this.selectedFont.set(font);
     }
   }
-  
+
   showDetail(technique: Technique): void {
     this.techniqueForDetail.set(technique);
   }
@@ -150,10 +153,10 @@ export class AppComponent {
   closeDetail(): void {
     this.techniqueForDetail.set(null);
   }
-  
+
   openForm(mode: FormMode, technique: Technique | null = null): void {
     this.formMode.set(mode);
-    this.techniqueForForm.set(technique ? {...technique} : {
+    this.techniqueForForm.set(technique ? { ...technique } : {
       id: 0,
       name: '',
       translation: '',
@@ -164,7 +167,7 @@ export class AppComponent {
       category: this.techniqueCategories[0]
     });
   }
-  
+
   closeForm(): void {
     this.techniqueForForm.set(null);
   }
@@ -175,19 +178,19 @@ export class AppComponent {
     if (!beltId) return;
 
     const techniqueData: Omit<Technique, 'id'> & { id?: number } = {
-        name: formData.get('name') as string,
-        translation: formData.get('translation') as string,
-        description: formData.get('description') as string,
-        execution: formData.get('execution') as string,
-        application: formData.get('application') as string,
-        demoUrl: formData.get('demoUrl') as string,
-        category: formData.get('category') as string,
+      name: formData.get('name') as string,
+      translation: formData.get('translation') as string,
+      description: formData.get('description') as string,
+      execution: formData.get('execution') as string,
+      application: formData.get('application') as string,
+      demoUrl: formData.get('demoUrl') as string,
+      category: formData.get('category') as string,
     };
 
     if (this.formMode() === 'edit' && this.techniqueForForm()?.id) {
-        this.dataService.updateTechnique(beltId, { ...techniqueData, id: this.techniqueForForm()!.id });
+      this.dataService.updateTechnique(beltId, { ...techniqueData, id: this.techniqueForForm()!.id });
     } else {
-        this.dataService.addTechnique(beltId, techniqueData);
+      this.dataService.addTechnique(beltId, techniqueData);
     }
 
     this.closeForm();
