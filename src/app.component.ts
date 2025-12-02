@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, signal, computed, effect, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, computed, effect, inject, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { JudoDataService } from './services/judo-data.service';
 import { Belt, Technique } from './models/judo.model';
@@ -97,6 +97,25 @@ export class AppComponent {
       const stored = localStorage.getItem('theme');
       const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
       this.isDarkMode.set(stored ? stored === 'dark' : prefersDark);
+
+      // Restaurar fonte
+      const storedFont = localStorage.getItem('fontFamily');
+      if (storedFont) {
+        const font = this.fontOptions.find(f => f.class === storedFont);
+        if (font) this.selectedFont.set(font);
+      }
+
+      // Restaurar tamanho
+      const storedSize = localStorage.getItem('fontSize');
+      if (storedSize) {
+        this.fontSize.set(Number(storedSize));
+      }
+
+      // Restaurar aba
+      const storedBelt = localStorage.getItem('selectedBeltIndex');
+      if (storedBelt) {
+        this.selectedBeltIndex.set(Number(storedBelt));
+      }
     }
 
     effect(() => {
@@ -109,11 +128,19 @@ export class AppComponent {
       }
 
       // Font Size
-      root.style.fontSize = `${this.fontSize()}px`;
+      const size = this.fontSize();
+      root.style.fontSize = `${size}px`;
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('fontSize', String(size));
+      }
 
       // Font Family
-      this.fontOptions.forEach(font => root.classList.remove(font.class));
-      root.classList.add(this.selectedFont().class);
+      const font = this.selectedFont();
+      this.fontOptions.forEach(f => root.classList.remove(f.class));
+      root.classList.add(font.class);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('fontFamily', font.class);
+      }
     });
   }
 
@@ -121,6 +148,9 @@ export class AppComponent {
   selectBelt(index: number): void {
     this.selectedBeltIndex.set(index);
     this.filterTerm.set('');
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('selectedBeltIndex', String(index));
+    }
   }
 
   updateFilter(event: Event): void {
@@ -219,5 +249,31 @@ export class AppComponent {
   handleSubmit(event: Event) {
     event.preventDefault();
     this.saveTechnique(event.target as HTMLFormElement);
+  }
+
+  // Acessibilidade: fechar modais com tecla Escape
+  @HostListener('document:keydown.escape', ['$event'])
+  onEscape(event: KeyboardEvent) {
+    if (this.techniqueForDetail()) {
+      this.closeDetail();
+    }
+    if (this.techniqueForForm()) {
+      this.closeForm();
+    }
+    if (this.techniqueToDelete()) {
+      this.cancelDelete();
+    }
+    if (this.isSettingsOpen()) {
+      this.isSettingsOpen.set(false);
+    }
+  }
+
+  // Fechar settings ao clicar fora
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    if (this.isSettingsOpen() && !target.closest('.settings-container')) {
+      this.isSettingsOpen.set(false);
+    }
   }
 }
