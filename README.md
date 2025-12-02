@@ -92,7 +92,7 @@ O tema alterna entre claro e escuro através de um toggle nas Configurações. A
 
 ## 📄 Licença
 
-Definir licença explícita (ex.: MIT). Caso nenhuma seja adicionada, o código permanece sem licença aberta formal.
+MIT License - Copyright (c) 2025 Victor Medeiros
 
 ---
 
