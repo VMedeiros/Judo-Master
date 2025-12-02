@@ -1,6 +1,10 @@
 <div align="center">
    <h1>🏯 Judô Master</h1>
    <p>Aplicação Angular para estudo, organização e gerenciamento de técnicas de Judô por faixa.</p>
+   
+   [![Deploy to GitHub Pages](https://github.com/VMedeiros/Judo-Master/workflows/Deploy%20to%20GitHub%20Pages/badge.svg)](https://github.com/VMedeiros/Judo-Master/actions)
+   
+   <p><strong><a href="https://vmedeiros.github.io/Judo-Master/">🔗 Acessar Aplicação</a></strong></p>
    <br/>
 </div>
 
@@ -34,6 +38,19 @@ npm install       # instala dependências
 npm run dev       # inicia servidor de desenvolvimento (porta 3000)
 npm run build     # build produção em dist/
 npm run preview   # servir build de produção
+npm run deploy    # deploy para GitHub Pages
+```
+
+## 🚀 Deploy
+
+### GitHub Pages (Automático)
+
+A aplicação é automaticamente implantada no GitHub Pages via GitHub Actions quando há push na branch `main`.
+
+### Deploy Manual
+
+```bash
+npm run deploy
 ```
 
 ## 🌓 Tema Claro/Escuro
