@@ -1,9 +1,9 @@
 <!-- Page container -->
-<div class="flex flex-col min-h-screen bg-theme text-theme">
+<div class="flex flex-col min-h-screen bg-theme text-theme bg-japan">
   <!-- HEADER -->
-  <header class="bg-theme-alt shadow-md sticky top-0 z-20">
+  <header class="bg-theme-alt shadow-md sticky top-0 z-20 header-premium">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
+      <div class="flex items-center justify-between h-16" role="banner">
         <!-- Logo and Title -->
         <div class="flex items-center space-x-3">
           <svg
@@ -39,7 +39,8 @@
         <div class="relative">
           <button
             (click)="toggleSettings()"
-            class="p-2 rounded-full text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 dark:focus:ring-offset-gray-800 focus:ring-blue-500"
+            class="p-2 rounded-full text-theme hover:bg-theme-alt focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600"
+            aria-label="Abrir configurações"
           >
             <svg
               class="w-6 h-6"
@@ -64,9 +65,7 @@
 
           <!-- SETTINGS DROPDOWN -->
           @if (isSettingsOpen()) {
-          <div
-            class="absolute right-0 mt-2 w-72 bg-white dark:bg-gray-800 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-30 p-4 space-y-4"
-          >
+          <div class="absolute right-0 mt-2 w-72 card z-30 p-4 space-y-4">
             <h3
               class="text-lg font-semibold mb-2 text-center text-gray-900 dark:text-gray-100"
             >
@@ -81,6 +80,7 @@
                 [class]="
                   isDarkMode() ? 'accent-bg' : 'bg-gray-300 dark:bg-gray-600'
                 "
+                aria-label="Alternar tema"
               >
                 <span class="sr-only">Enable dark mode</span>
                 <span
@@ -97,7 +97,7 @@
               <select
                 id="font-family"
                 (change)="changeFont($any($event.target).value)"
-                class="block w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                class="input block w-full"
               >
                 @for (font of fontOptions; track font.class) {
                 <option
@@ -117,7 +117,7 @@
               <select
                 id="font-size"
                 (change)="changeFontSize($any($event.target).value)"
-                class="block w-full rounded-md border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                class="input block w-full"
               >
                 @for (size of fontSizeOptions; track size.name) {
                 <option
@@ -139,14 +139,14 @@
   <!-- MAIN CONTENT -->
   <main class="flex-grow container mx-auto p-4 sm:p-6 lg:p-8">
     <!-- TABS -->
-    <div class="mb-6 bg-white dark:bg-gray-800/50 rounded-lg shadow">
+    <div class="mb-6 card">
       <div class="sm:hidden p-2">
         <label for="tabs" class="sr-only">Select a tab</label>
         <select
           id="tabs"
           name="tabs"
           (change)="selectBelt(+$any($event.target).value)"
-          class="block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:border-blue-500 focus:ring-blue-500"
+          class="input block w-full"
         >
           @for (belt of belts(); track belt.id; let i = $index) {
           <option [value]="i" [selected]="i === selectedBeltIndex()">
@@ -156,7 +156,10 @@
         </select>
       </div>
       <div class="hidden sm:block">
-        <nav class="flex space-x-2 sm:space-x-4 p-2" aria-label="Tabs">
+        <nav
+          class="flex space-x-2 sm:space-x-4 p-2"
+          aria-label="Faixas de Graduação"
+        >
           @for (belt of belts(); track belt.id; let i = $index) {
           <button
             (click)="selectBelt(i)"
@@ -176,7 +179,7 @@
 
     <!-- TAB CONTENT -->
     @if (selectedBelt(); as belt) {
-    <div class="card p-4 sm:p-6">
+    <div class="card p-4 sm:p-6" aria-label="Conteúdo da faixa selecionada">
       <div class="border-b border-gray-200 dark:border-gray-700 pb-4 mb-4">
         <h2 class="text-2xl font-bold flex items-center">
           <span
@@ -185,7 +188,7 @@
           ></span>
           <span>{{ belt.name }}</span>
         </h2>
-        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+        <p class="mt-2 text-sm text-theme">
           {{ belt.information }}
         </p>
         <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
@@ -255,7 +258,8 @@
           </h4>
           <div class="overflow-x-auto">
             <table
-              class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 table-fixed"
+              class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 table-fixed table-zebra"
+              role="table"
             >
               <thead class="table-header">
                 <tr>
@@ -300,7 +304,7 @@
                     {{ tech.description }}
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div class="flex items-center space-x-1">
+                    <div class="flex items-center space-x-1" aria-label="Ações">
                       @if(tech.demoUrl && tech.demoUrl !== '#') {
                       <a
                         [href]="tech.demoUrl"
@@ -308,6 +312,7 @@
                         rel="noopener noreferrer"
                         title="Demonstração"
                         class="p-2 rounded-full icon-blue hover:bg-theme-alt transition-colors"
+                        aria-label="Abrir demonstração"
                       >
                         <svg
                           class="w-5 h-5"
@@ -348,6 +353,7 @@
                         (click)="showDetail(tech)"
                         title="Ver Detalhes"
                         class="p-2 rounded-full icon-indigo hover:bg-theme-alt transition-colors"
+                        aria-label="Ver detalhes"
                       >
                         <svg
                           class="w-5 h-5"
@@ -373,6 +379,7 @@
                         (click)="openForm('edit', tech)"
                         title="Editar"
                         class="p-2 rounded-full icon-yellow hover:bg-theme-alt transition-colors"
+                        aria-label="Editar técnica"
                       >
                         <svg
                           class="w-5 h-5"
@@ -392,6 +399,7 @@
                         (click)="deleteTechnique(tech)"
                         title="Remover"
                         class="p-2 rounded-full icon-red hover:bg-theme-alt transition-colors"
+                        aria-label="Remover técnica"
                       >
                         <svg
                           class="w-5 h-5"
@@ -428,9 +436,9 @@
   </main>
 
   <!-- FOOTER -->
-  <footer class="bg-white dark:bg-gray-800 shadow-inner mt-auto py-4">
+  <footer class="bg-theme-alt shadow-inner mt-auto py-4">
     <div
-      class="container mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-gray-600 dark:text-gray-400"
+      class="container mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-theme"
     >
       Judô Master - Criado por Victor Medeiros
     </div>
