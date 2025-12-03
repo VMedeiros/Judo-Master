@@ -45,6 +45,9 @@ export class AppComponent {
   ];
   selectedFont = signal<FontOption>(this.fontOptions[0]);
 
+  // Current year for footer
+  currentYear = new Date().getFullYear();
+
   // Dialog/Modal Signals
   techniqueForDetail = signal<Technique | null>(null);
   techniqueForForm = signal<Technique | null>(null);
@@ -76,13 +79,15 @@ export class AppComponent {
     if (embedUrl.includes('youtube.com/watch?v=')) {
       const videoId = embedUrl.split('v=')[1]?.split('&')[0];
       if (videoId) {
-        embedUrl = `https://www.youtube.com/embed/${videoId}`;
+        embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
       }
     } else if (embedUrl.includes('youtu.be/')) {
       const videoId = embedUrl.split('youtu.be/')[1]?.split('?')[0];
       if (videoId) {
-        embedUrl = `https://www.youtube.com/embed/${videoId}`;
+        embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
       }
+    } else if (embedUrl.includes('youtube.com/embed/') && !embedUrl.includes('autoplay=')) {
+      embedUrl += embedUrl.includes('?') ? '&autoplay=1' : '?autoplay=1';
     }
 
     return this.sanitizer.bypassSecurityTrustResourceUrl(embedUrl);
