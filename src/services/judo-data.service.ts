@@ -18,7 +18,7 @@ const initialBelts: Belt[] = [
         "description": "Técnicas para cair com segurança.",
         "execution": "Rolar o corpo para dissipar o impacto, protegendo a cabeça e os órgãos vitais.",
         "application": "Essencial para a segurança em todos os treinos e competições.",
-        "demoUrl": "https://www.youtube.com/watch?v=JhI3a4AUFEA",
+        "demoUrl": "https://www.youtube.com/watch?v=VoktcQAxEPg",
         "category": "Fundamentos (Kihon)"
       },
       {
@@ -28,7 +28,7 @@ const initialBelts: Belt[] = [
         "description": "Formas de segurar o judogi.",
         "execution": "Pegada padrão com uma mão na gola (eri) e outra na manga (sode).",
         "application": "Fundamental para controlar o oponente e aplicar técnicas.",
-        "demoUrl": "https://www.youtube.com/watch?v=uD9t__a1w5E",
+        "demoUrl": "https://www.youtube.com/watch?v=61HkMNNKrVk",
         "category": "Fundamentos (Kihon)"
       }
     ]
@@ -49,7 +49,7 @@ const initialBelts: Belt[] = [
         "description": "Uma das primeiras técnicas de projeção aprendidas.",
         "execution": "Desequilibrar o oponente para trás e ceifar sua perna de apoio por fora.",
         "application": "Eficaz quando o oponente está se movendo para frente.",
-        "demoUrl": "https://www.youtube.com/watch?v=W4sIZ5_3-Qc",
+        "demoUrl": "https://www.youtube.com/watch?v=c-A_nP7mKAc",
         "category": "Técnicas de Projeção (Nage-waza)"
       }
     ]
@@ -70,7 +70,7 @@ const initialBelts: Belt[] = [
         "description": "Técnica de projeção usando o quadril.",
         "execution": "Envolver a cintura do oponente, encaixar o quadril e projetá-lo por cima das costas.",
         "application": "Poderosa técnica de curto alcance.",
-        "demoUrl": "https://www.youtube.com/watch?v=2n5a4s9p2vE",
+        "demoUrl": "https://www.youtube.com/watch?v=yhu1mfy2vJ4",
         "category": "Técnicas de Projeção (Nage-waza)"
       },
       {
@@ -80,7 +80,7 @@ const initialBelts: Belt[] = [
         "description": "Técnica fundamental de imobilização no solo.",
         "execution": "Controlar o oponente no chão, segurando a cabeça e o braço, com o corpo posicionado lateralmente.",
         "application": "Usada para garantir a pontuação ou preparar uma finalização.",
-        "demoUrl": "https://www.youtube.com/watch?v=Fj-DBQAu2_A",
+        "demoUrl": "https://www.youtube.com/watch?v=NDaQuJOFBYk",
         "category": "Técnicas de Controle no Solo (Katame-waza)"
       }
     ]
@@ -101,7 +101,7 @@ const initialBelts: Belt[] = [
         "description": "Variação mais sutil do O-goshi.",
         "execution": "Similar ao O-goshi, mas com um movimento de quadril mais rápido e flutuante.",
         "application": "Usado para surpreender o oponente com uma rotação rápida.",
-        "demoUrl": "#",
+        "demoUrl": "https://www.youtube.com/watch?v=bPKwtB4lyOQ",
         "category": "Técnicas de Projeção (Nage-waza)"
       },
       {
@@ -132,7 +132,7 @@ const initialBelts: Belt[] = [
         "description": "Uma das técnicas mais dinâmicas e eficazes do Judô.",
         "execution": "Desequilibrar o oponente para frente, girar e ceifar a parte interna de sua coxa com um movimento de \"chute\" para cima.",
         "application": "Extremamente versátil, pode ser usada em diversas situações.",
-        "demoUrl": "https://www.youtube.com/watch?v=3-fIWz8g5lA",
+        "demoUrl": "https://www.youtube.com/watch?v=iUpSu5J-bgw",
         "category": "Técnicas de Projeção (Nage-waza)"
       }
     ]
@@ -534,7 +534,7 @@ const initialBelts: Belt[] = [
         "description": "Técnica de sacrifício em que o tori se joga para trás para projetar o uke.",
         "execution": "O tori cai para trás, colocando o pé na barriga do uke e o projeta por cima da cabeça.",
         "application": "Excelente para surpreender um oponente que está empurrando para frente.",
-        "demoUrl": "#",
+        "demoUrl": "https://www.youtube.com/watch?v=880WbHvHv6A",
         "category": "Técnicas de Sacrifício (Sutemi-waza)"
       }
     ]
@@ -555,7 +555,7 @@ const initialBelts: Belt[] = [
         "description": "Técnica de sacrifício projetando o oponente para trás.",
         "execution": "Abraçar o oponente por trás ou pela frente, levantar e cair junto com ele para projetá-lo.",
         "application": "Um contra-ataque poderoso para técnicas de quadril como o Uchi-mata.",
-        "demoUrl": "#",
+        "demoUrl": "https://www.youtube.com/watch?v=Fgi9b8DJ5sQ",
         "category": "Técnicas de Sacrifício (Sutemi-waza)"
       }
     ]
@@ -576,7 +576,7 @@ const initialBelts: Belt[] = [
         "description": "Técnica clássica de Te-waza (técnicas de mão).",
         "execution": "Entrar sob o oponente, levantá-lo sobre os ombros e projetá-lo para frente.",
         "application": "Requer grande força e técnica apurada. Foi modificada nas regras atuais de competição.",
-        "demoUrl": "#",
+        "demoUrl": "https://www.youtube.com/watch?v=cnHRhSy8yi4",
         "category": "Técnicas de Projeção (Nage-waza)"
       },
       {
@@ -586,7 +586,7 @@ const initialBelts: Belt[] = [
         "description": "Técnica de estrangulamento sem o uso do judogi.",
         "execution": "Aplicar um mata-leão, usando o braço para pressionar as artérias carótidas.",
         "application": "Uma finalização poderosa no chão (ne-waza).",
-        "demoUrl": "#",
+        "demoUrl": "https://www.youtube.com/watch?v=9f0n8jez7iA",
         "category": "Técnicas de Estrangulamento (Shime-waza)"
       }
     ]
@@ -598,7 +598,7 @@ const initialBelts: Belt[] = [
 })
 export class JudoDataService {
   belts = signal<Belt[]>(initialBelts);
-  
+
   private nextId = 1000;
 
   addTechnique(beltId: number, technique: Omit<Technique, 'id'>) {
@@ -612,14 +612,14 @@ export class JudoDataService {
       })
     );
   }
-  
+
   updateTechnique(beltId: number, updatedTechnique: Technique) {
-     this.belts.update(belts =>
+    this.belts.update(belts =>
       belts.map(belt => {
         if (belt.id === beltId) {
-          return { 
-            ...belt, 
-            techniques: belt.techniques.map(t => t.id === updatedTechnique.id ? updatedTechnique : t) 
+          return {
+            ...belt,
+            techniques: belt.techniques.map(t => t.id === updatedTechnique.id ? updatedTechnique : t)
           };
         }
         return belt;
