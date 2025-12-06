@@ -57,6 +57,53 @@
 html, body {
   background-color: var(--color-bg);
   color: var(--color-text);
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Background decorativo melhorado com tema japonês */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: -1;
+  background-color: var(--color-bg);
+}
+
+/* Tema claro: padrão sutil com vermelho japonês */
+:root[data-theme='light'] body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: -1;
+  background: 
+    radial-gradient(ellipse 800px 600px at 20% 10%, rgba(200, 16, 46, 0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 600px 500px at 80% 90%, rgba(200, 16, 46, 0.03) 0%, transparent 70%),
+    linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(243, 244, 246, 1) 100%);
+}
+
+/* Tema escuro: tons mais sofisticados */
+:root[data-theme='dark'] body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse 900px 700px at 15% 15%, rgba(255, 51, 71, 0.08) 0%, transparent 65%),
+    radial-gradient(ellipse 700px 600px at 85% 85%, rgba(255, 51, 71, 0.05) 0%, transparent 70%),
+    linear-gradient(135deg, rgba(15, 20, 26, 1) 0%, rgba(23, 32, 42, 1) 100%);
 }
 
 /* garantir que o corpo herda a fonte aplicada no html */
@@ -92,11 +139,6 @@ body { font-family: inherit; }
 .pill-secondary-active {
   background-color: color-mix(in oklab, var(--secondary-accent) 10%, var(--secondary-bg));
   border: 1px solid color-mix(in oklab, var(--secondary-accent) 35%, var(--secondary-border));
-}
-
-/* Background decorativo opcional (sol nascente suave) */
-.bg-japan {
-  background-image: radial-gradient(circle at center, rgba(212,0,0,0.10) 0%, rgba(212,0,0,0.06) 28%, transparent 58%);
 }
 
 /* Suave transição entre temas */
