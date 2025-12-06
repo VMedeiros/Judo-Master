@@ -111,6 +111,45 @@
                 <option value="18">Grande</option>
               </select>
             </div>
+            <hr class="my-4 border-gray-300 dark:border-gray-600" />
+            <div
+              class="mb-4 p-3 rounded-lg bg-theme-alt border-l-4 border-accent-text"
+            >
+              <p class="text-xs italic text-theme leading-relaxed">
+                {{ currentQuote() }}
+              </p>
+            </div>
+            <hr class="my-4 border-gray-300 dark:border-gray-600" />
+            <button
+              (click)="openAbout()"
+              class="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium hover:bg-theme-alt transition-colors text-theme"
+              type="button"
+              aria-label="Abrir informações sobre o Judô"
+            >
+              <div
+                class="flex-shrink-0 w-5 h-5 rounded-full border-1.5 flex items-center justify-center"
+                style="border-color: #c8102e; border-width: 1.5px"
+              >
+                <svg
+                  class="w-2.5 h-2.5"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  style="color: #c8102e"
+                >
+                  <circle cx="12" cy="5" r="1" />
+                  <path
+                    d="M12 8v8m0 0v2"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </div>
+              <span
+                >Sobre o
+                <span class="accent-text font-serif font-bold">Judô</span></span
+              >
+            </button>
           </div>
           }
         </div>
@@ -118,12 +157,419 @@
     </div>
   </header>
 
+  <!-- ABOUT MODAL -->
+  @if (isAboutOpen()) {
+  <div
+    class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-3 sm:p-4 overflow-hidden"
+    (click)="closeAbout()"
+  >
+    <div
+      class="card max-w-2xl w-full max-h-[90vh] overflow-y-auto rounded-lg"
+      (click)="$event.stopPropagation()"
+      role="dialog"
+      aria-labelledby="about-title"
+      aria-modal="true"
+    >
+      <div class="p-4 sm:p-6">
+        <div class="flex justify-between items-start mb-6">
+          <div class="flex items-center gap-3">
+            <div class="flex-shrink-0">
+              <svg
+                class="w-10 h-10 sm:w-12 sm:h-12 accent-text"
+                viewBox="0 0 64 64"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <path
+                  d="M42.41 13.59c-2.34-2.34-5.43-3.59-8.7-3.59s-6.36 1.25-8.7 3.59c-4.82 4.82-4.82 12.58 0 17.4L32 38l7-7-8.5-8.5"
+                  stroke="#FBBF24"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M21.59 50.41c2.34 2.34 5.43 3.59 8.7 3.59s6.36-1.25 8.7-3.59c4.82-4.82 4.82-12.58 0-17.4L32 26l-7 7 8.5 8.5"
+                  stroke="#4F46E5"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
+            <div>
+              <h2
+                id="about-title"
+                class="text-2xl sm:text-3xl font-bold accessible-heading"
+              >
+                <span class="accent-text font-serif">Judô</span>
+                <span class="high-contrast-text font-sans">Master</span>
+              </h2>
+              <p class="text-xs sm:text-sm text-theme italic">
+                A Arte Marcial Japonesa
+              </p>
+            </div>
+          </div>
+          <button
+            (click)="closeAbout()"
+            class="p-1 rounded-full hover:bg-theme-alt transition-colors flex-shrink-0"
+            type="button"
+            aria-label="Fechar modal"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+
+        <div class="space-y-5 text-theme">
+          <!-- O que é Judô -->
+          <section>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-xl">🥋</span>
+              <h3 class="text-lg sm:text-xl font-bold accent-text">
+                O que é Judô?
+              </h3>
+            </div>
+            <p class="text-sm sm:text-base leading-relaxed">
+              Judô (柔道), que significa "o caminho da suavidade" em japonês (Jū
+              = suavidade, Dō = caminho), é uma arte marcial moderna criada em
+              1882 por Jigoro Kano no Japão. É um esporte olímpico que combina
+              técnicas de luta com princípios filosóficos profundos centrados em
+              respeito, disciplina e desenvolvimento pessoal.
+            </p>
+          </section>
+
+          <!-- Origem e História -->
+          <section>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-xl">📚</span>
+              <h3 class="text-lg sm:text-xl font-bold accent-text">
+                Origem e História
+              </h3>
+            </div>
+            <ul class="space-y-2 text-sm sm:text-base">
+              <li>
+                <strong>1882:</strong> Criado por Jigoro Kano, combinando
+                técnicas do Jujutsu tradicional
+              </li>
+              <li>
+                <strong>1964:</strong> Estreou como esporte olímpico em Tóquio
+              </li>
+              <li>
+                <strong>Atualmente:</strong> Praticado em mais de 190 países com
+                milhões de praticantes
+              </li>
+            </ul>
+          </section>
+
+          <!-- Filosofia -->
+          <section>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-xl">🎯</span>
+              <h3 class="text-lg sm:text-xl font-bold accent-text">
+                Filosofia do Judô
+              </h3>
+            </div>
+            <p class="text-sm sm:text-base leading-relaxed mb-2">
+              O Judô é fundamentado em dois princípios principais:
+            </p>
+            <ul class="space-y-2 text-sm sm:text-base">
+              <li>
+                <strong>Seiryoku Zen'yō (清力善用):</strong> Máximo Eficiência
+                com Mínimo Esforço - usar a força do oponente contra ele
+              </li>
+              <li>
+                <strong>Jita Kyoei (自他共栄):</strong> Benefício Mútuo e
+                Bem-Estar Comum - desenvolvimento conjunto
+              </li>
+            </ul>
+          </section>
+
+          <!-- Faixa Etária e Progressão -->
+          <section>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-xl">🎓</span>
+              <h3 class="text-lg sm:text-xl font-bold accent-text">
+                Sistema de Faixas
+              </h3>
+            </div>
+            <p class="text-sm sm:text-base leading-relaxed mb-3">
+              O Judô utiliza um sistema de faixas para indicar o nível de
+              habilidade e conhecimento do praticante:
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div
+                class="bg-theme-alt p-3 rounded-lg border border-gray-300 dark:border-gray-600"
+              >
+                <p class="font-semibold text-sm mb-1">🟤 Faixas Coloridas</p>
+                <p class="text-xs">
+                  Branca, Amarela, Laranja, Verde, Azul e Marrom. Para crianças
+                  e iniciantes.
+                </p>
+              </div>
+              <div
+                class="bg-theme-alt p-3 rounded-lg border border-gray-300 dark:border-gray-600"
+              >
+                <p class="font-semibold text-sm mb-1">⚫ Faixa Preta</p>
+                <p class="text-xs">
+                  Domínio técnico, conhecimento profundo e 1º até 10º Dan.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Benefícios -->
+          <section>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-xl">💪</span>
+              <h3 class="text-lg sm:text-xl font-bold accent-text">
+                Benefícios do Judô
+              </h3>
+            </div>
+            <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+              <li class="flex items-start gap-2">
+                <span class="accent-text font-bold text-lg">✓</span>
+                <span>Desenvolvimento físico e força</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="accent-text font-bold text-lg">✓</span>
+                <span>Coordenação motora e equilíbrio</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="accent-text font-bold text-lg">✓</span>
+                <span>Disciplina e respeito (Rei)</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="accent-text font-bold text-lg">✓</span>
+                <span>Confiança e autoestima</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="accent-text font-bold text-lg">✓</span>
+                <span>Amizade e camaradagem</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="accent-text font-bold text-lg">✓</span>
+                <span>Concentração e foco mental</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="accent-text font-bold text-lg">✓</span>
+                <span>Autocontrole e paciência</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="accent-text font-bold text-lg">✓</span>
+                <span>Resolução de problemas</span>
+              </li>
+            </ul>
+          </section>
+
+          <!-- Valores -->
+          <section>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-xl">🌟</span>
+              <h3 class="text-lg sm:text-xl font-bold accent-text">
+                Valores Fundamentais
+              </h3>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="bg-theme-alt p-3 rounded-lg">
+                <div class="flex gap-2">
+                  <span class="accent-text font-bold min-w-fit">Rei (礼):</span>
+                  <p class="text-sm">Respeito e cortesia</p>
+                </div>
+              </div>
+              <div class="bg-theme-alt p-3 rounded-lg">
+                <div class="flex gap-2">
+                  <span class="accent-text font-bold min-w-fit">Yu (勇):</span>
+                  <p class="text-sm">Coragem e bravura</p>
+                </div>
+              </div>
+              <div class="bg-theme-alt p-3 rounded-lg">
+                <div class="flex gap-2">
+                  <span class="accent-text font-bold min-w-fit"
+                    >Meiyo (名誉):</span
+                  >
+                  <p class="text-sm">Honra e reputação</p>
+                </div>
+              </div>
+              <div class="bg-theme-alt p-3 rounded-lg">
+                <div class="flex gap-2">
+                  <span class="accent-text font-bold min-w-fit"
+                    >Makoto (誠):</span
+                  >
+                  <p class="text-sm">Sinceridade e honestidade</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Técnicas Principais -->
+          <section>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-xl">🤸</span>
+              <h3 class="text-lg sm:text-xl font-bold accent-text">
+                Categorias de Técnicas
+              </h3>
+            </div>
+            <ul class="space-y-2 text-sm sm:text-base">
+              <li>
+                <strong>Nage-waza (投げ技):</strong> Técnicas de projeção e
+                arremesso
+              </li>
+              <li>
+                <strong>Katame-waza (固め技):</strong> Técnicas de controle no
+                solo
+              </li>
+              <li>
+                <strong>Shime-waza (締め技):</strong> Técnicas de
+                estrangulamento
+              </li>
+              <li>
+                <strong>Kansetsu-waza (関節技):</strong> Técnicas de articulação
+              </li>
+            </ul>
+          </section>
+
+          <!-- Curiosidades -->
+          <section>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-xl">🎌</span>
+              <h3 class="text-lg sm:text-xl font-bold accent-text">
+                Curiosidades
+              </h3>
+            </div>
+            <ul class="space-y-2 text-sm">
+              <li>
+                • O uniforme do Judô (judogi) representa igualdade entre todos
+                os praticantes
+              </li>
+              <li>• Judô desenvolve respeito mútuo entre competidores</li>
+              <li>
+                • A etiqueta Rei (reverência) é fundamental antes e depois das
+                aulas
+              </li>
+              <li>
+                • Jigoro Kano foi nomeado ao Comitê Olímpico Internacional aos
+                22 anos
+              </li>
+              <li>
+                • O Judô é considerado a base de várias outras artes marciais
+                modernas
+              </li>
+            </ul>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- SUCCESS MESSAGE -->
+  @if (successMessage().show) {
+  <div
+    class="fixed bottom-8 right-8 z-50 animate-in fade-in slide-in-from-bottom-6 duration-300"
+    role="alert"
+    aria-live="polite"
+    aria-atomic="true"
+  >
+    <div
+      class="bg-gradient-to-r from-green-500 to-green-600 dark:from-green-600 dark:to-green-700 rounded-xl p-4 sm:p-6 shadow-2xl max-w-sm border-l-4 border-white/30"
+    >
+      <div class="flex items-center gap-4">
+        <div class="flex-shrink-0">
+          <svg
+            class="w-7 h-7 sm:w-8 sm:h-8 text-white animate-bounce"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </div>
+        <p class="text-base sm:text-lg font-bold text-white tracking-wide">
+          {{ successMessage().text }}
+        </p>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- ERROR MESSAGE -->
+  @if (errorMessage().show) {
+  <div
+    class="fixed bottom-8 right-8 z-50 animate-in fade-in slide-in-from-bottom-6 duration-300"
+    role="alert"
+    aria-live="assertive"
+    aria-atomic="true"
+  >
+    <div
+      class="bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-700 rounded-xl p-4 sm:p-6 shadow-2xl max-w-sm border-l-4 border-white/30"
+    >
+      <div class="flex items-center gap-4">
+        <div class="flex-shrink-0">
+          <svg
+            class="w-7 h-7 sm:w-8 sm:h-8 text-white flex-shrink-0"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </div>
+        <p class="text-base sm:text-lg font-bold text-white tracking-wide">
+          {{ errorMessage().text }}
+        </p>
+      </div>
+    </div>
+  </div>
+  }
+
   <!-- MAIN CONTENT -->
   <main
     id="main-content"
     class="flex-grow container mx-auto px-3 py-4 sm:p-6 lg:p-8"
     role="main"
   >
+    <!-- CELEBRAÇÃO COMEMORATIVA -->
+    @if (currentCelebration(); as celebration) {
+    <div class="mb-6 animate-pulse">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="md:col-span-3">
+          <div
+            class="card p-4 sm:p-6 bg-gradient-to-r from-accent-text/10 to-accent-text/5 border-2 border-accent-text text-center"
+          >
+            <div class="flex items-center justify-center gap-3 mb-2">
+              <span class="text-5xl sm:text-6xl">{{ celebration.icon }}</span>
+              <h2 class="text-2xl sm:text-3xl font-bold accent-text font-serif">
+                {{ celebration.name }}
+              </h2>
+              <span class="text-5xl sm:text-6xl">{{ celebration.icon }}</span>
+            </div>
+            <p class="text-theme text-sm sm:text-base font-medium">
+              Celebrando este momento especial! 🎉
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+
     <!-- TABS -->
     <div class="mb-6 card">
       <div class="sm:hidden p-2">
@@ -346,12 +792,16 @@
                       class="flex items-center gap-0.5 sm:gap-1"
                       aria-label="Ações"
                     >
-                      @if(tech.demoUrl && tech.demoUrl !== '#') {
                       <button
                         (click)="showVideo(tech)"
+                        [disabled]="!tech.demoUrl || tech.demoUrl === '#'"
                         type="button"
                         title="Demonstração"
-                        class="p-1.5 sm:p-2 rounded-full icon-blue hover:bg-theme-alt transition-colors"
+                        [class]="
+                          tech.demoUrl && tech.demoUrl !== '#'
+                            ? 'p-1.5 sm:p-2 rounded-full icon-blue hover:bg-theme-alt transition-colors'
+                            : 'p-1.5 sm:p-2 rounded-full text-gray-400 cursor-not-allowed opacity-50'
+                        "
                         aria-label="Assistir demonstração"
                       >
                         <svg
@@ -368,28 +818,6 @@
                           />
                         </svg>
                       </button>
-                      } @else {
-                      <button
-                        disabled
-                        title="Demonstração não disponível"
-                        class="p-1.5 sm:p-2 rounded-full text-gray-400 cursor-not-allowed opacity-50"
-                        type="button"
-                      >
-                        <svg
-                          class="w-4 h-4 sm:w-5 sm:h-5"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-                          />
-                        </svg>
-                      </button>
-                      }
                       <button
                         (click)="showDetail(tech)"
                         title="Ver Detalhes"
@@ -503,11 +931,11 @@
   <!-- MODAL for Technique Detail -->
   @if (techniqueForDetail(); as tech) {
   <div
-    class="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-3 sm:p-4"
+    class="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center p-3 sm:p-4 overflow-hidden"
     (click)="closeDetail()"
   >
     <div
-      class="card max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+      class="card max-w-2xl w-full max-h-[90vh] overflow-y-auto rounded-lg"
       (click)="$event.stopPropagation()"
       role="dialog"
       aria-labelledby="detail-title"
@@ -565,11 +993,11 @@
   <!-- MODAL for Technique Form (Add/Edit) -->
   @if (techniqueForForm(); as tech) {
   <div
-    class="fixed inset-0 bg-black bg-opacity-75 z-40 flex items-center justify-center p-3 sm:p-4"
+    class="fixed inset-0 bg-black bg-opacity-75 z-40 flex items-center justify-center p-3 sm:p-4 overflow-hidden"
     (click)="closeForm()"
   >
     <div
-      class="card max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+      class="card max-w-2xl w-full max-h-[90vh] overflow-y-auto rounded-lg"
       (click)="$event.stopPropagation()"
       role="dialog"
       aria-labelledby="form-title"
@@ -731,11 +1159,11 @@
   <!-- MODAL for Delete Confirmation -->
   @if (techniqueToDelete(); as tech) {
   <div
-    class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-3 sm:p-4"
+    class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-3 sm:p-4 overflow-hidden"
     (click)="cancelDelete()"
   >
     <div
-      class="card max-w-md w-full"
+      class="card max-w-md w-full rounded-lg"
       (click)="$event.stopPropagation()"
       role="alertdialog"
       aria-labelledby="delete-title"
@@ -769,18 +1197,18 @@
         </p>
         <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center">
           <button
-            (click)="confirmDelete()"
-            type="button"
-            class="btn btn-accent order-2 sm:order-1"
-          >
-            Sim, tenho certeza
-          </button>
-          <button
             (click)="cancelDelete()"
             type="button"
-            class="btn order-1 sm:order-2"
+            class="btn order-1 sm:order-1"
           >
             Não, cancelar
+          </button>
+          <button
+            (click)="confirmDelete()"
+            type="button"
+            class="btn btn-accent order-2 sm:order-2"
+          >
+            Sim, remover
           </button>
         </div>
       </div>
@@ -789,13 +1217,13 @@
   }
 
   <!-- MODAL for Video Player -->
-  @if (techniqueForVideo(); as tech) {
+  @if (techniqueForVideo(); as tech) { @if (safeVideoUrl()) {
   <div
-    class="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-3 sm:p-4"
+    class="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-3 sm:p-4 overflow-hidden"
     (click)="closeVideo()"
   >
     <div
-      class="card max-w-4xl w-full"
+      class="card max-w-4xl w-full rounded-lg"
       (click)="$event.stopPropagation()"
       role="dialog"
       aria-labelledby="video-title"
@@ -846,5 +1274,40 @@
       </div>
     </div>
   </div>
-  }
+  } @else {
+  <div
+    class="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-3 sm:p-4 overflow-hidden"
+    (click)="closeVideo()"
+  >
+    <div
+      class="card max-w-md w-full rounded-lg"
+      (click)="$event.stopPropagation()"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="p-6 text-center">
+        <svg
+          class="mx-auto mb-4 w-12 h-12 text-red-600 dark:text-red-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+        <h3 class="text-lg font-bold text-theme mb-2">URL Inválida</h3>
+        <p class="text-sm text-theme mb-4">
+          O vídeo de demonstração não está disponível para esta técnica.
+        </p>
+        <button (click)="closeVideo()" type="button" class="btn btn-accent">
+          Fechar
+        </button>
+      </div>
+    </div>
+  </div>
+  } }
 </div>

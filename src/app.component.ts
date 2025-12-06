@@ -30,6 +30,7 @@ export class AppComponent {
   // Tema (inicializado no construtor para permitir leitura de localStorage)
   isDarkMode = signal(false);
   isSettingsOpen = signal(false);
+  isAboutOpen = signal(false);
 
   fontSize = signal(16); // base font size in px
   fontSizeOptions = [
@@ -54,6 +55,59 @@ export class AppComponent {
   formMode = signal<FormMode>('add');
   techniqueToDelete = signal<Technique | null>(null);
   techniqueForVideo = signal<Technique | null>(null);
+  successMessage = signal<{ show: boolean; text: string }>({ show: false, text: '' });
+  errorMessage = signal<{ show: boolean; text: string }>({ show: false, text: '' });
+
+  quotes = [
+    '"A prática do judô é um processo de aprendizado contínuo; a luta é apenas um meio para o aperfeiçoamento da pessoa." — Jigoro Kano',
+    '"O judo é como a vida; tem os seus altos e baixos, mas a chave é levantar-se sempre que cair." — Ronda Rousey',
+    '"Ceder é o meio mais eficiente de utilizar a energia. Resistir à força com força é fútil; use a flexibilidade para controlar a força." — Jigoro Kano',
+    '"O judô é a arte de usar o mínimo de força para o máximo de efeito. É a arte de vencer-se para vencer." — Yasuhiro Yamashita',
+    '"Dominar-se para triunfar. Conhecer-se para se dominar." — Jigoro Kano',
+    '"A gentileza sempre vence a força." — Kyuzo Mifune',
+    '"Não tecurves perante as dificuldades, mas sim adapta-te a elas, como a água que contorna a rocha." — Jigoro Kano',
+    '"Se caíres sete vezes, levanta-te oito." — Provérbio Japonês',
+    '"O judô começa e termina com respeito. O respeito é a base de tudo." — Mitsuyo Maeda'
+  ];
+
+  currentQuote = signal<string>(this.quotes[0]);
+
+  // Datas comemorativas
+  commemorativeDates = [
+    { name: 'Dia do Judô', icon: '🥋', month: 10, day: 25, duration: 1 }, // 25 de outubro
+    { name: 'Natal', icon: '🎄', month: 12, day: 25, duration: 10 }, // 25 de dezembro até fim do ano
+    { name: 'Ano Novo', icon: '🎆', month: 1, day: 1, duration: 7 }, // 1º a 7 de janeiro
+  ];
+
+  // Temporariamente mostrando todas as celebrações para validação
+  showAllCelebrations = signal(true);
+
+  currentCelebration = computed(() => {
+    const today = new Date();
+    const currentMonth = today.getMonth() + 1; // getMonth retorna 0-11
+    const currentDay = today.getDate();
+
+    // Natal: 1 semana antes (18 dez) até 1 semana depois (1 jan)
+    if ((currentMonth === 12 && currentDay >= 18) || (currentMonth === 1 && currentDay <= 1)) {
+      return this.commemorativeDates[1]; // Natal
+    }
+
+    // Ano Novo: 2 dias antes (30 dez) até 1 semana depois (8 jan)
+    if ((currentMonth === 12 && currentDay >= 30) || (currentMonth === 1 && currentDay >= 1 && currentDay <= 8)) {
+      return this.commemorativeDates[2]; // Ano Novo
+    }
+
+    // Dia do Judô: semana inteira (18-25 de outubro) - ajustado para semana do dia 25
+    // Assumindo semana de seg-dom, 25 out é domingo, então semana é 19-25
+    if (currentMonth === 10) {
+      // Para simplificar: considerando toda a última semana de outubro ou semana do dia 25
+      if (currentDay >= 19 && currentDay <= 25) {
+        return this.commemorativeDates[0]; // Dia do Judô
+      }
+    }
+
+    return null;
+  });
 
   techniqueCategories = [
     'Fundamentos (Kihon)',
@@ -68,6 +122,12 @@ export class AppComponent {
 
   // Computed Signals
   selectedBelt = computed(() => this.belts()[this.selectedBeltIndex()]);
+
+  isValidDemoUrl = computed(() => {
+    const tech = this.techniqueForVideo();
+    if (!tech?.demoUrl || tech.demoUrl === '#') return false;
+    return true;
+  });
 
   safeVideoUrl = computed(() => {
     const tech = this.techniqueForVideo();
@@ -91,6 +151,10 @@ export class AppComponent {
     }
 
     return this.sanitizer.bypassSecurityTrustResourceUrl(embedUrl);
+  });
+
+  isVideoButtonDisabled = computed(() => {
+    return !this.isValidDemoUrl();
   });
 
   groupedTechniques = computed(() => {
@@ -174,6 +238,16 @@ export class AppComponent {
         localStorage.setItem('fontFamily', font.class);
       }
     });
+
+    // Effect to manage body scroll when modals are open
+    effect(() => {
+      this.techniqueForDetail();
+      this.techniqueForForm();
+      this.techniqueToDelete();
+      this.techniqueForVideo();
+      this.isAboutOpen();
+      this.updateBodyScroll();
+    });
   }
 
   // Methods
@@ -195,6 +269,22 @@ export class AppComponent {
 
   toggleSettings(): void {
     this.isSettingsOpen.update(value => !value);
+    if (!this.isSettingsOpen()) return;
+    this.updateRandomQuote();
+  }
+
+  updateRandomQuote(): void {
+    const randomIndex = Math.floor(Math.random() * this.quotes.length);
+    this.currentQuote.set(this.quotes[randomIndex]);
+  }
+
+  openAbout(): void {
+    this.isAboutOpen.set(true);
+    this.isSettingsOpen.set(false);
+  }
+
+  closeAbout(): void {
+    this.isAboutOpen.set(false);
   }
 
   changeFontSize(size: string): void {
@@ -246,30 +336,57 @@ export class AppComponent {
     // Validar formulário antes de processar
     if (!form.checkValidity()) {
       form.reportValidity();
+      this.showErrorMessage('Por favor, preencha todos os campos obrigatórios.');
       return;
     }
 
     const formData = new FormData(form);
     const beltId = this.selectedBelt()?.id;
-    if (!beltId) return;
-
-    const techniqueData: Omit<Technique, 'id'> & { id?: number } = {
-      name: formData.get('name') as string,
-      translation: formData.get('translation') as string,
-      description: formData.get('description') as string,
-      execution: formData.get('execution') as string,
-      application: formData.get('application') as string,
-      demoUrl: formData.get('demoUrl') as string,
-      category: formData.get('category') as string,
-    };
-
-    if (this.formMode() === 'edit' && this.techniqueForForm()?.id) {
-      this.dataService.updateTechnique(beltId, { ...techniqueData, id: this.techniqueForForm()!.id });
-    } else {
-      this.dataService.addTechnique(beltId, techniqueData);
+    if (!beltId) {
+      this.showErrorMessage('Erro ao identificar a faixa selecionada.');
+      return;
     }
 
-    this.closeForm();
+    try {
+      const techniqueData: Omit<Technique, 'id'> & { id?: number } = {
+        name: formData.get('name') as string,
+        translation: formData.get('translation') as string,
+        description: formData.get('description') as string,
+        execution: formData.get('execution') as string,
+        application: formData.get('application') as string,
+        demoUrl: formData.get('demoUrl') as string,
+        category: formData.get('category') as string,
+      };
+
+      const isEdit = this.formMode() === 'edit' && this.techniqueForForm()?.id;
+
+      if (isEdit) {
+        this.dataService.updateTechnique(beltId, { ...techniqueData, id: this.techniqueForForm()!.id });
+        this.showSuccessMessage('Técnica atualizada com sucesso!');
+      } else {
+        this.dataService.addTechnique(beltId, techniqueData);
+        this.showSuccessMessage('Técnica adicionada com sucesso!');
+      }
+
+      this.closeForm();
+    } catch (error) {
+      console.error('Erro ao salvar técnica:', error);
+      this.showErrorMessage('Erro ao salvar a técnica. Tente novamente.');
+    }
+  }
+
+  showSuccessMessage(text: string): void {
+    this.successMessage.set({ show: true, text });
+    setTimeout(() => {
+      this.successMessage.set({ show: false, text: '' });
+    }, 3000);
+  }
+
+  showErrorMessage(text: string): void {
+    this.errorMessage.set({ show: true, text });
+    setTimeout(() => {
+      this.errorMessage.set({ show: false, text: '' });
+    }, 4000);
   }
 
   deleteTechnique(technique: Technique): void {
@@ -277,13 +394,25 @@ export class AppComponent {
   }
 
   confirmDelete(): void {
-    const technique = this.techniqueToDelete();
-    if (technique) {
-      const beltId = this.selectedBelt()?.id;
-      if (beltId) {
-        this.dataService.deleteTechnique(beltId, technique.id);
+    try {
+      const technique = this.techniqueToDelete();
+      if (!technique) {
+        this.showErrorMessage('Nenhuma técnica selecionada para remoção.');
+        return;
       }
+
+      const beltId = this.selectedBelt()?.id;
+      if (!beltId) {
+        this.showErrorMessage('Erro ao identificar a faixa selecionada.');
+        return;
+      }
+
+      this.dataService.deleteTechnique(beltId, technique.id);
+      this.showSuccessMessage('Item removido com sucesso!');
       this.techniqueToDelete.set(null);
+    } catch (error) {
+      console.error('Erro ao remover técnica:', error);
+      this.showErrorMessage('Erro ao remover a técnica. Tente novamente.');
     }
   }
 
@@ -314,6 +443,34 @@ export class AppComponent {
     }
     if (this.techniqueForVideo()) {
       this.closeVideo();
+    }
+    if (this.isAboutOpen()) {
+      this.closeAbout();
+    }
+    if (this.successMessage().show) {
+      this.successMessage.set({ show: false, text: '' });
+    }
+    if (this.errorMessage().show) {
+      this.errorMessage.set({ show: false, text: '' });
+    }
+  }
+
+  // Gerenciar scroll do body quando modais estão abertos
+  private updateBodyScroll(): void {
+    const hasOpenModal = this.techniqueForDetail() ||
+      this.techniqueForForm() ||
+      this.techniqueToDelete() ||
+      this.techniqueForVideo() ||
+      this.isAboutOpen();
+
+    if (typeof window !== 'undefined') {
+      if (hasOpenModal) {
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
+      }
     }
   }
 
