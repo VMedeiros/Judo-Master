@@ -298,12 +298,88 @@ export class AppComponent {
     }
   }
 
+  getBeltHexColor(tailwindColor: string): string {
+    const colorMap: { [key: string]: string } = {
+      'bg-white': '#FFFFFF',
+      'bg-gray-400': '#9CA3AF',
+      'bg-blue-600': '#2563EB',
+      'bg-yellow-400': '#FACC15',
+      'bg-orange-500': '#F97316',
+      'bg-green-600': '#16A34A',
+      'bg-purple-600': '#7C3AED',
+      'bg-yellow-800': '#854D0E',
+      'bg-black': '#000000',
+    };
+    return colorMap[tailwindColor] || '#000000';
+  }
+
   showDetail(technique: Technique): void {
     this.techniqueForDetail.set(technique);
   }
 
   closeDetail(): void {
     this.techniqueForDetail.set(null);
+  }
+
+  goToNextTechnique(): void {
+    const currentTech = this.techniqueForDetail();
+    if (!currentTech) return;
+
+    const filtered = this.getFilteredTechniques();
+    const currentIndex = filtered.findIndex(t => t.id === currentTech.id);
+
+    if (currentIndex < filtered.length - 1) {
+      this.techniqueForDetail.set(filtered[currentIndex + 1]);
+    }
+  }
+
+  goToPreviousTechnique(): void {
+    const currentTech = this.techniqueForDetail();
+    if (!currentTech) return;
+
+    const filtered = this.getFilteredTechniques();
+    const currentIndex = filtered.findIndex(t => t.id === currentTech.id);
+
+    if (currentIndex > 0) {
+      this.techniqueForDetail.set(filtered[currentIndex - 1]);
+    }
+  }
+
+  goToNextVideo(): void {
+    const currentTech = this.techniqueForVideo();
+    if (!currentTech) return;
+
+    const filtered = this.getFilteredTechniques();
+    const currentIndex = filtered.findIndex(t => t.id === currentTech.id);
+
+    if (currentIndex < filtered.length - 1) {
+      this.techniqueForVideo.set(filtered[currentIndex + 1]);
+    }
+  }
+
+  goToPreviousVideo(): void {
+    const currentTech = this.techniqueForVideo();
+    if (!currentTech) return;
+
+    const filtered = this.getFilteredTechniques();
+    const currentIndex = filtered.findIndex(t => t.id === currentTech.id);
+
+    if (currentIndex > 0) {
+      this.techniqueForVideo.set(filtered[currentIndex - 1]);
+    }
+  }
+
+  private getFilteredTechniques(): Technique[] {
+    const belt = this.selectedBelt();
+    if (!belt || !belt.techniques) return [];
+
+    const term = this.filterTerm().toLowerCase();
+    return !term
+      ? belt.techniques
+      : belt.techniques.filter(tech =>
+        tech.name.toLowerCase().includes(term) ||
+        tech.translation.toLowerCase().includes(term)
+      );
   }
 
   showVideo(technique: Technique): void {

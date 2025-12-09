@@ -588,16 +588,18 @@
         </select>
       </div>
       <div class="hidden sm:block">
-        <nav
-          class="flex space-x-2 sm:space-x-4 p-2"
-          aria-label="Faixas de Graduação"
-        >
+        <nav class="flex flex-wrap gap-2 p-2" aria-label="Faixas de Graduação">
           @for (belt of belts(); track belt.id; let i = $index) {
           <button
             (click)="selectBelt(i)"
-            [class]="i === selectedBeltIndex() ? 'pill-active' : ''"
-            class="flex items-center whitespace-nowrap py-2 px-3 rounded-md font-medium text-sm transition-colors duration-200"
+            [class]="
+              i === selectedBeltIndex()
+                ? 'pill-active'
+                : 'opacity-60 hover:opacity-100'
+            "
+            class="flex items-center whitespace-nowrap py-2 px-3 rounded-md font-medium text-sm transition-all duration-200"
             type="button"
+            title="Selecionar {{ belt.name }}"
           >
             <span
               [class]="belt.color"
@@ -614,25 +616,40 @@
     @if (selectedBelt(); as belt) {
     <div class="card p-4 sm:p-6" aria-label="Conteúdo da faixa selecionada">
       <div class="border-b border-gray-200 dark:border-gray-700 pb-4 mb-4">
-        <h2 class="text-2xl font-bold flex items-center">
-          <span
-            [class]="belt.color"
-            class="inline-block w-6 h-6 rounded-full mr-3 border-2 border-gray-400 dark:border-gray-500"
-          ></span>
-          <span>{{ belt.name }}</span>
-        </h2>
-        <p class="mt-2 text-sm text-theme">
-          {{ belt.information }}
-        </p>
-        <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-          <p>
-            <strong class="font-semibold">Faixa Etária:</strong>
-            {{ belt.ageGroup }}
-          </p>
-          <p>
-            <strong class="font-semibold">Pré-requisitos:</strong>
-            {{ belt.prerequisites }}
-          </p>
+        <div class="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-4">
+          <!-- Belt Image -->
+          <div class="hidden sm:flex flex-shrink-0">
+            <img
+              [src]="belt.beltImage"
+              [alt]="'Imagem da ' + belt.name"
+              class="h-14 sm:h-16 w-auto object-contain"
+              loading="lazy"
+            />
+          </div>
+
+          <!-- Belt Info -->
+          <div class="flex-1">
+            <h2 class="text-2xl font-bold flex items-center">
+              <span
+                [class]="belt.color"
+                class="inline-block w-6 h-6 rounded-full mr-3 border-2 border-gray-400 dark:border-gray-500"
+              ></span>
+              <span>{{ belt.name }}</span>
+            </h2>
+            <p class="mt-2 text-sm text-theme">
+              {{ belt.information }}
+            </p>
+            <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              <p>
+                <strong class="font-semibold">Faixa Etária:</strong>
+                {{ belt.ageGroup }}
+              </p>
+              <p>
+                <strong class="font-semibold">Pré-requisitos:</strong>
+                {{ belt.prerequisites }}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -985,6 +1002,74 @@
             <p>{{ tech.application }}</p>
           </div>
         </div>
+        <!-- Navegação do Carrossel -->
+        <div
+          class="mt-6 flex items-center justify-between gap-3 pt-4 border-t border-theme"
+        >
+          <button
+            (click)="goToPreviousTechnique()"
+            class="p-2 rounded-full hover:bg-theme-alt transition-colors icon-indigo"
+            type="button"
+            title="Técnica anterior"
+            aria-label="Ir para técnica anterior"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+          </button>
+          <button
+            (click)="closeDetail()"
+            class="p-2 rounded-full hover:bg-theme-alt transition-colors"
+            type="button"
+            title="Fechar"
+            aria-label="Fechar modal"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+          <button
+            (click)="goToNextTechnique()"
+            class="p-2 rounded-full hover:bg-theme-alt transition-colors icon-indigo"
+            type="button"
+            title="Próxima técnica"
+            aria-label="Ir para próxima técnica"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -1270,6 +1355,74 @@
             allowfullscreen
             loading="lazy"
           ></iframe>
+        </div>
+        <!-- Navegação do Carrossel para Vídeo -->
+        <div
+          class="mt-4 flex items-center justify-between gap-3 pt-4 border-t border-theme"
+        >
+          <button
+            (click)="goToPreviousVideo()"
+            class="p-2 rounded-full hover:bg-theme-alt transition-colors icon-indigo"
+            type="button"
+            title="Técnica anterior"
+            aria-label="Ir para técnica anterior"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+          </button>
+          <button
+            (click)="closeVideo()"
+            class="p-2 rounded-full hover:bg-theme-alt transition-colors"
+            type="button"
+            title="Fechar"
+            aria-label="Fechar vídeo"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+          <button
+            (click)="goToNextVideo()"
+            class="p-2 rounded-full hover:bg-theme-alt transition-colors icon-indigo"
+            type="button"
+            title="Próxima técnica"
+            aria-label="Ir para próxima técnica"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </button>
         </div>
       </div>
     </div>
