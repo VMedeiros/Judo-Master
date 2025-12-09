@@ -17,5 +17,6 @@ export interface Belt {
   ageGroup: string;
   prerequisites: string;
   information: string;
+  beltImage: string;
   techniques: Technique[];
 }

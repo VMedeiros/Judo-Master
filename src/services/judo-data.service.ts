@@ -10,6 +10,7 @@ const initialBelts: Belt[] = [
     "ageGroup": "A partir de 4 anos",
     "prerequisites": "Nenhum",
     "information": "A faixa branca simboliza a pureza e o início da jornada no Judô. O foco está nos fundamentos básicos, como ukemi (amortecimentos de queda), posturas e a filosofia do esporte.",
+    "beltImage": "assets/belts/branca.png",
     "techniques": [
       {
         "id": 101,
@@ -41,6 +42,7 @@ const initialBelts: Belt[] = [
     "ageGroup": "4 a 5 anos",
     "prerequisites": "Conhecimento básico dos fundamentos.",
     "information": "Introdução aos primeiros movimentos de desequilíbrio e técnicas simples.",
+    "beltImage": "assets/belts/cinza.png",
     "techniques": [
       {
         "id": 201,
@@ -62,6 +64,7 @@ const initialBelts: Belt[] = [
     "ageGroup": "6 a 7 anos",
     "prerequisites": "Domínio das técnicas da faixa cinza.",
     "information": "A faixa azul representa a fluidez da água. O judoca começa a desenvolver um repertório maior de técnicas e a combiná-las.",
+    "beltImage": "assets/belts/azul.png",
     "techniques": [
       {
         "id": 301,
@@ -93,6 +96,7 @@ const initialBelts: Belt[] = [
     "ageGroup": "8 a 9 anos",
     "prerequisites": "Consistência nas técnicas da faixa azul.",
     "information": "A faixa amarela simboliza a terra, onde as sementes do conhecimento começam a germinar. O judoca aprimora a coordenação e o tempo de suas técnicas.",
+    "beltImage": "assets/belts/amarela.png",
     "techniques": [
       {
         "id": 401,
@@ -124,6 +128,7 @@ const initialBelts: Belt[] = [
     "ageGroup": "10 a 11 anos",
     "prerequisites": "Bom desenvolvimento das técnicas da faixa amarela.",
     "information": "A faixa laranja representa o sol nascente. O judoca começa a ter mais consciência corporal e a entender a dinâmica dos golpes.",
+    "beltImage": "assets/belts/laranja.png",
     "techniques": [
       {
         "id": 501,
@@ -145,6 +150,7 @@ const initialBelts: Belt[] = [
     "ageGroup": "12 a 13 anos",
     "prerequisites": "Domínio das técnicas anteriores e início de combinações (renraku-waza).",
     "information": "A faixa verde simboliza o crescimento e a vegetação. O judoca desenvolve a força e a resistência, aplicando técnicas com mais vigor.",
+    "beltImage": "assets/belts/verde.png",
     "techniques": [
       {
         "id": 601,
@@ -526,6 +532,7 @@ const initialBelts: Belt[] = [
     "ageGroup": "14 a 15 anos",
     "prerequisites": "Boa execução de combinações e contra-ataques (kaeshi-waza).",
     "information": "A faixa roxa representa a nobreza e a sabedoria. O judoca começa a desenvolver um pensamento mais estratégico durante o combate.",
+    "beltImage": "assets/belts/roxa.png",
     "techniques": [
       {
         "id": 701,
@@ -547,6 +554,7 @@ const initialBelts: Belt[] = [
     "ageGroup": "A partir de 16 anos",
     "prerequisites": "Maturidade técnica e tática, domínio de um tokui-waza (técnica preferida).",
     "information": "A faixa marrom simboliza a solidez e a maturidade. É a última etapa antes da faixa preta, exigindo grande dedicação e polimento técnico.",
+    "beltImage": "assets/belts/marrom.png",
     "techniques": [
       {
         "id": 801,
@@ -568,6 +576,7 @@ const initialBelts: Belt[] = [
     "ageGroup": "A partir de 18 anos (geralmente)",
     "prerequisites": "Excelência em todos os princípios do Judô, conhecimento de katas e aprovação em exame rigoroso.",
     "information": "A faixa preta (Yudansha) não é o fim, mas o começo de uma nova jornada de aprendizado. Simboliza que o judoca dominou os fundamentos e está pronto para aprofundar seu conhecimento.",
+    "beltImage": "assets/belts/preta.png",
     "techniques": [
       {
         "id": 901,
