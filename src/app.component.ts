@@ -112,10 +112,15 @@ export class AppComponent {
   techniqueCategories = [
     'Fundamentos (Kihon)',
     'Técnicas de Projeção (Nage-waza)',
+    'Técnicas de Pé ou Pernas (Ashi-waza)',
+    'Técnicas de Quadril (Koshi-waza)',
+    'Técnicas de Mão/Braço (Te-waza)',
+    'Técnicas de Sacrifício Frontal (Ma-Sutemi-waza)',
+    'Técnicas de Sacrifício Lateral (Yoko-Sutemi-waza)',
     'Técnicas de Controle no Solo (Katame-waza)',
+    'Técnicas de Imobilização (Osae-waza)',
     'Técnicas de Estrangulamento (Shime-waza)',
     'Técnicas de Articulação (Kansetsu-waza)',
-    'Técnicas de Sacrifício (Sutemi-waza)',
     'Técnicas de Contra-ataque (Kaeshi-waza)',
     'Técnicas Combinadas (Renraku-waza)'
   ];
