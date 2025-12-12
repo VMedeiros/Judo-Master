@@ -423,6 +423,16 @@ const initialBelts: Belt[] = [
         "category": "Técnicas de Projeção (Nage-waza)"
       },
       {
+        "id": 639,
+        "name": "Hane-Goshi",
+        "translation": "Projeção de quadril saltitante",
+        "description": "Técnica de quadril explosiva onde a perna é usada para empurrar a coxa do oponente.",
+        "execution": "Entrar com o quadril baixo, colocar a coxa sob o quadril do oponente e levantar com um movimento de mola para projetá-lo.",
+        "application": "Técnica dinâmica e poderosa, eficaz contra oponentes que se movem para frente.",
+        "demoUrl": "https://www.youtube.com/watch?v=M9_7De6A1kk",
+        "category": "Técnicas de Quadril (Koshi-waza)"
+      },
+      {
         "id": 633,
         "name": "Tomoe-Nage",
         "translation": "Projeção em círculo",
@@ -430,7 +440,7 @@ const initialBelts: Belt[] = [
         "execution": "O tori desequilibra o uke para frente, cai para trás, coloca o pé em seu abdômen e o projeta por cima da cabeça.",
         "application": "Eficaz contra um oponente que está empurrando ou avançando com força.",
         "demoUrl": "https://www.youtube.com/watch?v=880WbHvHv6A",
-        "category": "Técnicas de Projeção (Nage-waza)"
+        "category": "Técnicas de Sacrifício Frontal (Ma-Sutemi-waza)"
       },
       {
         "id": 618,
