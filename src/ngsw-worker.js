@@ -1,47 +1,122 @@
-const CACHE_NAME = "judo-master-v1";
-const urlsToCache = ["/Judo-Master/", "/Judo-Master/index.html"];
+// Versão do cache — altere a cada deploy para forçar atualização
+const CACHE_PREFIX = "judo-master";
+const CACHE_VERSION = "v3";
+const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
+const ASSET_CACHE = `${CACHE_PREFIX}-assets-${CACHE_VERSION}`;
+
+// Helper: identifica navegação/HTML
+function isNavigationRequest(request) {
+  return (
+    request.mode === "navigate" ||
+    (request.method === "GET" &&
+      request.headers.get("accept")?.includes("text/html"))
+  );
+}
+
+// Helper: identifica assets estáticos
+function isStaticAsset(url) {
+  try {
+    const u = new URL(url, self.location.origin);
+    return /\.(?:png|jpg|jpeg|webp|svg|gif|ico|css|js|json|woff2?|ttf|otf)$/i.test(
+      u.pathname
+    );
+  } catch {
+    return false;
+  }
+}
 
 self.addEventListener("install", (event) => {
+  // Não faz precache agressivo do index; usa network-first para HTML
+  event.waitUntil(self.skipWaiting());
+});
+
+self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return Promise.allSettled(urlsToCache.map((url) => cache.add(url))).then(
-        () => self.skipWaiting()
+    (async () => {
+      const cacheNames = await caches.keys();
+      await Promise.all(
+        cacheNames.map((name) => {
+          if (name !== CACHE_NAME && name !== ASSET_CACHE) {
+            return caches.delete(name);
+          }
+        })
       );
-    })
+      await self.clients.claim();
+
+      // Notifica clientes para atualizarem caso necessário
+      const clients = await self.clients.matchAll({ type: "window" });
+      for (const client of clients) {
+        client.postMessage({ type: "SW_ACTIVATED", version: CACHE_VERSION });
+      }
+    })()
   );
 });
 
 self.addEventListener("fetch", (event) => {
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      if (response) {
-        return response;
-      }
-      return fetch(event.request).catch(() => {
-        // Retorna uma resposta de fallback se o fetch falhar
-        return new Response("Offline - Página não disponível", {
-          status: 503,
-          statusText: "Service Unavailable",
-        });
-      });
-    })
-  );
-});
+  const { request } = event;
 
-self.addEventListener("activate", (event) => {
-  const cacheWhitelist = [CACHE_NAME];
-  event.waitUntil(
-    caches
-      .keys()
-      .then((cacheNames) => {
-        return Promise.all(
-          cacheNames.map((cacheName) => {
-            if (cacheWhitelist.indexOf(cacheName) === -1) {
-              return caches.delete(cacheName);
-            }
-          })
-        );
-      })
-      .then(() => self.clients.claim())
+  // HTML: network-first para evitar index.html desatualizado
+  if (isNavigationRequest(request)) {
+    event.respondWith(
+      (async () => {
+        try {
+          const networkResponse = await fetch(request);
+          const cache = await caches.open(CACHE_NAME);
+          // Cacheia o index/html navegado para fallback offline
+          cache.put(request, networkResponse.clone());
+          return networkResponse;
+        } catch (err) {
+          const cached = await caches.match(request);
+          if (cached) return cached;
+          // Fallback simples quando offline e sem cache
+          return new Response("Offline — tente novamente mais tarde", {
+            status: 503,
+            statusText: "Service Unavailable",
+            headers: { "Content-Type": "text/plain; charset=utf-8" },
+          });
+        }
+      })()
+    );
+    return;
+  }
+
+  // Assets: cache-first com revalidação
+  if (isStaticAsset(request.url)) {
+    event.respondWith(
+      (async () => {
+        const cache = await caches.open(ASSET_CACHE);
+        const cached = await cache.match(request);
+        if (cached) {
+          // Revalida em background
+          try {
+            fetch(request)
+              .then((res) => {
+                if (res && res.ok) cache.put(request, res.clone());
+              })
+              .catch(() => {});
+          } catch {}
+          return cached;
+        }
+        // Sem cache: busca e armazena
+        const res = await fetch(request);
+        if (res && res.ok) await cache.put(request, res.clone());
+        return res;
+      })()
+    );
+    return;
+  }
+
+  // Outros: network-first com fallback ao cache
+  event.respondWith(
+    (async () => {
+      try {
+        const res = await fetch(request);
+        return res;
+      } catch {
+        const cached = await caches.match(request);
+        if (cached) return cached;
+        return new Response("Offline", { status: 503 });
+      }
+    })()
   );
 });
