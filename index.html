@@ -70,6 +70,22 @@
             .catch((err) =>
               console.log("Erro ao registrar Service Worker:", err)
             );
+
+          // Força reload quando o controlador do SW muda (novo deploy)
+          let reloaded = false;
+          navigator.serviceWorker.addEventListener("controllerchange", () => {
+            if (reloaded) return;
+            reloaded = true;
+            // Recarrega para obter o index.html e bundles atualizados
+            window.location.reload();
+          });
+
+          // Opcional: escuta mensagens do SW
+          navigator.serviceWorker.addEventListener("message", (event) => {
+            if (event.data?.type === "SW_ACTIVATED") {
+              console.log("SW ativado:", event.data);
+            }
+          });
         });
       }
     </script>
