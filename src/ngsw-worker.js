@@ -25,6 +25,29 @@ function isStaticAsset(url) {
   }
 }
 
+// Helper: tenta fallback para assets com nome-base igual quando o hash mudou
+async function assetHashedFallback(request) {
+  try {
+    const reqUrl = new URL(request.url);
+    const match = reqUrl.pathname.match(/^(.*)\-([A-Za-z0-9]+)(\.[a-z]+)$/);
+    if (!match) return null;
+    const base = match[1];
+    const ext = match[3];
+    const cache = await caches.open(ASSET_CACHE);
+    const keys = await cache.keys();
+    for (const key of keys) {
+      const keyUrl = new URL(key.url);
+      if (keyUrl.pathname.startsWith(base) && keyUrl.pathname.endsWith(ext)) {
+        const cached = await cache.match(key);
+        if (cached) return cached;
+      }
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 self.addEventListener("install", (event) => {
   // Não faz precache agressivo do index; usa network-first para HTML
   event.waitUntil(self.skipWaiting());
@@ -98,9 +121,21 @@ self.addEventListener("fetch", (event) => {
           return cached;
         }
         // Sem cache: busca e armazena
-        const res = await fetch(request);
-        if (res && res.ok) await cache.put(request, res.clone());
-        return res;
+        try {
+          const res = await fetch(request);
+          if (res && res.ok) {
+            await cache.put(request, res.clone());
+            return res;
+          }
+          // Se 404/erro, tenta fallback por nome-base
+          const fallback = await assetHashedFallback(request);
+          if (fallback) return fallback;
+          return res;
+        } catch {
+          const fallback = await assetHashedFallback(request);
+          if (fallback) return fallback;
+          throw new Error("Network error and no fallback available");
+        }
       })()
     );
     return;
