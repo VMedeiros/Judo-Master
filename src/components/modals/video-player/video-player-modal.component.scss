@@ -1,0 +1,9 @@
+// video-player-modal component styles
+
+:host {
+  display: contents;
+}
+
+.video-wrapper {
+  padding-bottom: 56.25%; // 16:9 aspect ratio
+}

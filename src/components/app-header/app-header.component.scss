@@ -1,0 +1,21 @@
+// app-header component styles
+// Global theme vars are in src/styles.css
+
+.settings-panel {
+  animation: fadeInDown 0.15s ease-out;
+}
+
+.quote-border {
+  border-color: var(--color-accent);
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,20 @@
+@if (celebration) {
+  <output class="block mb-6" aria-live="polite" aria-atomic="true">
+    <div class="celebration-card card p-4 sm:p-6 border-2 text-center">
+      <div class="flex items-center justify-center gap-3 mb-2">
+        <span class="text-5xl sm:text-6xl" aria-hidden="true">{{
+          celebration.icon
+        }}</span>
+        <h2 class="text-2xl sm:text-3xl font-bold accent-text font-serif">
+          {{ celebration.name }}
+        </h2>
+        <span class="text-5xl sm:text-6xl" aria-hidden="true">{{
+          celebration.icon
+        }}</span>
+      </div>
+      <p class="text-theme text-sm sm:text-base font-medium">
+        Celebrando este momento especial! 🎉
+      </p>
+    </div>
+    </output>
+}

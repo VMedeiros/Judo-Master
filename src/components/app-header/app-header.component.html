@@ -1,0 +1,214 @@
+<header
+  class="bg-theme-alt shadow-md sticky top-0 z-40 header-premium"
+  role="banner"
+>
+  <div class="container mx-auto px-3 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-14 sm:h-16">
+      <!-- Logo -->
+      <div class="flex items-center space-x-2 sm:space-x-3">
+        <img
+          src="assets/icons/icon-192x192.png"
+          class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl"
+          alt=""
+          aria-hidden="true"
+          width="192"
+          height="192"
+        />
+        <h1
+          class="text-lg sm:text-xl lg:text-2xl font-bold accessible-heading leading-none"
+        >
+          <span class="accent-text font-serif">Judô</span>
+          <span class="high-contrast-text font-sans">Master</span>
+        </h1>
+      </div>
+
+      <!-- Settings button -->
+      <div class="settings-container">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          aria-label="Abrir configurações de visualização"
+          title="Configurações"
+          [attr.aria-expanded]="isSettingsOpen()"
+          aria-haspopup="true"
+          (click)="toggleSettings()"
+        >
+          <span class="material-symbols-rounded" aria-hidden="true"
+            >settings</span
+          >
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Settings panel — renderizado FORA do header para evitar stacking context -->
+@if (isSettingsOpen()) {
+  <div
+    role="dialog"
+    aria-label="Configurações de aparência"
+    class="settings-panel fixed top-14 sm:top-16 right-2 sm:right-4 w-[min(340px,calc(100vw-1rem))] card p-4 shadow-2xl z-[9999] border border-theme max-h-[calc(100dvh-4.5rem)] overflow-y-auto"
+  >
+    <!-- Tema + Tamanho da Fonte — padrão JudoKan -->
+    <div class="flex items-start gap-0 mb-4">
+      <!-- Coluna Tema -->
+      <div class="flex-1">
+        <div class="flex items-center gap-2 mb-4">
+          <span
+            class="material-symbols-rounded text-gray-400 text-lg"
+            aria-hidden="true"
+            >palette</span
+          >
+          <p
+            class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest"
+          >
+            Tema
+          </p>
+        </div>
+        <div class="flex items-center gap-3 mt-2">
+          <span
+            class="material-symbols-rounded text-xl transition-colors duration-300"
+            [class]="theme.isDarkMode() ? 'text-gray-600' : 'text-sky-500'"
+            aria-hidden="true"
+            >light_mode</span
+          >
+
+          <button
+            type="button"
+            (click)="theme.toggleTheme()"
+            [attr.aria-pressed]="theme.isDarkMode()"
+            aria-label="Alternar entre tema claro e escuro"
+            class="relative w-[84px] h-[46px] rounded-[22px] transition-all duration-500 focus:outline-none flex items-center p-[6px] shadow-inner"
+            [class]="theme.isDarkMode() ? 'bg-[#7384d1]' : 'bg-gray-200'"
+          >
+            <div
+              class="w-[34px] h-[34px] rounded-full shadow-lg transition-all duration-500 transform flex items-center justify-center relative z-10"
+              [class]="
+                theme.isDarkMode()
+                  ? 'translate-x-[38px] bg-[#111827]'
+                  : 'translate-x-0 bg-white'
+              "
+            >
+              <span
+                class="material-symbols-rounded text-[20px] transition-all duration-500"
+                [class]="
+                  theme.isDarkMode()
+                    ? 'text-white -rotate-[10deg]'
+                    : 'text-sky-500'
+                "
+                >{{ theme.isDarkMode() ? "dark_mode" : "light_mode" }}</span
+              >
+            </div>
+          </button>
+
+          <span
+            class="material-symbols-rounded text-xl transition-colors duration-300"
+            [class]="theme.isDarkMode() ? 'text-[#7384d1]' : 'text-gray-300'"
+            aria-hidden="true"
+            >dark_mode</span
+          >
+        </div>
+      </div>
+
+      <!-- Divisor vertical -->
+      <div class="w-px bg-gray-200 dark:bg-gray-700 self-stretch mx-2"></div>
+
+      <!-- Coluna Tamanho da Fonte -->
+      <div class="flex-1 pl-2">
+        <div class="flex items-center gap-2 mb-4">
+          <span
+            class="material-symbols-rounded text-gray-400 text-lg"
+            aria-hidden="true"
+            >format_size</span
+          >
+          <p
+            class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest"
+          >
+            Tamanho da Fonte
+          </p>
+        </div>
+        <fieldset
+          class="relative flex items-center p-1 bg-gray-100 dark:bg-gray-800/50 rounded-2xl border border-gray-200 dark:border-gray-800 h-11 overflow-hidden"
+          aria-label="Tamanho da fonte"
+        >
+          <div
+            class="absolute top-1 bottom-1 w-[calc(33.33%-4px)] bg-[#334155] dark:bg-[#1e293b] rounded-xl shadow-md transition-all duration-300 z-0"
+            [style.left]="
+              theme.fontSize() === 14
+                ? '0.8%'
+                : theme.fontSize() === 16
+                  ? '33.8%'
+                  : '66.8%'
+            "
+          ></div>
+          <button
+            type="button"
+            (click)="theme.changeFontSize('14')"
+            [attr.aria-pressed]="theme.fontSize() === 14"
+            class="flex-1 h-full rounded-xl text-[11px] font-black tracking-normal transition-all relative z-10"
+            [class]="
+              theme.fontSize() === 14
+                ? 'text-sky-400'
+                : 'text-gray-500 dark:text-gray-400 hover:text-white'
+            "
+          >
+            P
+          </button>
+          <button
+            type="button"
+            (click)="theme.changeFontSize('16')"
+            [attr.aria-pressed]="theme.fontSize() === 16"
+            class="flex-1 h-full rounded-xl text-[11px] font-black tracking-normal transition-all relative z-10"
+            [class]="
+              theme.fontSize() === 16
+                ? 'text-sky-400'
+                : 'text-gray-500 dark:text-gray-400 hover:text-white'
+            "
+          >
+            M
+          </button>
+          <button
+            type="button"
+            (click)="theme.changeFontSize('18')"
+            [attr.aria-pressed]="theme.fontSize() === 18"
+            class="flex-1 h-full rounded-xl text-[11px] font-black tracking-normal transition-all relative z-10"
+            [class]="
+              theme.fontSize() === 18
+                ? 'text-sky-400'
+                : 'text-gray-500 dark:text-gray-400 hover:text-white'
+            "
+          >
+            G
+          </button>
+        </fieldset>
+      </div>
+    </div>
+
+    <!-- Quote -->
+    <div class="mb-4 p-3 rounded-lg bg-theme-alt border-l-4 quote-border">
+      <p class="text-xs italic text-theme leading-relaxed">
+        {{ currentQuote() }}
+      </p>
+    </div>
+
+    <hr class="my-3 border-theme" />
+
+    <!-- About button -->
+    <button
+      type="button"
+      class="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium hover:bg-theme-alt transition-colors text-theme"
+      aria-label="Abrir informações sobre o Judô"
+      (click)="onOpenAbout()"
+    >
+      <span
+        class="material-symbols-rounded text-[18px] accent-text"
+        aria-hidden="true"
+        >info</span
+      >
+      <span
+        >Sobre o
+        <span class="accent-text font-serif font-bold">Judô</span></span
+      >
+    </button>
+  </div>
+}

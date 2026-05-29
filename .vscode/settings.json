@@ -1,0 +1,11 @@
+{
+  "css.lint.unknownAtRules": "ignore",
+  "sonarlint.rules": {
+    "Web:S5725": {
+      "level": "off"
+    },
+    "Web:S6819": {
+      "level": "off"
+    }
+  }
+}

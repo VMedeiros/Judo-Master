@@ -1,271 +1,340 @@
-/* Import de fontes para seleção (deve vir antes de qualquer regra) */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600&family=Noto+Serif+JP:wght@400;600&family=Roboto+Mono:wght@400;600&display=swap');
+/* =========================================================
+   Judo-Master — Design System alinhado à identidade JudoKan
+   Paleta: Sky Blue accent (#0ea5e9) + Navy primary (#334e68)
+   Fontes: Inter + Noto Sans JP + Noto Serif JP (auto-hospedadas)
+   ========================================================= */
+
+/* Fontes auto-hospedadas via fontsource (sem dependência CDN) */
+@import '@fontsource-variable/inter';
+@import '@fontsource/noto-sans-jp/400.css';
+@import '@fontsource/noto-sans-jp/500.css';
+@import '@fontsource/noto-sans-jp/700.css';
+@import '@fontsource/noto-serif-jp/400.css';
+@import '@fontsource/noto-serif-jp/700.css';
+@import '@fontsource-variable/roboto-mono';
+@import 'material-symbols/rounded.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Variáveis de tema base (Estilo Japonês: Branco & Vermelho) */
-:root[data-theme='light'] {
-  /* Base viva e acessível */
-  --color-bg: #ffffff;
-  --color-bg-alt: #f3f4f6;    /* Gray 100 para contraste nas cards */
-  --color-text: #0b1220;      /* Mais escuro que Gray 900 */
-  --color-text-muted: #374151;/* Gray 700 para melhor leitura */
-  --color-border: #d1d5db;    /* Gray 300 mais visível */
+/* ----------------------------------------------------------
+   Variáveis de tema — modo claro
+   ---------------------------------------------------------- */
+:root {
+  /* Fundo */
+  --color-bg:       #f8fafc;
+  --color-bg-alt:   #f1f5f9;
+  --color-surface:  #ffffff;
 
-  /* Accent vermelho japonês com alto contraste */
-  --color-accent: #c8102e;    /* Japan Red */
-  --color-accent-alt: #a10d24;
+  /* Texto */
+  --color-text:       #0f172a;
+  --color-text-muted: #475569;
 
-  /* Secundário (branco & vermelho suave) */
-  --secondary-bg: #ffffff;
-  --secondary-border: #eaeaea;
-  --secondary-accent: #e00022; /* vermelho secundário mais vivo */
-  --secondary-accent-alt: #bb001c;
+  /* Borda */
+  --color-border: #e2e8f0;
 
-  /* Suporte */
+  /* Accent sky (JudoKan) */
+  --color-accent:     #0ea5e9;
+  --color-accent-alt: #0284c7;
+  --color-accent-bg:  rgba(14, 165, 233, 0.10);
+
+  /* Primary navy */
+  --color-primary:     #334e68;
+  --color-primary-alt: #243b53;
+
+  /* Semânticas */
   --success: #16a34a;
   --warning: #f59e0b;
-  --danger: #dc2626;
+  --danger:  #dc2626;
 }
 
-:root[data-theme='dark'] {
-  /* Base escura com contraste elevado */
-  --color-bg: #0f141a;
-  --color-bg-alt: #17202a;
-  --color-text: #f3f4f6;
-  --color-text-muted: #d1d5db;
-  --color-border: #25303a;
+/* ----------------------------------------------------------
+   Variáveis de tema — modo escuro
+   ---------------------------------------------------------- */
+.dark {
+  --color-bg:       #0a1929;
+  --color-bg-alt:   #111827;
+  --color-surface:  #1e293b;
 
-  /* Accent adaptado para escuro */
-  --color-accent: #ff3347;
-  --color-accent-alt: #e3263a;
+  --color-text:       #f1f5f9;
+  --color-text-muted: #94a3b8;
 
-  /* Secundário adaptado ao dark */
-  --secondary-bg: #1a2027;
-  --secondary-border: #2a333d;
-  --secondary-accent: #ff4050;
-  --secondary-accent-alt: #e83343;
+  --color-border: rgba(255, 255, 255, 0.08);
 
-  /* Suporte */
+  --color-accent:     #38bdf8;
+  --color-accent-alt: #0ea5e9;
+  --color-accent-bg:  rgba(56, 189, 248, 0.12);
+
+  --color-primary:     #627d98;
+  --color-primary-alt: #829ab1;
+
   --success: #22c55e;
-  --warning: #f59e0b;
-  --danger: #ef4444;
+  --warning: #fbbf24;
+  --danger:  #f87171;
 }
 
+/* ----------------------------------------------------------
+   Base — corpo transparente sobre o background do index.html
+   ---------------------------------------------------------- */
 html, body {
-  background-color: var(--color-bg);
+  background-color: transparent;
   color: var(--color-text);
-  position: relative;
+  font-family: 'Inter', 'Noto Sans JP', ui-sans-serif, system-ui, sans-serif;
+  line-height: 1.6;
   overflow-x: hidden;
+  transition: color 0.3s ease;
 }
 
-/* Background decorativo melhorado com tema japonês */
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
-  z-index: -1;
-  background-color: var(--color-bg);
-}
-
-/* Tema claro: padrão sutil com vermelho japonês */
-:root[data-theme='light'] body::after {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
-  z-index: -1;
-  background: 
-    radial-gradient(ellipse 800px 600px at 20% 10%, rgba(200, 16, 46, 0.05) 0%, transparent 60%),
-    radial-gradient(ellipse 600px 500px at 80% 90%, rgba(200, 16, 46, 0.03) 0%, transparent 70%),
-    linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(243, 244, 246, 1) 100%);
-}
-
-/* Tema escuro: tons mais sofisticados */
-:root[data-theme='dark'] body::after {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
-  z-index: -1;
-  background:
-    radial-gradient(ellipse 900px 700px at 15% 15%, rgba(255, 51, 71, 0.08) 0%, transparent 65%),
-    radial-gradient(ellipse 700px 600px at 85% 85%, rgba(255, 51, 71, 0.05) 0%, transparent 70%),
-    linear-gradient(135deg, rgba(15, 20, 26, 1) 0%, rgba(23, 32, 42, 1) 100%);
-}
-
-/* garantir que o corpo herda a fonte aplicada no html */
 body { font-family: inherit; }
 
-/* Font family helpers */
-.font-sans { font-family: 'Noto Sans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
-.font-serif { font-family: 'Noto Serif JP', ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif; }
-.font-mono { font-family: 'Roboto Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace; }
+/* ----------------------------------------------------------
+   Font family helpers (controlados pelo AppComponent)
+   ---------------------------------------------------------- */
+.font-sans  { font-family: 'Inter', 'Noto Sans JP', ui-sans-serif, system-ui, sans-serif; }
+.font-serif { font-family: 'Noto Serif JP', ui-serif, Georgia, serif; }
+.font-mono  { font-family: 'Roboto Mono', ui-monospace, monospace; }
 
-/* Utilidades complementares */
-.border-theme { border-color: var(--color-border); }
-.bg-theme { background-color: var(--color-bg); }
-.bg-theme-alt { background-color: var(--color-bg-alt); }
-.text-theme { color: var(--color-text); }
-.accent-text { color: var(--color-accent); }
-.accent-bg { background-color: var(--color-accent); }
+/* ----------------------------------------------------------
+   Utilidades de tema (classes semânticas usadas no template)
+   ---------------------------------------------------------- */
+.border-theme  { border-color: var(--color-border); }
+.bg-theme      { background-color: var(--color-bg); }
+.bg-theme-alt  { background-color: var(--color-bg-alt); }
+.text-theme    { color: var(--color-text); }
+.text-theme-muted { color: var(--color-text-muted); }
+.accent-text   { color: var(--color-accent); }
+.accent-bg     { background-color: var(--color-accent); }
 .accent-bg:hover { background-color: var(--color-accent-alt); }
 
-/* Temas secundários focados no claro (branco & vermelho) */
-.secondary-card {
-  background-color: var(--secondary-bg);
-  border: 1px solid var(--secondary-border);
-  border-radius: 0.75rem;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+/* Headings de alto contraste */
+.accessible-heading {
+  color: var(--color-text);
+  font-weight: 700;
+  letter-spacing: 0.01em;
 }
-.btn-secondary {
-  background-color: var(--secondary-accent);
-  color: #fff;
-  border-color: var(--secondary-accent);
-}
-.btn-secondary:hover { background-color: var(--secondary-accent-alt); }
-.pill-secondary-active {
-  background-color: color-mix(in oklab, var(--secondary-accent) 10%, var(--secondary-bg));
-  border: 1px solid color-mix(in oklab, var(--secondary-accent) 35%, var(--secondary-border));
-}
+.high-contrast-text { color: var(--color-text); }
+.brand-subtle       { color: var(--color-text-muted); }
 
-/* Suave transição entre temas */
-html { transition: background-color .3s ease, color .3s ease; }
-
-/* ---- UI Harmonizada ---- */
+/* ----------------------------------------------------------
+   Card — identidade JudoKan (rounded-2xl + backdrop-blur sobre foto)
+   ---------------------------------------------------------- */
 .card {
-  background-color: var(--color-bg-alt);
+  background-color: rgba(255, 255, 255, 0.88);
   color: var(--color-text);
-  border: 1px solid var(--color-border);
-  border-radius: 0.75rem;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+  border: 1px solid rgba(255, 255, 255, 0.50);
+  border-radius: 1rem;          /* rounded-2xl */
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.14);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+}
+.dark .card {
+  background-color: rgba(10, 20, 40, 0.72);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 40px rgba(0, 0, 0, 0.50);
 }
 
+/* ----------------------------------------------------------
+   Tabela — estilo JudoKan
+   ---------------------------------------------------------- */
 .table-header {
-  background-color: var(--color-bg-alt);
-  color: var(--color-text);
+  background-color: rgba(241, 245, 249, 0.50);
+  color: var(--color-text-muted);
 }
-.table-row {
-  background-color: var(--color-bg-alt);
-  border-color: var(--color-border);
+.dark .table-header {
+  background-color: rgba(30, 41, 59, 0.30);
 }
-.table-zebra tbody tr:nth-child(odd) { background-color: color-mix(in oklab, var(--color-bg-alt) 92%, var(--color-border)); }
-.table-zebra tbody tr:hover { background-color: color-mix(in oklab, var(--color-bg-alt) 85%, var(--color-border)); }
+.table-row { border-color: var(--color-border); }
 
+/* Zebra suave */
+.table-zebra tbody tr:nth-child(odd)  { background-color: rgba(241, 245, 249, 0.40); }
+.table-zebra tbody tr:hover           { background-color: rgba(14, 165, 233, 0.06); }
+.dark .table-zebra tbody tr:nth-child(odd) { background-color: rgba(30, 41, 59, 0.30); }
+.dark .table-zebra tbody tr:hover          { background-color: rgba(56, 189, 248, 0.06); }
+
+/* ----------------------------------------------------------
+   Input — estilo JudoKan
+   ---------------------------------------------------------- */
 .input {
-  background-color: var(--color-bg-alt);
+  background-color: var(--color-surface);
   border: 1px solid var(--color-border);
   color: var(--color-text);
-  border-radius: 0.5rem;
-  min-height: 2.25rem;
-  padding: 0.5rem 0.75rem;
+  border-radius: 0.75rem;       /* rounded-xl */
+  min-height: 2.5rem;
+  padding: 0.5rem 0.875rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
-.input::placeholder { color: color-mix(in oklab, var(--color-text) 50%, #aaa); }
-.input:focus { outline: 2px solid var(--color-accent); box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-accent) 30%, transparent); }
-.input:focus-visible { outline-width: 3px; }
+.dark .input {
+  background-color: #111827;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+.input::placeholder { color: var(--color-text-muted); opacity: 0.7; }
+.input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-bg);
+}
 
+/* Select — remover aparência nativa */
+select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.625rem center; background-size: 1.25em; padding-right: 2.5rem; }
+
+/* ----------------------------------------------------------
+   Button — estilo JudoKan
+   ---------------------------------------------------------- */
 .btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
-  font-weight: 700;
+  font-weight: 600;
+  font-size: 0.875rem;
   padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
+  border-radius: 0.75rem;       /* rounded-xl */
   border: 1px solid var(--color-border);
-  transition: transform .06s ease, box-shadow .2s ease, background-color .2s ease;
+  background-color: var(--color-surface);
+  color: var(--color-text);
   cursor: pointer;
+  transition: transform 0.06s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  white-space: nowrap;
 }
+.dark .btn {
+  background-color: #1e293b;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+.btn:hover    { background-color: var(--color-bg-alt); }
+.btn:active   { transform: translateY(1px); }
 .btn:focus-visible { outline: 3px solid var(--color-accent); outline-offset: 2px; }
+
+/* Botão primário — gradiente JudoKan */
 .btn-accent {
-  background-color: var(--color-accent);
+  background: linear-gradient(135deg, #0369a1 0%, #0284c7 50%, #0ea5e9 100%);
   color: white;
-  border-color: var(--color-accent);
+  border-color: transparent;
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.30);
 }
-.btn-accent:hover { background-color: var(--color-accent-alt); box-shadow: 0 6px 16px color-mix(in oklab, var(--color-accent) 25%, transparent); }
+.btn-accent:hover {
+  background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%);
+  box-shadow: 0 4px 16px rgba(14, 165, 233, 0.40);
+}
 .btn-accent:active { transform: translateY(1px); }
+
+/* Botão secundário — navy/primary */
+.btn-secondary {
+  background: linear-gradient(135deg, #243b53 0%, #334e68 100%);
+  color: white;
+  border-color: transparent;
+}
+.btn-secondary:hover { background: linear-gradient(135deg, #192a3e 0%, #243b53 100%); }
+
+/* Botão ghost */
 .btn-ghost {
   background-color: transparent;
+  border-color: transparent;
   color: var(--color-text);
 }
+.btn-ghost:hover { background-color: var(--color-bg-alt); }
 
-/* Pills/tabs ativos com vermelho suave e texto nítido */
+/* ----------------------------------------------------------
+   Pills / tabs de faixa — estilo JudoKan
+   ---------------------------------------------------------- */
 .pill-active {
-  background-color: color-mix(in oklab, var(--color-accent) 18%, #fff);
-  color: #111827;
-  border: 1px solid color-mix(in oklab, var(--color-accent) 35%, var(--color-border));
-  box-shadow: 0 3px 10px color-mix(in oklab, var(--color-accent) 20%, transparent);
+  background-color: var(--color-accent-bg);
+  color: var(--color-accent);
+  border: 1px solid rgba(14, 165, 233, 0.30);
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.15);
+}
+.dark .pill-active {
+  background-color: #1e3a4e; /* solid dark blue — contraste 11.7:1 com texto branco */
+  color: #ffffff;
+  border-color: rgba(56, 189, 248, 0.40);
 }
 
-/* Ícones de ação com esquema acessível */
-.icon-blue { color: #2563eb; }
+/* ----------------------------------------------------------
+   Ícones de ação coloridos
+   ---------------------------------------------------------- */
+.icon-blue   { color: #0284c7; }
 .icon-indigo { color: #4f46e5; }
-.icon-yellow { color: #ca8a04; }
-.icon-red { color: var(--danger); }
+.icon-yellow { color: #b45309; }
+.icon-red    { color: var(--danger); }
+.dark .icon-blue   { color: #38bdf8; }
+.dark .icon-yellow { color: #fbbf24; }
+.dark .icon-red    { color: #f87171; }
 
-/* Header premium com borda inferior sutil */
+/* ----------------------------------------------------------
+   Material Symbols helper
+   ---------------------------------------------------------- */
+.material-symbols-rounded {
+  font-family: 'Material Symbols Rounded', sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 1.25rem;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+  user-select: none;
+}
+
+/* ----------------------------------------------------------
+   Header premium — JudoKan
+   ---------------------------------------------------------- */
 .header-premium {
-  border-bottom: 1px solid var(--color-border);
-  backdrop-filter: saturate(1.2) blur(2px);
+  background-color: rgba(255, 255, 255, 0.88);
+  border-bottom: 1px solid rgba(14, 165, 233, 0.18);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+}
+.dark .header-premium {
+  background-color: rgba(10, 25, 41, 0.97);
+  border-bottom-color: var(--color-border);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
-/* Acessibilidade tipográfica básica */
-html {
-  line-height: 1.5;
+/* ----------------------------------------------------------
+   Toast / mensagens de feedback
+   ---------------------------------------------------------- */
+.toast-success {
+  background-color: #dcfce7;
+  border: 1px solid #86efac;
+  color: #166534;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
 }
-.accessible-heading {
-  color: #0b1220;
-  font-weight: 800;
-  letter-spacing: 0.01em;
-}
-:root[data-theme='dark'] .accessible-heading {
-  color: #f9fafb;
-}
-.high-contrast-text {
-  color: #0b1220;
-}
-:root[data-theme='dark'] .high-contrast-text {
-  color: #f9fafb;
-}
-.brand-subtle {
-  color: #9ca3af; /* Gray 400 para o subtítulo leve no header */
+.toast-error {
+  background-color: #fee2e2;
+  border: 1px solid #fca5a5;
+  color: #991b1b;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
 }
 
-/* Switch de tema acessível */
+/* ----------------------------------------------------------
+   Switch de tema — alinhado à paleta sky blue
+   ---------------------------------------------------------- */
 .theme-switch {
   position: relative;
   display: inline-block;
   width: 52px;
   height: 28px;
 }
-.theme-switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
+.theme-switch input { opacity: 0; width: 0; height: 0; }
 .theme-slider {
   position: absolute;
   cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #d1d5db;
-  transition: .3s;
+  inset: 0;
+  background-color: #cbd5e1;
+  transition: 0.3s;
   border-radius: 28px;
 }
-.theme-slider:before {
+.theme-slider::before {
   position: absolute;
   content: "";
   height: 20px;
@@ -273,35 +342,30 @@ html {
   left: 4px;
   bottom: 4px;
   background-color: white;
-  transition: .3s;
+  transition: 0.3s;
   border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
 }
 input:checked + .theme-slider {
-  background-color: var(--color-accent);
+  background: linear-gradient(135deg, #0284c7, #0ea5e9);
 }
-input:checked + .theme-slider:before {
-  transform: translateX(24px);
-}
-.theme-slider:hover {
-  background-color: #9ca3af;
-}
-input:checked + .theme-slider:hover {
-  background-color: var(--color-accent-alt);
-}
+input:checked + .theme-slider::before { transform: translateX(24px); }
+.theme-slider:hover        { background-color: #94a3b8; }
+input:checked + .theme-slider:hover { background: linear-gradient(135deg, #0369a1, #0284c7); }
 .theme-switch input:focus-visible + .theme-slider {
   outline: 3px solid var(--color-accent);
   outline-offset: 2px;
 }
 
-/* Scroll horizontal com sombra indicadora em mobile */
+/* ----------------------------------------------------------
+   Scroll horizontal com sombra indicadora
+   ---------------------------------------------------------- */
 .shadow-inner-x {
   background:
-    /* Sombra esquerda */
-    linear-gradient(to right, var(--color-bg-alt) 30%, rgba(255, 255, 255, 0)),
-    linear-gradient(to right, rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0) 3%),
-    /* Sombra direita */
-    linear-gradient(to left, var(--color-bg-alt) 30%, rgba(255, 255, 255, 0)),
-    linear-gradient(to left, rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0) 3%);
+    linear-gradient(to right, var(--color-bg-alt) 30%, transparent),
+    linear-gradient(to right, rgba(0,0,0,0.04), transparent 4%),
+    linear-gradient(to left,  var(--color-bg-alt) 30%, transparent),
+    linear-gradient(to left,  rgba(0,0,0,0.04), transparent 4%);
   background-position: left center, left center, right center, right center;
   background-repeat: no-repeat;
   background-color: var(--color-bg-alt);
@@ -309,58 +373,73 @@ input:checked + .theme-slider:hover {
   background-attachment: local, scroll, local, scroll;
 }
 
-:root[data-theme='dark'] .shadow-inner-x {
-  background:
-    linear-gradient(to right, var(--color-bg-alt) 30%, rgba(0, 0, 0, 0)),
-    linear-gradient(to right, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0) 3%),
-    linear-gradient(to left, var(--color-bg-alt) 30%, rgba(0, 0, 0, 0)),
-    linear-gradient(to left, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0) 3%);
-  background-position: left center, left center, right center, right center;
-  background-repeat: no-repeat;
-  background-color: var(--color-bg-alt);
-  background-size: 30px 100%, 6px 100%, 30px 100%, 6px 100%;
-  background-attachment: local, scroll, local, scroll;
+/* ----------------------------------------------------------
+   Custom scrollbar — estilo JudoKan
+   ---------------------------------------------------------- */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 99px;
 }
+.dark ::-webkit-scrollbar-thumb { background: #334155; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+.dark ::-webkit-scrollbar-thumb:hover { background: #475569; }
 
-/* Melhorias para dispositivos móveis */
+/* ----------------------------------------------------------
+   Responsividade mobile
+   ---------------------------------------------------------- */
 @media (max-width: 640px) {
-  /* Reduzir tamanhos de fonte em telas muito pequenas */
-  html {
-    font-size: 14px;
-  }
-  
-  /* Melhorar área de toque em botões */
-  .btn, button {
-    min-height: 44px;
-    min-width: 44px;
-  }
-  
-  /* Otimizar tabelas em mobile */
-  table {
-    font-size: 0.875rem;
-  }
+  .btn, button { min-height: 44px; min-width: 44px; }
+  table { font-size: 0.875rem; }
 }
 
-/* Melhorar performance com will-change */
-.theme-slider,
-.btn,
-.pill-active {
-  will-change: transform, background-color;
-}
+/* Performance */
+.theme-slider, .btn, .pill-active { will-change: transform, background-color; }
 
 /* Suporte a modo de alto contraste */
 @media (prefers-contrast: high) {
-  .btn {
-    border-width: 2px;
-  }
-  
-  .card {
-    border-width: 2px;
-  }
-  
-  :root[data-theme='light'] {
-    --color-text: #000000;
+  .btn   { border-width: 2px; }
+  .card  { border-width: 2px; }
+  .input { border-width: 2px; }
+
+  :root {
+    --color-text:   #000000;
     --color-border: #000000;
+  }
+  .dark {
+    --color-text:   #ffffff;
+    --color-border: #ffffff;
+  }
+}
+
+/* Global focus-visible — acessibilidade teclado */
+:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Print */
+@media print {
+  .header-premium,
+  footer,
+  .btn,
+  app-toast,
+  app-about-modal,
+  app-technique-detail-modal,
+  app-technique-form-modal,
+  app-delete-confirm-modal,
+  app-video-player-modal {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  .card {
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
   }
 }
 
@@ -384,4 +463,30 @@ input:checked + .theme-slider:hover {
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;  /* Chrome, Safari and Opera */
+}
+
+/* ----------------------------------------------------------
+   <dialog> element reset — deixa Tailwind/CSS customizado
+   controlar o layout. Posicionamento padrão do UA é sobrescrito
+   pela classe utilitária `static` do Tailwind aplicada inline.
+   ---------------------------------------------------------- */
+dialog {
+  padding: 0;
+  border: none;
+  background: transparent;
+  max-width: none;
+  max-height: none;
+  overflow: visible;
+  color: inherit;
+}
+
+dialog::backdrop {
+  display: none;
+}
+
+/* Settings panel no header: mantém position absolute */
+dialog.settings-panel {
+  position: absolute;
+  inset: auto;
+  margin: 0;
 }

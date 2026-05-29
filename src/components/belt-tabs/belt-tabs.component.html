@@ -1,0 +1,56 @@
+<nav class="mb-6 card" aria-label="Navegação por faixas de graduação">
+  <!-- Mobile: select dropdown -->
+  <div class="sm:hidden p-2">
+    <label for="belt-select" class="sr-only"
+      >Selecionar faixa de graduação</label
+    >
+    <select
+      id="belt-select"
+      name="belt-select"
+      class="input block w-full"
+      (change)="onSelectChange($event)"
+    >
+      @for (belt of belts; track belt.id; let i = $index) {
+        <option [value]="i" [selected]="i === selectedIndex">
+          {{ belt.name }}
+        </option>
+      }
+    </select>
+  </div>
+
+  <!-- Desktop: tab buttons -->
+  <div
+    class="hidden sm:block"
+    role="tablist"
+    aria-label="Faixas de Graduação"
+    (keydown)="onTablistKeydown($event)"
+  >
+    <div class="flex flex-wrap gap-2 p-2">
+      @for (belt of belts; track belt.id; let i = $index) {
+        <button
+          #tabBtn
+          type="button"
+          role="tab"
+          [attr.aria-selected]="i === selectedIndex"
+          [attr.tabindex]="i === selectedIndex ? 0 : -1"
+          [attr.id]="'belt-tab-' + i"
+          [attr.aria-controls]="'belt-panel-' + i"
+          [attr.aria-label]="'Selecionar ' + belt.name"
+          [class]="
+            i === selectedIndex
+              ? 'pill-active flex items-center whitespace-nowrap py-2 px-3 rounded-xl font-medium text-sm transition-all duration-200'
+              : 'flex items-center whitespace-nowrap py-2 px-3 rounded-xl font-medium text-sm transition-all duration-200 opacity-60 hover:opacity-100 hover:bg-theme-alt text-theme'
+          "
+          (click)="beltSelected.emit(i)"
+        >
+          <span
+            [class]="belt.color"
+            class="inline-block w-4 h-4 rounded-full mr-2 border border-gray-400 dark:border-gray-500 flex-shrink-0"
+            aria-hidden="true"
+          ></span>
+          {{ belt.name }}
+        </button>
+      }
+    </div>
+  </div>
+</nav>
