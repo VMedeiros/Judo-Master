@@ -1,0 +1,214 @@
+@if (isOpen) {
+  <div
+    class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-3 sm:p-4"
+    (click)="closed.emit()"
+    (keydown.escape)="closed.emit()"
+  >
+    <dialog
+      open
+      class="static card max-w-2xl w-full max-h-[90vh] overflow-y-auto rounded-2xl"
+      aria-labelledby="about-title"
+      (click)="$event.stopPropagation()"
+      (keydown.escape)="closed.emit()"
+    >
+      <div class="p-4 sm:p-6">
+        <!-- Modal header -->
+        <div class="flex justify-between items-start mb-5">
+          <div class="flex items-center gap-3">
+            <img
+              src="assets/icons/icon-192x192.png"
+              class="w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0 rounded-xl"
+              alt=""
+              aria-hidden="true"
+              width="192"
+              height="192"
+            />
+            <div>
+              <h2 id="about-title" class="text-xl sm:text-2xl font-bold">
+                <span class="accent-text font-serif">Judô</span>
+                <span class="high-contrast-text font-sans">Master</span>
+              </h2>
+              <p class="text-xs sm:text-sm text-theme italic">
+                A Arte Marcial Japonesa
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            class="p-1.5 rounded-lg hover:bg-theme-alt transition-colors flex-shrink-0"
+            aria-label="Fechar modal Sobre o Judô"
+            (click)="closed.emit()"
+          >
+            <span
+              class="material-symbols-rounded text-[22px]"
+              aria-hidden="true"
+              >close</span
+            >
+          </button>
+        </div>
+
+        <!-- Content -->
+        <div class="space-y-5 text-theme text-sm sm:text-base">
+          <section aria-labelledby="about-what">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-xl" aria-hidden="true">🥋</span>
+              <h3
+                id="about-what"
+                class="text-base sm:text-lg font-bold accent-text"
+              >
+                O que é Judô?
+              </h3>
+            </div>
+            <p class="leading-relaxed">
+              Judô (柔道), que significa "o caminho da suavidade" em japonês (Jū
+              = suavidade, Dō = caminho), é uma arte marcial moderna criada em
+              1882 por <strong>Jigoro Kano</strong> no Japão. É um esporte
+              olímpico que combina técnicas de luta com princípios filosóficos
+              centrados em respeito, disciplina e desenvolvimento pessoal.
+            </p>
+          </section>
+
+          <section aria-labelledby="about-history">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-xl" aria-hidden="true">📚</span>
+              <h3
+                id="about-history"
+                class="text-base sm:text-lg font-bold accent-text"
+              >
+                Origem e História
+              </h3>
+            </div>
+            <ul class="space-y-1.5 list-none">
+              <li>
+                <strong>1882:</strong> Criado por Jigoro Kano a partir do
+                Jujutsu tradicional
+              </li>
+              <li>
+                <strong>1964:</strong> Estreou como esporte olímpico em Tóquio
+              </li>
+              <li>
+                <strong>Atualmente:</strong> Praticado em mais de 190 países
+              </li>
+            </ul>
+          </section>
+
+          <section aria-labelledby="about-philosophy">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-xl" aria-hidden="true">🎯</span>
+              <h3
+                id="about-philosophy"
+                class="text-base sm:text-lg font-bold accent-text"
+              >
+                Filosofia do Judô
+              </h3>
+            </div>
+            <ul class="space-y-1.5 list-none">
+              <li>
+                <strong>Seiryoku Zen'yō (清力善用):</strong> Máximo Eficiência
+                com Mínimo Esforço
+              </li>
+              <li>
+                <strong>Jita Kyoei (自他共栄):</strong> Benefício Mútuo e
+                Bem-Estar Comum
+              </li>
+            </ul>
+          </section>
+
+          <section aria-labelledby="about-belts">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-xl" aria-hidden="true">🎓</span>
+              <h3
+                id="about-belts"
+                class="text-base sm:text-lg font-bold accent-text"
+              >
+                Sistema de Faixas
+              </h3>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
+              <div
+                class="bg-theme-alt p-3 rounded-lg border border-gray-300 dark:border-gray-600"
+              >
+                <p class="font-semibold text-sm mb-1">🟤 Faixas Coloridas</p>
+                <p class="text-xs leading-relaxed">
+                  Branca, Amarela, Laranja, Verde, Azul e Marrom. Para crianças
+                  e iniciantes.
+                </p>
+              </div>
+              <div
+                class="bg-theme-alt p-3 rounded-lg border border-gray-300 dark:border-gray-600"
+              >
+                <p class="font-semibold text-sm mb-1">⚫ Faixa Preta</p>
+                <p class="text-xs leading-relaxed">
+                  Domínio técnico, conhecimento profundo. Do 1º até o 10º Dan.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section aria-labelledby="about-benefits">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-xl" aria-hidden="true">💪</span>
+              <h3
+                id="about-benefits"
+                class="text-base sm:text-lg font-bold accent-text"
+              >
+                Benefícios do Judô
+              </h3>
+            </div>
+            <ul class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 list-none">
+              @for (benefit of benefits; track benefit) {
+                <li class="flex items-start gap-2">
+                  <span
+                    class="accent-text font-bold flex-shrink-0"
+                    aria-hidden="true"
+                    >✓</span
+                  >
+                  <span>{{ benefit }}</span>
+                </li>
+              }
+            </ul>
+          </section>
+
+          <section aria-labelledby="about-values">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-xl" aria-hidden="true">🌟</span>
+              <h3
+                id="about-values"
+                class="text-base sm:text-lg font-bold accent-text"
+              >
+                Valores Fundamentais
+              </h3>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              @for (value of values; track value.key) {
+                <div class="bg-theme-alt p-3 rounded-lg">
+                  <span class="accent-text font-bold">{{ value.key }}:</span>
+                  <span class="ml-1">{{ value.description }}</span>
+                </div>
+              }
+            </div>
+          </section>
+
+          <section aria-labelledby="about-techniques">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-xl" aria-hidden="true">🤸</span>
+              <h3
+                id="about-techniques"
+                class="text-base sm:text-lg font-bold accent-text"
+              >
+                Categorias de Técnicas
+              </h3>
+            </div>
+            <ul class="space-y-1.5 list-none">
+              @for (cat of techniqueCategories; track cat.name) {
+                <li>
+                  <strong>{{ cat.name }}:</strong> {{ cat.description }}
+                </li>
+              }
+            </ul>
+          </section>
+        </div>
+      </div>
+    </dialog>
+  </div>
+}

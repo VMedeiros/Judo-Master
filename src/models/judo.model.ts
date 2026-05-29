@@ -20,3 +20,26 @@ export interface Belt {
   beltImage: string;
   techniques: Technique[];
 }
+
+export interface GroupedTechnique {
+  readonly category: string;
+  readonly techniques: Technique[];
+}
+
+export type FormMode = 'add' | 'edit';
+
+export interface TechniqueFormData {
+  readonly name: string;
+  readonly translation: string;
+  readonly description: string;
+  readonly execution: string;
+  readonly application: string;
+  readonly demoUrl: string;
+  readonly category: string;
+  readonly id?: number;
+}
+
+export interface FormSaveEvent {
+  readonly data: TechniqueFormData;
+  readonly mode: FormMode;
+}

@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
@@ -10,159 +10,548 @@
       name="description"
       content="Sistema de gerenciamento de técnicas de Judô por graduação de faixas"
     />
-    <meta name="theme-color" content="#c8102e" />
+    <meta
+      name="theme-color"
+      content="#1e3a5f"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#0a1929"
+      media="(prefers-color-scheme: dark)"
+    />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta
+      http-equiv="Referrer-Policy"
+      content="strict-origin-when-cross-origin"
+    />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
     <meta name="apple-mobile-web-app-title" content="Judô Master" />
     <link rel="manifest" href="manifest.webmanifest" />
-    <link rel="apple-touch-icon" href="assets/icons/icon-192x192.png" />
+    <!-- Favicon premium: kanji 柔 com gradiente azul (identidade JudoKan) -->
+    <link rel="icon" type="image/svg+xml" href="assets/icon.svg" />
+    <link rel="mask-icon" href="assets/icon.svg" color="#0ea5e9" />
+    <!-- Inline SVG favicon fallback (browsers que não suportam SVG) -->
+    <link
+      rel="icon"
+      sizes="any"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%230ea5e9'/%3E%3Cstop offset='100%25' style='stop-color:%230284c7'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='6' fill='url(%23g)'/%3E%3Ctext x='16' y='23' font-family='sans-serif' font-size='18' font-weight='700' fill='%23102a43' text-anchor='middle'%3E%E6%9F%94%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="152x152"
+      href="assets/icons/icon-152x152.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="167x167"
+      href="assets/icons/icon-167x167.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="assets/icons/icon-180x180.png"
+    />
     <link
       rel="icon"
       type="image/png"
       sizes="32x32"
-      href="assets/icons/icon-192x192.png"
+      href="assets/favicon-32x32.png"
     />
     <link
       rel="icon"
       type="image/png"
       sizes="16x16"
-      href="assets/icons/icon-192x192.png"
+      href="assets/favicon-16x16.png"
     />
     <title>Judô Master - Gerenciamento de Técnicas</title>
-    <!-- Preconnect para otimização de fontes -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- Tailwind via build (PostCSS). Evitar CDN em produção. -->
+
     <style>
-      /* Custom scrollbar for a better look */
+      /* ============================================================
+         Custom Scrollbar
+         ============================================================ */
       ::-webkit-scrollbar {
-        width: 8px;
+        width: 6px;
+        height: 6px;
       }
       ::-webkit-scrollbar-track {
-        background: #f1f1f1;
-      }
-      .dark ::-webkit-scrollbar-track {
-        background: #2d3748;
+        background: transparent;
       }
       ::-webkit-scrollbar-thumb {
-        background: #888;
-        border-radius: 4px;
-      }
-      .dark ::-webkit-scrollbar-thumb {
-        background: #555;
+        background-color: rgba(156, 163, 175, 0.4);
+        border-radius: 20px;
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: #555;
+        background-color: rgba(156, 163, 175, 0.6);
       }
-      .dark ::-webkit-scrollbar-thumb:hover {
-        background: #333;
+      .dark ::-webkit-scrollbar-thumb {
+        background-color: rgba(75, 85, 99, 0.4);
       }
 
-      /* Splash Screen / Loading */
+      /* ============================================================
+         Background — foto de judô com overlay (igual tela de login JudoKan)
+         ============================================================ */
+      body {
+        font-family: "Inter", "Noto Sans JP", sans-serif;
+        background-color: #0a1422;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image: url("https://images.unsplash.com/photo-1656653121475-e33829581294?q=80&w=1170&auto=format&fit=crop");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        z-index: -3;
+      }
+
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(
+          to right,
+          rgba(10, 30, 60, 0.88) 0%,
+          rgba(10, 30, 60, 0.6) 40%,
+          rgba(10, 30, 60, 0.4) 100%
+        );
+        z-index: -2;
+      }
+
+      /* Tema claro — overlay e fundo adaptados */
+      html:not(.dark) body {
+        background-color: #7aa8c4;
+      }
+      html:not(.dark) body::after {
+        background: rgba(235, 242, 248, 0.72);
+      }
+
+      /* ============================================================
+         Premium Splash Screen (identidade JudoKan)
+         ============================================================ */
       #app-splash {
         position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, #c8102e 0%, #a10d24 100%);
+        inset: 0;
+        width: 100vw;
+        height: 100vh;
+        height: 100dvh;
+        background: linear-gradient(
+          135deg,
+          #0a1929 0%,
+          #102a43 50%,
+          #192a3e 100%
+        );
+        z-index: 9999;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        z-index: 9999;
-        transition: opacity 0.5s ease-out;
+        transition:
+          opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+          visibility 0.8s,
+          transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow: hidden;
       }
 
-      #app-splash.loaded {
-        opacity: 0;
+      /* Partículas flutuantes */
+      .splash-particles {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
         pointer-events: none;
+      }
+      .splash-particle {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background: rgba(14, 165, 233, 0.3);
+        border-radius: 50%;
+        animation: float-particle 8s infinite ease-in-out;
+      }
+      .splash-particle:nth-child(1) {
+        left: 10%;
+        top: 20%;
+        animation-delay: 0s;
+        animation-duration: 6s;
+      }
+      .splash-particle:nth-child(2) {
+        left: 20%;
+        top: 80%;
+        animation-delay: 1s;
+        animation-duration: 8s;
+      }
+      .splash-particle:nth-child(3) {
+        left: 30%;
+        top: 40%;
+        animation-delay: 2s;
+        animation-duration: 7s;
+      }
+      .splash-particle:nth-child(4) {
+        left: 50%;
+        top: 60%;
+        animation-delay: 0.5s;
+        animation-duration: 9s;
+      }
+      .splash-particle:nth-child(5) {
+        left: 70%;
+        top: 30%;
+        animation-delay: 1.5s;
+        animation-duration: 6s;
+      }
+      .splash-particle:nth-child(6) {
+        left: 80%;
+        top: 70%;
+        animation-delay: 2.5s;
+        animation-duration: 8s;
+      }
+      .splash-particle:nth-child(7) {
+        left: 90%;
+        top: 50%;
+        animation-delay: 0.7s;
+        animation-duration: 7s;
+      }
+      .splash-particle:nth-child(8) {
+        left: 40%;
+        top: 10%;
+        animation-delay: 1.2s;
+        animation-duration: 9s;
+      }
+
+      /* Rings pulsantes atrás do logo */
+      .splash-rings {
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .splash-ring {
+        position: absolute;
+        width: 120px;
+        height: 120px;
+        border: 1px solid rgba(14, 165, 233, 0.2);
+        border-radius: 50%;
+        animation: ring-expand 3s infinite ease-out;
+      }
+      .splash-ring:nth-child(1) {
+        animation-delay: 0s;
+      }
+      .splash-ring:nth-child(2) {
+        animation-delay: 1s;
+      }
+      .splash-ring:nth-child(3) {
+        animation-delay: 2s;
+      }
+
+      .splash-logo-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
       .splash-logo {
-        width: 120px;
-        height: 120px;
-        margin-bottom: 2rem;
-        animation: pulse 2s ease-in-out infinite;
+        position: relative;
+        z-index: 1;
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+        border-radius: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow:
+          0 0 60px rgba(14, 165, 233, 0.3),
+          0 20px 40px rgba(0, 0, 0, 0.3);
+        animation:
+          pulse-glow-splash 2s infinite,
+          entrance-bounce 0.6s ease-out;
+        overflow: hidden;
+      }
+      .splash-logo::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(255, 255, 255, 0.15),
+          transparent
+        );
+        animation: shine-logo 3s infinite;
+      }
+      .splash-kanji {
+        font-family: "Noto Sans JP", serif;
+        font-size: 42px;
+        font-weight: 700;
+        color: #102a43;
+        animation: kanji-appear 0.8s ease-out 0.3s both;
       }
 
       .splash-title {
-        font-size: 2.5rem;
-        font-weight: 700;
+        margin-top: 24px;
+        font-family: "Inter", sans-serif;
         color: white;
-        margin-bottom: 0.5rem;
-        font-family: "Noto Serif JP", serif;
+        font-size: 32px;
+        font-weight: 800;
+        letter-spacing: -1px;
+        text-shadow: 0 2px 20px rgba(14, 165, 233, 0.3);
+        animation: text-slide-up 0.6s ease-out 0.4s both;
       }
-
       .splash-subtitle {
-        font-size: 1.25rem;
-        color: rgba(255, 255, 255, 0.9);
-        margin-bottom: 2rem;
+        margin-top: 8px;
+        color: #0ea5e9;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 4px;
+        font-weight: 600;
+        animation: text-slide-up 0.6s ease-out 0.5s both;
       }
 
-      .splash-loader {
-        width: 50px;
-        height: 50px;
-        border: 4px solid rgba(255, 255, 255, 0.3);
-        border-top-color: white;
+      .loader-container {
+        margin-top: 48px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        animation: text-slide-up 0.6s ease-out 0.6s both;
+      }
+      .loader-bar {
+        width: 240px;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      .loader-progress {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          #0284c7,
+          #38bdf8,
+          #0ea5e9,
+          #38bdf8,
+          #0284c7
+        );
+        background-size: 300% 100%;
+        border-radius: 4px;
+        animation: loading-bar 1.5s ease-in-out infinite;
+      }
+      .loader-dots {
+        display: flex;
+        gap: 4px;
+        margin-top: 4px;
+      }
+      .loader-dot {
+        width: 6px;
+        height: 6px;
+        background: rgba(14, 165, 233, 0.4);
         border-radius: 50%;
-        animation: spin 1s linear infinite;
+        animation: dot-pulse 1.4s ease-in-out infinite;
+      }
+      .loader-dot:nth-child(1) {
+        animation-delay: 0s;
+      }
+      .loader-dot:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .loader-dot:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+      .loader-text {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.5);
+        font-weight: 500;
+        letter-spacing: 1px;
       }
 
-      .splash-loading-text {
-        margin-top: 1rem;
-        color: white;
-        font-size: 0.875rem;
-        opacity: 0.8;
+      .splash-hidden {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transform: scale(1.05);
       }
 
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
+      /* ============================================================
+         Keyframes
+         ============================================================ */
+      @keyframes float-particle {
+        0%,
+        100% {
+          transform: translateY(0) scale(1);
+          opacity: 0.3;
+        }
+        50% {
+          transform: translateY(-30px) scale(1.2);
+          opacity: 0.6;
         }
       }
-
-      @keyframes pulse {
-        0%,
+      @keyframes ring-expand {
+        0% {
+          transform: scale(1);
+          opacity: 0.4;
+        }
+        100% {
+          transform: scale(2);
+          opacity: 0;
+        }
+      }
+      @keyframes entrance-bounce {
+        0% {
+          transform: scale(0.5);
+          opacity: 0;
+        }
+        60% {
+          transform: scale(1.1);
+        }
         100% {
           transform: scale(1);
           opacity: 1;
         }
+      }
+      @keyframes kanji-appear {
+        0% {
+          transform: scale(0.8);
+          opacity: 0;
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      @keyframes text-slide-up {
+        0% {
+          transform: translateY(20px);
+          opacity: 0;
+        }
+        100% {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+      @keyframes pulse-glow-splash {
+        0%,
+        100% {
+          box-shadow:
+            0 0 30px rgba(14, 165, 233, 0.3),
+            0 20px 40px rgba(0, 0, 0, 0.3);
+        }
         50% {
-          transform: scale(1.05);
-          opacity: 0.8;
+          box-shadow:
+            0 0 60px rgba(14, 165, 233, 0.5),
+            0 25px 50px rgba(0, 0, 0, 0.4);
+        }
+      }
+      @keyframes shine-logo {
+        0% {
+          transform: translateX(-100%) rotate(45deg);
+        }
+        100% {
+          transform: translateX(100%) rotate(45deg);
+        }
+      }
+      @keyframes loading-bar {
+        0% {
+          background-position: 100% 0;
+        }
+        100% {
+          background-position: -100% 0;
+        }
+      }
+      @keyframes dot-pulse {
+        0%,
+        80%,
+        100% {
+          transform: scale(0.6);
+          opacity: 0.4;
+        }
+        40% {
+          transform: scale(1);
+          opacity: 1;
         }
       }
 
-      /* Skeleton loader styles */
+      /* ============================================================
+         Skeleton
+         ============================================================ */
       .skeleton {
         background: linear-gradient(
           90deg,
-          #f0f0f0 25%,
-          #e0e0e0 50%,
-          #f0f0f0 75%
+          #e5e7eb 25%,
+          #f3f4f6 50%,
+          #e5e7eb 75%
         );
         background-size: 200% 100%;
-        animation: loading 1.5s ease-in-out infinite;
+        animation: skeleton-anim 1.5s infinite;
+        border-radius: 8px;
       }
-
       .dark .skeleton {
         background: linear-gradient(
           90deg,
-          #2d3748 25%,
-          #1a202c 50%,
-          #2d3748 75%
+          #374151 25%,
+          #4b5563 50%,
+          #374151 75%
         );
         background-size: 200% 100%;
       }
-
-      @keyframes loading {
+      @keyframes skeleton-anim {
         0% {
           background-position: 200% 0;
         }
         100% {
           background-position: -200% 0;
+        }
+      }
+
+      /* ============================================================
+         Responsive
+         ============================================================ */
+      @media (max-width: 480px) {
+        .splash-logo {
+          width: 80px;
+          height: 80px;
+          border-radius: 20px;
+        }
+        .splash-kanji {
+          font-size: 34px;
+        }
+        .splash-title {
+          font-size: 24px;
+          margin-top: 20px;
+        }
+        .splash-subtitle {
+          font-size: 10px;
+          letter-spacing: 3px;
+        }
+        .loader-bar {
+          width: 200px;
+        }
+        .loader-container {
+          margin-top: 36px;
+        }
+      }
+
+      /* Prefers reduced motion */
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
         }
       }
     </style>
@@ -183,68 +572,110 @@
         }
       }
     </script>
-    <script>
-      // Registrar Service Worker para PWA
+    <script type="module">
       if ("serviceWorker" in navigator) {
-        window.addEventListener("load", () => {
-          navigator.serviceWorker
-            .register("ngsw-worker.js")
-            .then((reg) => console.log("Service Worker registrado:", reg))
-            .catch((err) =>
-              console.log("Erro ao registrar Service Worker:", err),
-            );
-
-          // Força reload quando o controlador do SW muda (novo deploy)
-          let reloaded = false;
-          navigator.serviceWorker.addEventListener("controllerchange", () => {
-            if (reloaded) return;
-            reloaded = true;
-            // Recarrega para obter o index.html e bundles atualizados
-            window.location.reload();
-          });
-
-          // Opcional: escuta mensagens do SW
-          navigator.serviceWorker.addEventListener("message", (event) => {
-            if (event.data?.type === "SW_ACTIVATED") {
-              console.log("SW ativado:", event.data);
+        const _isLocalDev = ["localhost", "127.0.0.1", "0.0.0.0"].includes(
+          location.hostname,
+        );
+        if (_isLocalDev) {
+          const regs = await navigator.serviceWorker.getRegistrations();
+          regs.forEach((r) => r.unregister());
+        } else {
+          window.addEventListener("load", async () => {
+            try {
+              await navigator.serviceWorker.register("ngsw-worker.js");
+            } catch (err) {
+              console.warn("SW registration failed:", err);
             }
+            let reloaded = false;
+            navigator.serviceWorker.addEventListener("controllerchange", () => {
+              if (reloaded) return;
+              reloaded = true;
+              globalThis.location.reload();
+            });
           });
-        });
+        }
       }
     </script>
   </head>
-  <body class="bg-white dark:bg-gray-900 transition-colors duration-300">
-    <!-- Splash Screen -->
-    <div id="app-splash">
-      <svg
-        class="splash-logo"
-        viewBox="0 0 64 64"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
+  <body>
+    <!-- Skip to main content -->
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[999] focus:px-4 focus:py-2 focus:bg-accent-500 focus:text-white focus:rounded-xl focus:text-sm focus:font-semibold focus:shadow-lg"
+    >
+      Ir para o conteúdo principal
+    </a>
+
+    <!-- Premium Splash Screen -->
+    <div id="app-splash" aria-label="Carregando Judô Master" aria-busy="true">
+      <div class="splash-particles" aria-hidden="true">
+        <div class="splash-particle"></div>
+        <div class="splash-particle"></div>
+        <div class="splash-particle"></div>
+        <div class="splash-particle"></div>
+        <div class="splash-particle"></div>
+        <div class="splash-particle"></div>
+        <div class="splash-particle"></div>
+        <div class="splash-particle"></div>
+      </div>
+
+      <div class="splash-logo-container">
+        <div class="splash-rings" aria-hidden="true">
+          <div class="splash-ring"></div>
+          <div class="splash-ring"></div>
+          <div class="splash-ring"></div>
+        </div>
+        <div class="splash-logo">
+          <span class="splash-kanji" aria-hidden="true">柔</span>
+        </div>
+      </div>
+
+      <div class="splash-title">Judô Master</div>
+      <div class="splash-subtitle">Gerenciamento de Técnicas</div>
+
+      <div class="loader-container" aria-hidden="true">
+        <div class="loader-bar">
+          <div class="loader-progress"></div>
+        </div>
+        <div class="loader-dots">
+          <div class="loader-dot"></div>
+          <div class="loader-dot"></div>
+          <div class="loader-dot"></div>
+        </div>
+        <span class="loader-text">Carregando recursos...</span>
+      </div>
+
+      <output class="sr-only" aria-live="polite" id="splash-status"
+        >Carregando aplicação Judô Master. Por favor, aguarde.</output
       >
-        <path
-          d="M42.41 13.59c-2.34-2.34-5.43-3.59-8.7-3.59s-6.36 1.25-8.7 3.59c-4.82 4.82-4.82 12.58 0 17.4L32 38l7-7-8.5-8.5"
-          stroke="#FBBF24"
-          stroke-width="3"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-        <path
-          d="M21.59 50.41c2.34 2.34 5.43 3.59 8.7 3.59s6.36-1.25 8.7-3.59c4.82-4.82 4.82-12.58 0-17.4L32 26l-7 7 8.5 8.5"
-          stroke="#4F46E5"
-          stroke-width="3"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
-      <h1 class="splash-title">Judô Master</h1>
-      <p class="splash-subtitle">Gerenciamento de Técnicas</p>
-      <div class="splash-loader"></div>
-      <p class="splash-loading-text">Carregando...</p>
     </div>
 
-    <app-root>
-      <!-- Loading fallback content -->
+    <noscript>
+      <div
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 100vh;
+          font-family: system-ui, sans-serif;
+          text-align: center;
+          padding: 2rem;
+          background: #0a1929;
+          color: #f1f5f9;
+        "
+      >
+        <div>
+          <h1 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem">
+            Judô Master
+          </h1>
+          <p>Esta aplicação requer JavaScript para funcionar.</p>
+          <p>Por favor, habilite o JavaScript no seu navegador.</p>
+        </div>
+      </div>
+    </noscript>
+
+    <app-root id="main-content" role="main">
       <div
         style="
           display: flex;
@@ -256,43 +687,31 @@
         "
       >
         <div style="width: 100%; max-width: 400px">
-          <!-- Header skeleton -->
           <div
             class="skeleton"
             style="
               height: 60px;
               width: 100%;
               margin-bottom: 2rem;
-              border-radius: 8px;
-            "
-          ></div>
-
-          <!-- Card skeletons -->
-          <div
-            class="skeleton"
-            style="
-              height: 200px;
-              width: 100%;
-              margin-bottom: 1rem;
               border-radius: 12px;
             "
           ></div>
           <div
             class="skeleton"
             style="
-              height: 200px;
+              height: 180px;
               width: 100%;
               margin-bottom: 1rem;
-              border-radius: 12px;
+              border-radius: 16px;
             "
           ></div>
           <div
             class="skeleton"
             style="
-              height: 200px;
+              height: 180px;
               width: 100%;
               margin-bottom: 1rem;
-              border-radius: 12px;
+              border-radius: 16px;
             "
           ></div>
         </div>
@@ -300,18 +719,47 @@
     </app-root>
 
     <script>
-      // Remove splash screen quando o Angular carregar
-      window.addEventListener("load", () => {
-        setTimeout(() => {
-          const splash = document.getElementById("app-splash");
-          if (splash) {
-            splash.classList.add("loaded");
+      (function () {
+        const splash = document.getElementById("app-splash");
+        const splashStatus = document.getElementById("splash-status");
+        const loaderText = splash && splash.querySelector(".loader-text");
+        if (!splash) return;
+
+        const messages = [
+          "Carregando recursos...",
+          "Preparando interface...",
+          "Quase pronto...",
+        ];
+        let idx = 0;
+        const interval = setInterval(() => {
+          idx = (idx + 1) % messages.length;
+          if (loaderText) loaderText.textContent = messages[idx];
+          if (splashStatus) splashStatus.textContent = messages[idx];
+        }, 800);
+
+        const hideSplash = () => {
+          clearInterval(interval);
+          if (loaderText) loaderText.textContent = "Pronto!";
+          if (splashStatus)
+            splashStatus.textContent = "Aplicação carregada com sucesso.";
+          requestAnimationFrame(() => {
+            splash.classList.add("splash-hidden");
+            splash.setAttribute("aria-hidden", "true");
+            splash.setAttribute("aria-busy", "false");
             setTimeout(() => {
-              splash.style.display = "none";
-            }, 500);
-          }
-        }, 1000); // Mantém o splash por pelo menos 1 segundo
-      });
+              if (splash.parentNode) splash.remove();
+            }, 800);
+          });
+        };
+
+        globalThis.addEventListener("angular-ready", hideSplash, {
+          once: true,
+        });
+        globalThis.addEventListener("DOMContentLoaded", () =>
+          setTimeout(hideSplash, 2000),
+        );
+        setTimeout(hideSplash, 5000);
+      })();
     </script>
   </body>
 </html>
