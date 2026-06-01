@@ -16,7 +16,11 @@
         <div class="flex justify-between items-start mb-5">
           <div class="flex items-center gap-3">
             <img
-              src="assets/icons/icon-192x192.png"
+              [src]="
+                theme.isDarkMode()
+                  ? 'assets/icons/icon-192x192-dark.png'
+                  : 'assets/icons/icon-192x192.png'
+              "
               class="w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0 rounded-xl"
               alt=""
               aria-hidden="true"
