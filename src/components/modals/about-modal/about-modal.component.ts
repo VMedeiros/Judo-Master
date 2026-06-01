@@ -13,6 +13,7 @@
 } from '@angular/core';
 
 import { focusFirstFocusable } from '../../../utils/modal-focus.util';
+import { ThemeService } from '../../../services/theme.service';
 
 @Component({
     selector: 'app-about-modal',
@@ -24,6 +25,7 @@ import { focusFirstFocusable } from '../../../utils/modal-focus.util';
 export class AboutModalComponent implements OnChanges {
     private readonly elementRef = inject(ElementRef);
     private readonly injector = inject(Injector);
+    protected readonly theme = inject(ThemeService);
 
     @Input() public isOpen = false;
     @Output() public readonly closed = new EventEmitter<void>();
