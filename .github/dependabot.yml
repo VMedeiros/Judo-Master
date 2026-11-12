@@ -1,0 +1,63 @@
+# Judô Master — Dependabot: dependências atualizadas automaticamente
+version: 2
+updates:
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '09:00'
+      timezone: 'America/Sao_Paulo'
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: 'deps'
+      prefix-development: 'deps(dev)'
+    labels:
+      - 'dependencies'
+      - 'npm'
+    # SheetJS is installed from its own CDN, not the npm registry.
+    ignore:
+      - dependency-name: 'xlsx'
+    groups:
+      angular:
+        patterns:
+          - '@angular/*'
+          - '@angular-devkit/*'
+        update-types:
+          - 'minor'
+          - 'patch'
+      typescript:
+        patterns:
+          - 'typescript'
+          - '@types/*'
+      testing:
+        patterns:
+          - 'karma*'
+          - 'jasmine*'
+          - '@playwright/*'
+          - '@axe-core/*'
+      linting:
+        patterns:
+          - 'eslint*'
+          - '@eslint/*'
+          - 'typescript-eslint'
+          - 'angular-eslint'
+          - 'prettier*'
+      tailwind:
+        patterns:
+          - 'tailwindcss'
+          - '@tailwindcss/*'
+
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '09:00'
+      timezone: 'America/Sao_Paulo'
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: 'ci'
+    labels:
+      - 'dependencies'
+      - 'github-actions'

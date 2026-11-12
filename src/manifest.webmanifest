@@ -1,13 +1,17 @@
 {
+  "id": "/Judo-Master/",
   "name": "Judô Master",
   "short_name": "Judô Master",
-  "description": "Sistema de gerenciamento de técnicas de Judô por graduação de faixas",
-  "theme_color": "#0ea5e9",
-  "background_color": "#0a1929",
-  "display": "standalone",
-  "scope": "/Judo-Master/",
+  "description": "Técnicas de Judô por faixa: descrição, execução, aplicação e vídeos de demonstração.",
+  "lang": "pt-BR",
+  "dir": "ltr",
   "start_url": "/Judo-Master/",
+  "scope": "/Judo-Master/",
+  "display": "standalone",
   "orientation": "any",
+  "theme_color": "#0a1422",
+  "background_color": "#0a1929",
+  "categories": ["education", "sports"],
   "icons": [
     {
       "src": "assets/icons/icon-36x36.png",
@@ -86,34 +90,6 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
-    },
-    {
-      "src": "assets/icons/icon-192x192-dark.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any",
-      "media": "(prefers-color-scheme: dark)"
-    },
-    {
-      "src": "assets/icons/icon-512x512-dark.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any",
-      "media": "(prefers-color-scheme: dark)"
-    },
-    {
-      "src": "assets/icons/icon-192x192-maskable-dark.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable",
-      "media": "(prefers-color-scheme: dark)"
-    },
-    {
-      "src": "assets/icons/icon-512x512-maskable-dark.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable",
-      "media": "(prefers-color-scheme: dark)"
     }
   ]
 }

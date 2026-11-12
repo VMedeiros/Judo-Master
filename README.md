@@ -1,99 +1,163 @@
-<div align="center">
-   <h1>🏯 Judô Master</h1>
-   <p>Aplicação Angular para estudo, organização e gerenciamento de técnicas de Judô por faixa.</p>
-   
-   [![Deploy to GitHub Pages](https://github.com/VMedeiros/Judo-Master/workflows/Deploy%20to%20GitHub%20Pages/badge.svg)](https://github.com/VMedeiros/Judo-Master/actions)
-   
-   <p><strong><a href="https://vmedeiros.github.io/Judo-Master/">🔗 Acessar Aplicação</a></strong></p>
-   <br/>
-</div>
+<p align="center">
+  <img src="src/assets/icons/icon-192x192.png" width="96" height="96" alt="Judô Master">
+</p>
 
-## 🎯 Visão Geral
+<h1 align="center">🥋 Judô Master</h1>
 
-O **Judô Master** auxilia praticantes e instrutores a acompanhar conteúdos de graduação: técnicas, categorias, descrições, execução e aplicação. A interface permite filtrar, adicionar, editar e remover técnicas, ajustar fonte, tamanho e alternar entre tema claro e escuro com persistência.
+<p align="center">
+  <strong>As técnicas de Judô de cada faixa — com descrição, execução, aplicação e vídeo</strong>
+</p>
 
-## 🧪 Tecnologias
+<p align="center">
+  <a href="https://vmedeiros.github.io/Judo-Master/"><strong>🔗 Acessar o app</strong></a> •
+  <a href="#-funcionalidades">Funcionalidades</a> •
+  <a href="#-desenvolvimento">Desenvolvimento</a> •
+  <a href="#-qualidade">Qualidade</a> •
+  <a href="#-deploy">Deploy</a> •
+  <a href="#-estrutura">Estrutura</a>
+</p>
 
-- **Angular 21** (Standalone Components & Signals)
-- **TypeScript 5**
-- **Tailwind CSS** (utilização de classes utilitárias e modo escuro via classe `dark`)
-- **RxJS** para reatividade em serviços
-
-## 📁 Estrutura Simplificada
-
-```
-src/
-   app.component.*        # Componente raiz e template
-   assets/judo-data.json  # Dados de faixas e técnicas
-   models/judo.model.ts   # Tipagens (Belt, Technique)
-   services/judo-data.service.ts # Operações CRUD em memória
-```
-
-## 🔧 Configuração & Execução
-
-Pré-requisito: **Node.js 18+**
-
-```bash
-npm install       # instala dependências
-npm run dev       # inicia servidor de desenvolvimento (porta 3000)
-npm run build     # build produção em dist/
-npm run preview   # servir build de produção
-npm run deploy    # deploy para GitHub Pages
-```
-
-## 🚀 Deploy
-
-### GitHub Pages (Automático)
-
-A aplicação é automaticamente implantada no GitHub Pages via GitHub Actions quando há push na branch `main`.
-
-### Deploy Manual
-
-```bash
-npm run deploy
-```
-
-## 🌓 Tema Claro/Escuro
-
-O tema alterna entre claro e escuro através de um toggle nas Configurações. A seleção é persistida em `localStorage` e, na ausência de preferência salva, respeita o `prefers-color-scheme` do sistema. Variáveis CSS e a classe `dark` em `<html>` controlam a paleta.
-
-## 📋 Funcionalidades
-
-- ✅ Gerenciamento de técnicas por faixa
-- ✅ Filtro e busca de técnicas
-- ✅ Visualização de vídeos demonstrativos
-- ✅ Exportação para Excel e PDF
-- ✅ Tema claro/escuro com persistência
-- ✅ Seleção de fonte e tamanho
-- ✅ Responsivo (mobile, tablet, desktop)
-- ✅ Acessibilidade (WCAG 2.1 AA)
-- ✅ **PWA - Instalável e funciona offline**
-
-## 🛠 Scripts
-
-- `npm run dev` – Servidor de desenvolvimento
-- `npm run build` – Build otimizado
-- `npm run preview` – Servir build de produção
-
-## 🚀 Próximas Melhorias (Sugestões)
-
-- Persistência real (API / IndexedDB)
-- Upload de mídia demonstrativa
-- Busca avançada multi-campos
-- Internacionalização (i18n)
-
-## 🤝 Contribuição
-
-1. Faça um fork
-2. Crie uma branch: `git checkout -b feat/minha-melhoria`
-3. Commit: `git commit -m "feat: adiciona ..."`
-4. Push: `git push origin feat/minha-melhoria`
-5. Abra um Pull Request
-
-## 📄 Licença
-
-MIT License - Copyright (c) 2025 Victor Medeiros
+<p align="center">
+  <a href="https://github.com/VMedeiros/Judo-Master/actions/workflows/ci.yml"><img src="https://github.com/VMedeiros/Judo-Master/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <img src="https://img.shields.io/badge/Angular-21-DD0031?logo=angular&logoColor=white" alt="Angular 21">
+  <img src="https://img.shields.io/badge/TypeScript-5.9_strict-3178C6?logo=typescript&logoColor=white" alt="TypeScript strict">
+  <img src="https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white" alt="Tailwind CSS 4">
+  <img src="https://img.shields.io/badge/WCAG-2.1_AA-2E7D32" alt="WCAG 2.1 AA">
+  <img src="https://img.shields.io/badge/License-MIT-green" alt="MIT">
+</p>
 
 ---
 
-Feito com dedicação para apoiar estudos de Judô. Oss! 🥋
+## 📋 Sobre
+
+O **Judô Master** organiza o conteúdo de exame de cada graduação, da faixa branca à preta: o nome
+japonês de cada técnica, a tradução, a descrição, como executar, quando aplicar e um vídeo de
+demonstração. É um app instalável (PWA) que funciona sem internet depois da primeira visita, e o
+aluno ou professor pode adicionar, corrigir e remover técnicas — as mudanças ficam salvas no próprio
+aparelho.
+
+Faz parte da mesma família visual do [JudoKan](https://github.com/VMedeiros/JudoKan), o sistema de
+gestão de academias, e segue os mesmos padrões de engenharia.
+
+## 🚀 Funcionalidades
+
+- **Faixas** — 8 graduações com faixa etária, pré-requisitos e as técnicas do exame, agrupadas por categoria
+- **Busca** — por nome, tradução, descrição ou categoria, sem distinguir acentos ("projecao" encontra "Projeção")
+- **Detalhes** — execução e aplicação de cada técnica, com navegação para a anterior e a próxima
+- **Vídeos** — player do YouTube no modo de privacidade reforçada (`youtube-nocookie.com`), com links de vídeos, Shorts e youtu.be
+- **Edição** — adicionar, editar e remover técnicas; "Restaurar técnicas originais" desfaz tudo
+- **Downloads** — a faixa em Excel (com filtros) ou PDF
+- **Aparência** — tema claro/escuro (segue o sistema até você escolher) e três tamanhos de fonte
+- **Offline e instalável** — service worker do Angular; avisa quando há uma versão nova
+- **Acessível** — WCAG 2.1 AA verificado com axe nos dois temas, navegação completa por teclado
+
+O manual de uso está em [docs/MANUAL.md](docs/MANUAL.md).
+
+### Dados no aparelho
+
+Nada sai do navegador: não há servidor nem conta. As técnicas que vêm com o app ficam no código
+([src/data/belts.data.ts](src/data/belts.data.ts)) e só as **alterações do usuário** são gravadas no
+`localStorage`. Por isso, técnicas incluídas numa versão nova aparecem para todos — inclusive para
+quem já editou alguma coisa. Os dados gravados por versões anteriores à 2.1 são migrados
+automaticamente na primeira abertura.
+
+## 🛠 Tecnologias
+
+| Área       | Escolha                                                                              |
+| ---------- | ------------------------------------------------------------------------------------ |
+| Framework  | Angular 21 — componentes standalone, signals, zoneless, controle de fluxo nativo     |
+| Linguagem  | TypeScript 5.9 em modo `strict` + `strictTemplates`                                  |
+| Estilo     | Tailwind CSS 4, tokens de tema em CSS, modo escuro por classe                        |
+| PWA        | `@angular/service-worker` (cache do app, das fontes e das imagens)                   |
+| Exportação | SheetJS (Excel) e jsPDF + AutoTable (PDF), carregados só no primeiro download        |
+| Testes     | Jasmine + Karma (unitários, cobertura mínima de 95%) e Playwright + axe-core (E2E)   |
+| Qualidade  | ESLint 10 (angular-eslint, typescript-eslint, SonarJS), Prettier, Husky, lint-staged |
+
+## 💻 Desenvolvimento
+
+Pré-requisito: **Node.js 22.12+** (veja `.nvmrc`).
+
+```bash
+npm install        # instala as dependências e o hook de pre-commit
+npm start          # http://localhost:3000
+npm run build      # build de produção em dist/ (base /Judo-Master/)
+npm run preview    # serve o build de produção
+```
+
+| Script                            | O que faz                                                             |
+| --------------------------------- | --------------------------------------------------------------------- |
+| `npm test`                        | Testes unitários em modo watch                                        |
+| `npm run test:ci`                 | Testes unitários uma vez, headless, com cobertura                     |
+| `npm run test:e2e`                | Playwright (desktop e celular) + auditoria de acessibilidade com axe  |
+| `npm run lint` / `lint:ci`        | ESLint (corrige / falha em qualquer aviso)                            |
+| `npm run format` / `format:check` | Prettier                                                              |
+| `npm run typecheck`               | `tsc --noEmit` do app e dos testes                                    |
+| `npm run check:data`              | Valida os dados das faixas: ids, campos obrigatórios, links e imagens |
+| `npm run check:icons`             | Confere os ícones usados × os pedidos ao Google Fonts                 |
+| `npm run check:bundle`            | Limites de tamanho do JavaScript (rode depois do build)               |
+| `npm run icons`                   | Regera os ícones PNG do PWA a partir do SVG                           |
+
+### Adicionando técnicas ao conteúdo original
+
+Edite [src/data/belts.data.ts](src/data/belts.data.ts) e rode `npm run check:data`. Cada técnica
+precisa de um `id` inteiro e único (abaixo de 100000 — acima disso ficam as criadas pelos usuários),
+`name`, `description` e `category`. O `demoUrl` aceita links do YouTube ou fica vazio.
+
+### Ícones
+
+O Google Fonts entrega só os ícones do Material Symbols listados em `icon_names=` no `index.html`
+(em ordem alfabética). Ao usar um ícone novo, inclua-o ali — `npm run check:icons` acusa o esquecimento.
+
+## ✅ Qualidade
+
+Todo push e pull request passa pelo [CI](.github/workflows/ci.yml):
+
+| Job           | Verifica                                                                 |
+| ------------- | ------------------------------------------------------------------------ |
+| Lint & format | ESLint sem avisos e Prettier                                             |
+| TypeScript    | Compilação estrita do app e dos testes                                   |
+| Unit tests    | Karma headless, com piso de cobertura (95% linhas/funções, 85% branches) |
+| Data & icons  | Integridade dos dados das faixas e dos ícones                            |
+| Security      | `npm audit`: bloqueia _high_ em produção e _critical_ em tudo            |
+| E2E           | Fluxos reais, teclado e WCAG 2.1 AA (axe), em desktop e celular          |
+| Build         | Build de produção e orçamento de tamanho do bundle                       |
+
+Localmente, o pre-commit roda ESLint e Prettier nos arquivos alterados.
+
+## 🚀 Deploy
+
+O [deploy](.github/workflows/deploy.yml) roda **só depois que o CI passa** num push para `main`:
+gera o build de produção e publica `dist/` no branch `gh-pages`, servido pelo GitHub Pages em
+<https://vmedeiros.github.io/Judo-Master/>. Detalhes, segurança (CSP) e o funcionamento offline estão
+em [docs/DEPLOY.md](docs/DEPLOY.md).
+
+## 📁 Estrutura
+
+```
+src/
+├── main.ts                  # bootstrap: zoneless, service worker, tratamento global de erros
+├── app.component.*          # layout, diálogos e downloads
+├── components/
+│   ├── modal/               # diálogo acessível (<dialog> nativo): foco, Escape, scroll lock
+│   ├── modals/              # sobre, confirmação, configurações, detalhes, formulário, vídeo
+│   ├── app-header/  belt-tabs/  celebration-banner/  technique-table/  toast/
+├── services/                # estado da tela, dados + migração, tema, exportação, toasts…
+├── data/belts.data.ts       # conteúdo original das faixas e técnicas
+├── constants/  models/  utils/  environments/
+├── assets/                  # ícones, faixas, theme-init.js (tema antes da primeira pintura)
+└── images/                  # foto de fundo (WebP em 3 tamanhos)
+e2e/                         # testes Playwright
+scripts/                     # verificações de qualidade e geradores
+```
+
+## 🔒 Segurança
+
+Veja [SECURITY.md](SECURITY.md).
+
+## 📄 Licença
+
+[MIT](LICENSE) © Victor Medeiros
+
+---
+
+<p align="center">Feito com dedicação para apoiar os estudos de Judô. Oss! 🥋</p>

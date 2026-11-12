@@ -1,216 +1,138 @@
-@if (technique) {
-  <div
-    class="fixed inset-0 bg-black/60 z-40 flex items-center justify-center p-3 sm:p-4"
-    (click)="closed.emit()"
-    (keydown.escape)="closed.emit()"
-  >
-    <dialog
-      open
-      class="static card max-w-2xl w-full max-h-[90vh] overflow-y-auto rounded-2xl"
-      aria-labelledby="form-title"
-      (click)="$event.stopPropagation()"
-      (keydown.escape)="closed.emit()"
-    >
-      <form (submit)="onSubmit($event)" novalidate>
-        <!-- Form header -->
-        <div
-          class="flex justify-between items-center p-4 sm:p-6 border-b border-theme"
-        >
-          <h3
-            id="form-title"
-            class="text-lg sm:text-xl font-bold accessible-heading"
-          >
-            {{ mode === "add" ? "Adicionar Nova Técnica" : "Editar Técnica" }}
-          </h3>
-          <button
-            type="button"
-            class="p-1.5 rounded-lg hover:bg-theme-alt transition-colors flex-shrink-0 ml-3"
-            aria-label="Fechar formulário"
-            (click)="closed.emit()"
-          >
-            <span
-              class="material-symbols-rounded text-[22px]"
-              aria-hidden="true"
-              >close</span
-            >
-          </button>
-        </div>
+<app-modal [title]="title()" size="lg" (closed)="closed.emit()">
+  <form id="technique-form" class="space-y-4" novalidate (submit)="onSubmit($event)">
+    <p class="text-theme-muted text-xs">Campos marcados com <span class="text-red-600 dark:text-red-400">*</span> são obrigatórios.</p>
 
-        <!-- Form body -->
-        <div class="p-4 sm:p-6 space-y-4">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label
-                for="tech-name"
-                class="block text-sm font-medium text-theme mb-1"
-              >
-                Nome
-                <abbr
-                  title="obrigatório"
-                  class="text-red-500 no-underline"
-                  aria-hidden="true"
-                  >*</abbr
-                >
-              </label>
-              <input
-                type="text"
-                name="name"
-                id="tech-name"
-                [value]="technique.name"
-                required
-                minlength="2"
-                maxlength="120"
-                class="input block w-full"
-                aria-required="true"
-                autocomplete="off"
-              />
-            </div>
-            <div>
-              <label
-                for="tech-translation"
-                class="block text-sm font-medium text-theme mb-1"
-                >Tradução</label
-              >
-              <input
-                type="text"
-                name="translation"
-                id="tech-translation"
-                [value]="technique.translation"
-                maxlength="120"
-                class="input block w-full"
-                autocomplete="off"
-              />
-            </div>
-          </div>
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div>
+        <label for="tech-name" class="field-label">
+          Nome <span class="text-red-600 dark:text-red-400" aria-hidden="true">*</span>
+        </label>
+        <input
+          id="tech-name"
+          name="name"
+          type="text"
+          class="input block w-full"
+          required
+          autocomplete="off"
+          [maxLength]="limits.name"
+          [value]="technique().name"
+          [attr.aria-invalid]="!!errors().name"
+          [attr.aria-describedby]="describedBy('name')"
+          (input)="clearError('name')"
+        />
+        @if (errors().name; as message) {
+          <p id="name-error" class="field-error">{{ message }}</p>
+        }
+      </div>
+      <div>
+        <label for="tech-translation" class="field-label">Tradução</label>
+        <input
+          id="tech-translation"
+          name="translation"
+          type="text"
+          class="input block w-full"
+          autocomplete="off"
+          [maxLength]="limits.translation"
+          [value]="technique().translation"
+        />
+      </div>
+    </div>
 
-          <div>
-            <label
-              for="tech-category"
-              class="block text-sm font-medium text-theme mb-1"
-            >
-              Categoria
-              <abbr
-                title="obrigatório"
-                class="text-red-500 no-underline"
-                aria-hidden="true"
-                >*</abbr
-              >
-            </label>
-            <select
-              name="category"
-              id="tech-category"
-              required
-              class="input block w-full"
-              aria-required="true"
-            >
-              @for (category of categories; track category) {
-                <option
-                  [value]="category"
-                  [selected]="technique.category === category"
-                >
-                  {{ category }}
-                </option>
-              }
-            </select>
-          </div>
+    <div>
+      <label for="tech-category" class="field-label">
+        Categoria <span class="text-red-600 dark:text-red-400" aria-hidden="true">*</span>
+      </label>
+      <select
+        id="tech-category"
+        name="category"
+        class="input block w-full"
+        required
+        [attr.aria-invalid]="!!errors().category"
+        [attr.aria-describedby]="describedBy('category')"
+        (change)="clearError('category')"
+      >
+        @for (category of categoryOptions(); track category) {
+          <option [value]="category" [selected]="technique().category === category">{{ category }}</option>
+        }
+      </select>
+      @if (errors().category; as message) {
+        <p id="category-error" class="field-error">{{ message }}</p>
+      }
+    </div>
 
-          <div>
-            <label
-              for="tech-description"
-              class="block text-sm font-medium text-theme mb-1"
-            >
-              Descrição
-              <abbr
-                title="obrigatório"
-                class="text-red-500 no-underline"
-                aria-hidden="true"
-                >*</abbr
-              >
-            </label>
-            <textarea
-              name="description"
-              id="tech-description"
-              rows="3"
-              required
-              maxlength="500"
-              class="input block w-full resize-y"
-              aria-required="true"
-              >{{ technique.description }}</textarea
-            >
-          </div>
+    <div>
+      <label for="tech-description" class="field-label">
+        Descrição <span class="text-red-600 dark:text-red-400" aria-hidden="true">*</span>
+      </label>
+      <textarea
+        id="tech-description"
+        name="description"
+        rows="3"
+        class="input block w-full resize-y"
+        required
+        [maxLength]="limits.description"
+        [value]="technique().description"
+        [attr.aria-invalid]="!!errors().description"
+        [attr.aria-describedby]="describedBy('description')"
+        (input)="clearError('description')"
+      ></textarea>
+      @if (errors().description; as message) {
+        <p id="description-error" class="field-error">{{ message }}</p>
+      }
+    </div>
 
-          <div>
-            <label
-              for="tech-execution"
-              class="block text-sm font-medium text-theme mb-1"
-              >Execução</label
-            >
-            <textarea
-              name="execution"
-              id="tech-execution"
-              rows="3"
-              maxlength="500"
-              class="input block w-full resize-y"
-              >{{ technique.execution }}</textarea
-            >
-          </div>
+    <div>
+      <label for="tech-execution" class="field-label">Execução</label>
+      <textarea
+        id="tech-execution"
+        name="execution"
+        rows="3"
+        class="input block w-full resize-y"
+        [maxLength]="limits.execution"
+        [value]="technique().execution"
+      ></textarea>
+    </div>
 
-          <div>
-            <label
-              for="tech-application"
-              class="block text-sm font-medium text-theme mb-1"
-              >Aplicação</label
-            >
-            <textarea
-              name="application"
-              id="tech-application"
-              rows="3"
-              maxlength="500"
-              class="input block w-full resize-y"
-              >{{ technique.application }}</textarea
-            >
-          </div>
+    <div>
+      <label for="tech-application" class="field-label">Aplicação</label>
+      <textarea
+        id="tech-application"
+        name="application"
+        rows="3"
+        class="input block w-full resize-y"
+        [maxLength]="limits.application"
+        [value]="technique().application"
+      ></textarea>
+    </div>
 
-          <div>
-            <label
-              for="tech-demoUrl"
-              class="block text-sm font-medium text-theme mb-1"
-              >URL da Demonstração</label
-            >
-            <input
-              type="url"
-              name="demoUrl"
-              id="tech-demoUrl"
-              [value]="technique.demoUrl"
-              placeholder="https://www.youtube.com/watch?v=..."
-              class="input block w-full"
-              autocomplete="off"
-              (input)="clearUrlValidity($event)"
-            />
-          </div>
-        </div>
+    <div>
+      <label for="tech-demoUrl" class="field-label">Vídeo de demonstração (YouTube)</label>
+      <input
+        id="tech-demoUrl"
+        name="demoUrl"
+        type="url"
+        inputmode="url"
+        class="input block w-full"
+        autocomplete="off"
+        placeholder="https://www.youtube.com/watch?v=…"
+        [maxLength]="limits.demoUrl"
+        [value]="technique().demoUrl"
+        [attr.aria-invalid]="!!errors().demoUrl"
+        [attr.aria-describedby]="describedBy('demoUrl', 'demoUrl-hint')"
+        (input)="clearError('demoUrl')"
+      />
+      <p id="demoUrl-hint" class="text-theme-muted mt-1 text-xs">Aceita links de vídeos, Shorts e youtu.be.</p>
+      @if (errors().demoUrl; as message) {
+        <p id="demoUrl-error" class="field-error">{{ message }}</p>
+      }
+    </div>
+  </form>
 
-        <!-- Form footer -->
-        <div
-          class="px-4 sm:px-6 py-4 bg-theme-alt border-t border-theme rounded-b-2xl flex flex-col sm:flex-row justify-end gap-2 sm:gap-3"
-        >
-          <button
-            type="button"
-            class="btn order-2 sm:order-1"
-            (click)="closed.emit()"
-          >
-            Cancelar
-          </button>
-          <button type="submit" class="btn btn-accent order-1 sm:order-2">
-            <span
-              class="material-symbols-rounded text-[18px]"
-              aria-hidden="true"
-              >save</span
-            >
-            Salvar
-          </button>
-        </div>
-      </form>
-    </dialog>
-  </div>
-}
+  <ng-container modalFooter>
+    <button type="button" class="btn" (click)="closed.emit()">Cancelar</button>
+    <button type="submit" form="technique-form" class="btn btn-accent">
+      <span class="material-symbols-rounded text-[18px]" aria-hidden="true">save</span>
+      Salvar
+    </button>
+  </ng-container>
+</app-modal>

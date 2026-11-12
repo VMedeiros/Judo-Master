@@ -1,227 +1,168 @@
 import { Injectable } from '@angular/core';
-import * as XLSX from 'xlsx';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
 
+import { APP_NAME } from '../constants/app.constants';
 import { Belt, Technique } from '../models/judo.model';
+import { dateStamp, slugify } from '../utils/text.util';
 
-// Tipos auxiliares para extensões do jsPDF
-interface JsPDFWithAutoTable extends jsPDF {
-    lastAutoTable: { finalY: number };
-}
-interface JsPDFWithPages extends jsPDF {
-    internal: jsPDF['internal'] & { getNumberOfPages(): number };
-}
+type Rgb = [number, number, number];
 
-// Brand colors
-const COLOR_NAVY: [number, number, number] = [16, 42, 67];   // #102a43
-const COLOR_SKY: [number, number, number] = [14, 165, 233];  // #0ea5e9
-const COLOR_LIGHT: [number, number, number] = [248, 250, 252]; // slate-50
-const COLOR_GRAY: [number, number, number] = [100, 116, 139];  // slate-500
-const COLOR_BORDER: [number, number, number] = [226, 232, 240]; // slate-200
+const COLOR_NAVY: Rgb = [16, 42, 67]; // #102a43
+const COLOR_SKY: Rgb = [14, 165, 233]; // #0ea5e9
+const COLOR_LIGHT: Rgb = [248, 250, 252]; // slate-50
+const COLOR_MUTED: Rgb = [100, 116, 139]; // slate-500
+const COLOR_FOOTER_TEXT: Rgb = [203, 213, 225]; // slate-300, readable on navy
+const COLOR_BORDER: Rgb = [226, 232, 240]; // slate-200
+const COLOR_BODY_TEXT: Rgb = [30, 41, 59]; // slate-800
 
+const SHEET_COLUMNS = [
+  'Categoria',
+  'Nome',
+  'Tradução',
+  'Descrição',
+  'Execução',
+  'Aplicação',
+  'Vídeo',
+];
+
+/**
+ * Excel and PDF downloads of a belt's techniques. The libraries are large and
+ * only needed here, so they load on the first export instead of with the app.
+ */
 @Injectable({ providedIn: 'root' })
 export class ExportService {
+  public async exportToExcel(belt: Belt): Promise<void> {
+    const XLSX = await import('xlsx');
+    const rows = belt.techniques.map(t => [
+      t.category,
+      t.name,
+      t.translation,
+      t.description,
+      t.execution,
+      t.application,
+      t.demoUrl,
+    ]);
+    const sheet = XLSX.utils.aoa_to_sheet([SHEET_COLUMNS, ...rows]);
+    sheet['!cols'] = [28, 28, 28, 45, 45, 35, 40].map(wch => ({ wch }));
+    sheet['!autofilter'] = {
+      ref: XLSX.utils.encode_range({
+        s: { r: 0, c: 0 },
+        e: { r: rows.length, c: SHEET_COLUMNS.length - 1 },
+      }),
+    };
+    const book = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(book, sheet, sheetName(belt.name));
+    XLSX.writeFile(book, `${this.fileName(belt)}.xlsx`);
+  }
 
-    // ── Excel ──────────────────────────────────────────────────────────────────
+  public async exportToPdf(belt: Belt): Promise<void> {
+    const [{ jsPDF }, { autoTable }] = await Promise.all([
+      import('jspdf'),
+      import('jspdf-autotable'),
+    ]);
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 14;
 
-    public exportToExcel(belt: Belt): void {
-        if (!belt.techniques.length) return;
+    // Header bar with the app name and the belt
+    doc.setFillColor(...COLOR_NAVY);
+    doc.rect(0, 0, pageWidth, 18, 'F');
+    doc.setFillColor(...COLOR_SKY);
+    doc.rect(0, 18, pageWidth, 1, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(13);
+    doc.setTextColor(...COLOR_SKY);
+    doc.text(APP_NAME, margin, 12);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+    doc.setTextColor(255, 255, 255);
+    doc.text(belt.name, pageWidth - margin, 12, { align: 'right' });
 
-        const wb = XLSX.utils.book_new();
-        const COLS = ['Nome', 'Tradução', 'Categoria', 'Descrição', 'Execução', 'Aplicação', 'URL Demo'];
+    doc.setFontSize(8.5);
+    doc.setTextColor(...COLOR_MUTED);
+    doc.text(
+      `Faixa etária: ${belt.ageGroup}   •   Pré-requisitos: ${belt.prerequisites}`,
+      margin,
+      26,
+      {
+        maxWidth: pageWidth - 2 * margin,
+      }
+    );
 
-        // Group techniques by category
-        const groups = this.groupByCategory(belt.techniques);
+    let y = 34;
+    for (const [category, techniques] of groupByCategory(belt.techniques)) {
+      if (y > pageHeight - 30) {
+        doc.addPage();
+        y = 20;
+      }
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9);
+      doc.setTextColor(...COLOR_NAVY);
+      doc.text(category.toUpperCase(), margin, y);
 
-        // Build rows: category header + data rows per group
-        const aoa: unknown[][] = [COLS];
-        for (const [category, techs] of groups) {
-            // Category separator row (merged visually via empty cols)
-            aoa.push([category, '', '', '', '', '', '']);
-            for (const tech of techs) {
-                aoa.push([
-                    tech.name,
-                    tech.translation,
-                    tech.category,
-                    tech.description,
-                    tech.execution,
-                    tech.application,
-                    tech.demoUrl,
-                ]);
-            }
-        }
-
-        const ws = XLSX.utils.aoa_to_sheet(aoa);
-
-        // Column widths
-        ws['!cols'] = [
-            { wch: 28 }, // Nome
-            { wch: 28 }, // Tradução
-            { wch: 22 }, // Categoria
-            { wch: 45 }, // Descrição
-            { wch: 45 }, // Execução
-            { wch: 35 }, // Aplicação
-            { wch: 35 }, // URL Demo
-        ];
-
-        // Style header row (row 0)
-        for (let c = 0; c < COLS.length; c++) {
-            const cellRef = XLSX.utils.encode_cell({ r: 0, c });
-            if (!ws[cellRef]) continue;
-            ws[cellRef].s = {
-                font: { bold: true, color: { rgb: 'FFFFFF' }, sz: 11 },
-                fill: { fgColor: { rgb: '102A43' } },
-                alignment: { horizontal: 'center', vertical: 'center' },
-                border: { bottom: { style: 'thin', color: { rgb: '0EA5E9' } } },
-            };
-        }
-
-        // Style category separator rows
-        let rowIdx = 1;
-        for (const [, techs] of groups) {
-            // Category row
-            const cellRef = XLSX.utils.encode_cell({ r: rowIdx, c: 0 });
-            if (ws[cellRef]) {
-                ws[cellRef].s = {
-                    font: { bold: true, color: { rgb: '0369A1' }, sz: 10, italic: true },
-                    fill: { fgColor: { rgb: 'F0F9FF' } },
-                    alignment: { horizontal: 'left', vertical: 'center' },
-                };
-            }
-            rowIdx += 1 + techs.length;
-        }
-
-        XLSX.utils.book_append_sheet(wb, ws, belt.name.substring(0, 31));
-        XLSX.writeFile(wb, `${belt.name.replace(/\s+/g, '_')}_tecnicas_${this.dateStamp()}.xlsx`);
+      autoTable(doc, {
+        startY: y + 2,
+        head: [['Nome', 'Tradução', 'Descrição', 'Execução']],
+        body: techniques.map(t => [t.name, t.translation, t.description, t.execution]),
+        theme: 'grid',
+        // Leave room for the footer bar on every page.
+        margin: { left: margin, right: margin, bottom: 14 },
+        headStyles: {
+          fillColor: COLOR_NAVY,
+          textColor: [255, 255, 255],
+          fontSize: 8,
+          fontStyle: 'bold',
+        },
+        bodyStyles: { fontSize: 7.5, textColor: COLOR_BODY_TEXT },
+        styles: {
+          cellPadding: { top: 3, bottom: 3, left: 4, right: 4 },
+          lineColor: COLOR_BORDER,
+          lineWidth: 0.1,
+        },
+        alternateRowStyles: { fillColor: COLOR_LIGHT },
+        columnStyles: { 0: { cellWidth: 45 }, 1: { cellWidth: 45 } },
+      });
+      y = (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 8;
     }
 
-    // ── PDF ────────────────────────────────────────────────────────────────────
-
-    public exportToPDF(belt: Belt): void {
-        if (!belt.techniques.length) return;
-
-        const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-        const pageW = doc.internal.pageSize.getWidth();
-        const pageH = doc.internal.pageSize.getHeight();
-        const margin = 14;
-
-        // ── Header bar ──
-        doc.setFillColor(...COLOR_NAVY);
-        doc.rect(0, 0, pageW, 18, 'F');
-
-        // App name
-        doc.setTextColor(14, 165, 233);
-        doc.setFontSize(13);
-        doc.setFont('helvetica', 'bold');
-        doc.text('Judô Master', margin, 12);
-
-        // Belt name on the right
-        doc.setTextColor(255, 255, 255);
-        doc.setFontSize(11);
-        doc.setFont('helvetica', 'normal');
-        doc.text(belt.name, pageW - margin, 12, { align: 'right' });
-
-        // ── Accent line under header ──
-        doc.setFillColor(...COLOR_SKY);
-        doc.rect(0, 18, pageW, 1, 'F');
-
-        // ── Belt meta ──
-        let y = 26;
-        doc.setTextColor(...COLOR_GRAY);
-        doc.setFontSize(8.5);
-        doc.setFont('helvetica', 'normal');
-        doc.text(`Faixa Etária: ${belt.ageGroup}   •   Pré-requisitos: ${belt.prerequisites}`, margin, y);
-
-        y += 6;
-
-        // ── Tables per category ──
-        const groups = this.groupByCategory(belt.techniques);
-
-        for (const [category, techs] of groups) {
-            // Category label
-            if (y > pageH - 30) {
-                doc.addPage();
-                y = 20;
-            }
-            doc.setFontSize(9);
-            doc.setFont('helvetica', 'bold');
-            doc.setTextColor(...COLOR_NAVY);
-            doc.text(category.toUpperCase(), margin, y);
-            y += 2;
-
-            autoTable(doc, {
-                startY: y,
-                head: [['Nome', 'Tradução', 'Descrição', 'Execução']],
-                body: techs.map(t => [t.name, t.translation, t.description, t.execution]),
-                theme: 'grid',
-                margin: { left: margin, right: margin },
-                headStyles: {
-                    fillColor: COLOR_NAVY,
-                    textColor: [255, 255, 255],
-                    fontSize: 8,
-                    fontStyle: 'bold',
-                    cellPadding: { top: 3, bottom: 3, left: 4, right: 4 },
-                },
-                bodyStyles: {
-                    fontSize: 7.5,
-                    textColor: [30, 41, 59],
-                    cellPadding: { top: 3, bottom: 3, left: 4, right: 4 },
-                },
-                alternateRowStyles: { fillColor: COLOR_LIGHT },
-                columnStyles: {
-                    0: { cellWidth: 40 },
-                    1: { cellWidth: 38 },
-                    2: { cellWidth: 80 },
-                    3: { cellWidth: 80 },
-                },
-                tableLineColor: COLOR_BORDER,
-                tableLineWidth: 0.1,
-                didDrawCell: (data) => {
-                    // Sky accent left border on header row
-                    if (data.row.section === 'head' && data.column.index === 0) {
-                        doc.setFillColor(...COLOR_SKY);
-                        doc.rect(data.cell.x, data.cell.y, 1.5, data.cell.height, 'F');
-                    }
-                },
-            });
-
-            y = (doc as JsPDFWithAutoTable).lastAutoTable.finalY + 8;
-        }
-
-        // ── Footer on every page ──
-        const totalPages = (doc as JsPDFWithPages).internal.getNumberOfPages();
-        for (let i = 1; i <= totalPages; i++) {
-            doc.setPage(i);
-            doc.setFillColor(...COLOR_NAVY);
-            doc.rect(0, pageH - 8, pageW, 8, 'F');
-            doc.setTextColor(...COLOR_GRAY);
-            doc.setFontSize(7);
-            doc.setFont('helvetica', 'normal');
-            doc.text(
-                `Gerado em ${new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}`,
-                margin, pageH - 3
-            );
-            doc.text(`Página ${i} de ${totalPages}`, pageW - margin, pageH - 3, { align: 'right' });
-        }
-
-        doc.save(`${belt.name.replace(/\s+/g, '_')}_tecnicas_${this.dateStamp()}.pdf`);
+    const generatedOn = new Date().toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
+    });
+    const totalPages = doc.getNumberOfPages();
+    for (let page = 1; page <= totalPages; page++) {
+      doc.setPage(page);
+      doc.setFillColor(...COLOR_NAVY);
+      doc.rect(0, pageHeight - 8, pageWidth, 8, 'F');
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7);
+      doc.setTextColor(...COLOR_FOOTER_TEXT);
+      doc.text(`Gerado em ${generatedOn}`, margin, pageHeight - 3);
+      doc.text(`Página ${page} de ${totalPages}`, pageWidth - margin, pageHeight - 3, {
+        align: 'right',
+      });
     }
 
-    // ── Helpers ────────────────────────────────────────────────────────────────
+    doc.save(`${this.fileName(belt)}.pdf`);
+  }
 
-    private groupByCategory(techniques: Technique[]): Map<string, Technique[]> {
-        const map = new Map<string, Technique[]>();
-        for (const tech of techniques) {
-            const list = map.get(tech.category) ?? [];
-            list.push(tech);
-            map.set(tech.category, list);
-        }
-        return map;
-    }
+  private fileName(belt: Belt): string {
+    return `judo-master-${slugify(belt.name)}-${dateStamp()}`;
+  }
+}
 
-    private dateStamp(): string {
-        const now = new Date();
-        return `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`;
-    }
+function groupByCategory(techniques: readonly Technique[]): Map<string, Technique[]> {
+  const groups = new Map<string, Technique[]>();
+  for (const technique of techniques) {
+    const group = groups.get(technique.category);
+    if (group) group.push(technique);
+    else groups.set(technique.category, [technique]);
+  }
+  return groups;
+}
+
+/** Excel limits sheet names to 31 characters and forbids : \ / ? * [ ] */
+function sheetName(name: string): string {
+  return name.replaceAll(/[:\\/?*[\]]/g, ' ').slice(0, 31);
 }

@@ -1,133 +1,128 @@
-﻿<a
-  href="#main-content"
-  class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[999] btn-accent px-4 py-2 rounded-xl text-sm font-semibold shadow-lg"
->
-  Ir para o conteúdo principal
-</a>
+<a href="#main-content" class="skip-link">Ir para o conteúdo principal</a>
 
-<div class="flex flex-col min-h-screen text-theme">
-  <!-- Header -->
-  <app-header (openAbout)="state.isAboutOpen.set(true)"></app-header>
+<div class="text-theme flex min-h-dvh flex-col">
+  <app-header (openSettings)="state.openSettings()" />
 
-  <!-- Toasts -->
-  <app-toast></app-toast>
+  <main id="main-content" class="container mx-auto grow px-2 py-3 sm:p-6 lg:p-8" tabindex="-1">
+    <app-celebration-banner [celebration]="celebration()" />
 
-  <!-- About modal -->
-  <app-about-modal
-    [isOpen]="state.isAboutOpen()"
-    (closed)="state.isAboutOpen.set(false)"
-  ></app-about-modal>
-
-  <!-- Technique detail modal -->
-  <app-technique-detail-modal
-    [technique]="state.techniqueForDetail()"
-    (closed)="state.techniqueForDetail.set(null)"
-    (nextTechnique)="state.goToNextDetail()"
-    (previousTechnique)="state.goToPrevDetail()"
-  ></app-technique-detail-modal>
-
-  <!-- Technique form modal (add/edit) -->
-  <app-technique-form-modal
-    [technique]="state.techniqueForForm()"
-    [mode]="state.formMode()"
-    (closed)="state.techniqueForForm.set(null)"
-    (saved)="state.onSaveTechnique($event)"
-  ></app-technique-form-modal>
-
-  <!-- Delete confirmation modal -->
-  <app-delete-confirm-modal
-    [technique]="state.techniqueToDelete()"
-    (closed)="state.techniqueToDelete.set(null)"
-    (confirmed)="state.onConfirmDelete()"
-  ></app-delete-confirm-modal>
-
-  <!-- Video player modal -->
-  <app-video-player-modal
-    [technique]="state.techniqueForVideo()"
-    [safeUrl]="state.safeVideoUrl()"
-    (closed)="state.techniqueForVideo.set(null)"
-    (nextVideo)="state.goToNextVideo()"
-    (previousVideo)="state.goToPrevVideo()"
-  ></app-video-player-modal>
-
-  <!-- Main content -->
-  <main
-    id="main-content"
-    class="flex-grow container mx-auto px-2 py-3 sm:p-6 lg:p-8"
-    role="main"
-    aria-label="Conteúdo principal"
-  >
-    <!-- Celebration banner -->
-    <app-celebration-banner
-      [celebration]="currentCelebration()"
-    ></app-celebration-banner>
-
-    <!-- Belt navigation tabs -->
     <app-belt-tabs
       [belts]="state.belts()"
       [selectedIndex]="state.selectedBeltIndex()"
       (beltSelected)="state.selectBelt($event)"
-    ></app-belt-tabs>
+    />
 
-    <!-- Belt technique table -->
     @if (state.selectedBelt(); as belt) {
       <app-technique-table
         [belt]="belt"
         [groupedTechniques]="state.groupedTechniques()"
         [filterTerm]="state.filterTerm()"
+        [visibleCount]="state.visibleCount()"
+        [exporting]="exporting()"
         (filterChange)="state.filterTerm.set($event)"
-        (showDetail)="state.techniqueForDetail.set($event)"
-        (showVideo)="state.techniqueForVideo.set($event)"
+        (showDetail)="state.openDetail($event)"
+        (showVideo)="state.openVideo($event)"
         (editTechnique)="state.openEditForm($event)"
-        (deleteTechnique)="state.techniqueToDelete.set($event)"
+        (deleteTechnique)="state.openDelete($event)"
         (addTechnique)="state.openAddForm()"
-        (exportExcel)="onExportExcel()"
-        (exportPdf)="onExportPdf()"
-      ></app-technique-table>
+        (exportExcel)="export('excel')"
+        (exportPdf)="export('pdf')"
+      />
     }
   </main>
 
-  <!-- Footer -->
-  <footer
-    class="border-t border-theme bg-theme-alt/70 backdrop-blur-sm py-3 px-6 mt-auto"
-    role="contentinfo"
-    aria-label="Rodapé do site"
-  >
-    <div
-      class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2"
-    >
-      <div class="flex items-center gap-1.5 text-xs text-theme-muted">
-        <span class="material-symbols-rounded text-[14px] opacity-50" aria-hidden="true">sports_martial_arts</span>
-        <span>&copy; {{ currentYear }} Judô Master.</span>
-        <span class="hidden sm:inline opacity-70">Todos os direitos reservados.</span>
-      </div>
-      <div class="flex items-center gap-2">
-        <span class="text-xs text-theme-muted opacity-70">Desenvolvido por</span>
+  <footer class="app-footer mt-auto border-t px-6 py-3">
+    <div class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 sm:flex-row">
+      <p class="text-theme-muted flex items-center gap-1.5 text-xs">
+        <span class="material-symbols-rounded text-[14px]" aria-hidden="true">sports_martial_arts</span>
+        <span>&copy; {{ currentYear }} {{ appName }}.</span>
+        <span class="hidden sm:inline">Todos os direitos reservados.</span>
+      </p>
+      <p class="flex items-center gap-2 text-xs">
+        <span class="text-theme-muted">Desenvolvido por</span>
         <a
           href="https://www.linkedin.com/in/victormedeiros95/"
           target="_blank"
           rel="noopener noreferrer"
-          class="inline-flex items-center gap-1.5 text-xs font-semibold accent-text hover:opacity-80 transition-opacity group"
-          aria-label="Perfil de Victor Medeiros no LinkedIn (abre em nova aba)"
+          class="accent-text group inline-flex items-center gap-1.5 font-semibold transition-opacity hover:opacity-80"
         >
-          <svg
-            class="w-3.5 h-3.5 flex-shrink-0"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
+          <svg class="h-3.5 w-3.5 shrink-0" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path
               d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"
             />
           </svg>
           <span class="group-hover:underline">Victor Medeiros</span>
-          <span
-            class="material-symbols-rounded text-[11px] opacity-0 group-hover:opacity-100 transition-opacity"
-            aria-hidden="true"
-            >north_east</span
-          >
+          <span class="sr-only">(LinkedIn, abre em nova aba)</span>
         </a>
-      </div>
+      </p>
     </div>
   </footer>
 </div>
+
+<app-toast />
+
+@switch (state.modal().kind) {
+  @case ('settings') {
+    <app-settings-modal
+      [hasChanges]="state.hasChanges()"
+      (closed)="state.closeModal()"
+      (openAbout)="state.openAbout()"
+      (resetTechniques)="state.openReset()"
+    />
+  }
+  @case ('about') {
+    <app-about-modal (closed)="state.closeModal()" />
+  }
+  @case ('reset') {
+    <app-confirm-modal
+      title="Restaurar técnicas originais"
+      confirmLabel="Restaurar"
+      icon="restart_alt"
+      (closed)="state.closeModal()"
+      (confirmed)="state.confirmReset()"
+    >
+      Todas as técnicas que você adicionou, editou ou removeu voltarão ao conteúdo original do {{ appName }}. Esta ação
+      não pode ser desfeita.
+    </app-confirm-modal>
+  }
+}
+
+@let modal = state.modal();
+@if (modal.kind === 'detail') {
+  <app-technique-detail-modal
+    [technique]="modal.technique"
+    [hasPrevious]="navigation().previous"
+    [hasNext]="navigation().next"
+    (closed)="state.closeModal()"
+    (previous)="state.goTo(-1)"
+    (next)="state.goTo(1)"
+    (watchVideo)="watchVideoFromDetail()"
+  />
+} @else if (modal.kind === 'video') {
+  <app-video-player-modal
+    [technique]="modal.technique"
+    [hasPrevious]="navigation().previous"
+    [hasNext]="navigation().next"
+    (closed)="state.closeModal()"
+    (previous)="state.goTo(-1)"
+    (next)="state.goTo(1)"
+  />
+} @else if (modal.kind === 'form') {
+  <app-technique-form-modal
+    [technique]="modal.technique"
+    [mode]="modal.mode"
+    [categories]="state.categories()"
+    (closed)="state.closeModal()"
+    (saved)="state.saveTechnique($event)"
+  />
+} @else if (modal.kind === 'delete') {
+  <app-confirm-modal
+    title="Remover técnica"
+    confirmLabel="Sim, remover"
+    (closed)="state.closeModal()"
+    (confirmed)="state.confirmDelete()"
+  >
+    Tem certeza que deseja remover <strong class="high-contrast-text">"{{ modal.technique.name }}"</strong>? Você pode
+    trazê-la de volta em Configurações → Restaurar técnicas originais.
+  </app-confirm-modal>
+}

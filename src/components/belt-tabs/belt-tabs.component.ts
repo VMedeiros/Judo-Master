@@ -1,49 +1,48 @@
-﻿import {
-    ChangeDetectionStrategy,
-    Component,
-    ElementRef,
-    EventEmitter,
-    Input,
-    Output,
-    QueryList,
-    ViewChildren,
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  input,
+  output,
+  viewChildren,
 } from '@angular/core';
 
 import { Belt } from '../../models/judo.model';
 
 @Component({
-    selector: 'app-belt-tabs',
-    standalone: true,
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    templateUrl: './belt-tabs.component.html',
-    styleUrl: './belt-tabs.component.scss',
+  selector: 'app-belt-tabs',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './belt-tabs.component.html',
 })
 export class BeltTabsComponent {
-    @Input({ required: true }) public belts: Belt[] = [];
-    @Input() public selectedIndex = 0;
-    @Output() public readonly beltSelected = new EventEmitter<number>();
+  public readonly belts = input.required<readonly Belt[]>();
+  public readonly selectedIndex = input(0);
+  public readonly beltSelected = output<number>();
 
-    @ViewChildren('tabBtn') private readonly tabButtons!: QueryList<ElementRef<HTMLButtonElement>>;
+  private readonly tabButtons = viewChildren<ElementRef<HTMLButtonElement>>('tabButton');
 
-    protected onSelectChange(event: Event): void {
-        this.beltSelected.emit(Number((event.target as HTMLSelectElement).value));
-    }
+  protected onSelectChange(event: Event): void {
+    this.beltSelected.emit(Number((event.target as HTMLSelectElement).value));
+  }
 
-    protected onTablistKeydown(event: KeyboardEvent): void {
-        let next: number | null = null;
-        if (event.key === 'ArrowRight') {
-            next = Math.min(this.selectedIndex + 1, this.belts.length - 1);
-        } else if (event.key === 'ArrowLeft') {
-            next = Math.max(this.selectedIndex - 1, 0);
-        } else if (event.key === 'Home') {
-            next = 0;
-        } else if (event.key === 'End') {
-            next = this.belts.length - 1;
-        }
-        if (next !== null) {
-            event.preventDefault();
-            this.beltSelected.emit(next);
-            this.tabButtons.get(next)?.nativeElement.focus();
-        }
-    }
+  /** WAI-ARIA tabs: arrows move (and wrap), Home and End jump to the ends. */
+  protected onTablistKeydown(event: KeyboardEvent): void {
+    const count = this.belts().length;
+    if (count === 0) return;
+    // Start from the focused tab, not the input: with key repeat the next
+    // keydown can arrive before the new selection has been rendered.
+    const focused = this.tabButtons().findIndex(tab => tab.nativeElement === event.target);
+    const current = focused === -1 ? this.selectedIndex() : focused;
+    const targets: Partial<Record<string, number>> = {
+      ArrowRight: (current + 1) % count,
+      ArrowLeft: (current - 1 + count) % count,
+      Home: 0,
+      End: count - 1,
+    };
+    const next = targets[event.key];
+    if (next === undefined) return;
+    event.preventDefault();
+    this.beltSelected.emit(next);
+    this.tabButtons()[next]?.nativeElement.focus();
+  }
 }

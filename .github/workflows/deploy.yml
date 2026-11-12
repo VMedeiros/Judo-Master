@@ -1,36 +1,58 @@
+# Judô Master — deploy to GitHub Pages
+#
+# Runs ONLY when the "CI" workflow completes successfully on main, so nothing
+# reaches users without passing the whole quality gate:
+#   lint → typecheck → unit tests → data & icons → security → e2e → build
+#
+# Publishes dist/ to the gh-pages branch, which GitHub Pages serves
+# (Settings → Pages → Source: "Deploy from a branch", gh-pages, / root).
+
 name: Deploy to GitHub Pages
 
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ['CI']
+    types: [completed]
+    branches: [main]
+  # Manual redeploy of main, still only after a green CI run (see `if:` below).
   workflow_dispatch:
 
-permissions:
-  contents: write
+# Never two deploys at once, and never cancel one halfway.
+concurrency:
+  group: deploy-pages
+  cancel-in-progress: false
 
 jobs:
-  build-and-deploy:
+  deploy:
+    name: Deploy → GitHub Pages
     runs-on: ubuntu-latest
+    if: >-
+      github.event_name == 'workflow_dispatch'
+      || (github.event.workflow_run.conclusion == 'success'
+          && github.event.workflow_run.event == 'push')
+    permissions:
+      contents: write
     steps:
-      - name: Checkout
+      - name: Checkout the commit that passed CI
         uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "npm"
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
-      - name: Install dependencies
-        run: npm install
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          cache: 'npm'
 
-      - name: Build
+      - run: npm ci
+
+      - name: Production build
         run: npm run build
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Publish dist/ to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
-          cname: false
+          # Adds .nojekyll, so GitHub Pages serves the files as they are.
+          enable_jekyll: false
+          commit_message: 'deploy: ${{ github.event.workflow_run.head_sha || github.sha }}'

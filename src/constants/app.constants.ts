@@ -1,52 +1,65 @@
-export const APP_NAME = 'Judô Master' as const;
-export const APP_VERSION = '2.0.0' as const;
+export const APP_NAME = 'Judô Master';
 
-export const NOTIFICATION_TIMEOUT_SUCCESS = 3000 as const;
-export const NOTIFICATION_TIMEOUT_ERROR = 4000 as const;
+/**
+ * localStorage keys. GitHub Pages serves every project of an account from the
+ * same origin (vmedeiros.github.io), so all keys carry the app's prefix to
+ * keep them apart from the other projects' storage.
+ */
+export const STORAGE_KEYS = {
+  /** Theme and font size. Read before the first paint by src/assets/theme-init.js. */
+  SETTINGS: 'judo-master:settings',
+  CHANGES: 'judo-master:changes',
+  SELECTED_BELT: 'judo-master:selected-belt',
+} as const;
 
-export interface FontOption {
-    readonly name: string;
-    readonly class: string;
-}
+/** Keys written by versions before 2.1, migrated on first load and then removed. */
+export const LEGACY_STORAGE_KEYS = {
+  BELTS: 'judokan_belts',
+  SELECTED_BELT_INDEX: 'selectedBeltIndex',
+  THEME: 'theme',
+  FONT_SIZE: 'fontSize',
+  FONT_FAMILY: 'fontFamily',
+} as const;
 
-export const FONT_OPTIONS: ReadonlyArray<FontOption> = [
-    { name: 'Inter', class: 'font-sans' },
-    { name: 'Serifada', class: 'font-serif' },
-    { name: 'Monoespaçada', class: 'font-mono' },
-] as const;
+/** Cache names used by the hand-written service worker shipped before 2.1. */
+export const LEGACY_CACHE_PREFIX = 'judo-master-';
 
-export const FONT_SIZE_OPTIONS: ReadonlyArray<{ readonly name: string; readonly value: number }> = [
-    { name: 'Pequena', value: 14 },
-    { name: 'Padrão', value: 16 },
-    { name: 'Grande', value: 18 },
-] as const;
+/** Ids for techniques the user creates start here, far above any seed id. */
+export const USER_TECHNIQUE_ID_START = 100_000;
 
-export const DEFAULT_FONT_SIZE = 16 as const;
+export const TOAST_DURATION_MS = 3500;
+export const TOAST_ERROR_DURATION_MS = 6000;
 
-export const TECHNIQUE_CATEGORIES: ReadonlyArray<string> = [
-    'Fundamentos (Kihon)',
-    'NAGUE-WAZA - Koshi-waza',
-    'NAGUE-WAZA - Ashi-waza',
-    'NAGUE-WAZA - Te-waza',
-    'NAGUE-WAZA - Ma-sutemi-waza',
-    'NAGUE-WAZA - Yoko-sutemi-waza',
-    'KATAME-WAZA - Ossae-komi-waza',
-    'KATAME-WAZA - Shime-waza',
-    'KATAME-WAZA - Kansetsu-waza',
-    'Técnicas de Projeção (Nage-waza)',
-    'Técnicas de Controle no Solo (Katame-waza)',
-    'Técnicas de Estrangulamento (Shime-waza)',
-    'Técnicas de Articulação (Kansetsu-waza)',
-] as const;
+export type FontSize = 'small' | 'medium' | 'large';
 
-export const QUOTES: ReadonlyArray<string> = [
-    '"A prática do judô é um processo de aprendizado contínuo; a luta é apenas um meio para o aperfeiçoamento da pessoa." — Jigoro Kano',
-    '"Ceder é o meio mais eficiente de utilizar a energia. Resistir à força com força é fútil; use a flexibilidade para controlar a força." — Jigoro Kano',
-    '"Dominar-se para triunfar. Conhecer-se para se dominar." — Jigoro Kano',
-    '"A gentileza sempre vence a força." — Kyuzo Mifune',
-    '"Se caíres sete vezes, levanta-te oito." — Provérbio Japonês',
-    '"O judô é a arte de usar o mínimo de força para o máximo de efeito." — Yasuhiro Yamashita',
-    '"Não te curves perante as dificuldades, mas sim adapta-te a elas." — Jigoro Kano',
-    '"O judô começa e termina com respeito. O respeito é a base de tudo." — Mitsuyo Maeda',
-    '"A jornada de mil quilômetros começa com o primeiro passo." — Lao-Tzu',
-] as const;
+/** Root font size per option. Relative, so the browser's own setting still applies. */
+export const FONT_SIZE_SCALE: Readonly<Record<FontSize, string>> = {
+  small: '87.5%',
+  medium: '100%',
+  large: '112.5%',
+};
+
+export const FONT_SIZE_OPTIONS: ReadonlyArray<{
+  readonly value: FontSize;
+  readonly short: string;
+  readonly label: string;
+}> = [
+  { value: 'small', short: 'P', label: 'Pequena' },
+  { value: 'medium', short: 'M', label: 'Média' },
+  { value: 'large', short: 'G', label: 'Grande' },
+];
+
+/** theme-color of the browser UI, per theme. Kept in sync with theme-init.js. */
+export const THEME_COLORS = { light: '#e8f0f7', dark: '#0a1422' } as const;
+
+export const QUOTES: readonly string[] = [
+  '"A prática do judô é um processo de aprendizado contínuo; a luta é apenas um meio para o aperfeiçoamento da pessoa." — Jigoro Kano',
+  '"Ceder é o meio mais eficiente de utilizar a energia. Resistir à força com força é fútil; use a flexibilidade para controlar a força." — Jigoro Kano',
+  '"Dominar-se para triunfar. Conhecer-se para se dominar." — Jigoro Kano',
+  '"A gentileza sempre vence a força." — Kyuzo Mifune',
+  '"Se caíres sete vezes, levanta-te oito." — Provérbio Japonês',
+  '"O judô é a arte de usar o mínimo de força para o máximo de efeito." — Yasuhiro Yamashita',
+  '"Não te curves perante as dificuldades, mas sim adapta-te a elas." — Jigoro Kano',
+  '"O judô começa e termina com respeito. O respeito é a base de tudo." — Mitsuyo Maeda',
+  '"A jornada de mil quilômetros começa com o primeiro passo." — Lao-Tzu',
+];

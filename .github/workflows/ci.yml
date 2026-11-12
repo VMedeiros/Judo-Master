@@ -1,0 +1,158 @@
+# Judô Master — quality gate
+#
+# Parallel jobs : lint | typecheck | test | checks | security | e2e
+# Then          : build (after lint + typecheck + checks)
+#
+# The live deploy only runs after this workflow succeeds on main (deploy.yml).
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Cancel superseded runs, except on main.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: '22.x'
+
+jobs:
+  lint:
+    name: Lint & format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      - run: npm ci
+      - name: ESLint (TypeScript, templates, scripts)
+        run: npm run lint:ci
+      - name: Prettier
+        run: npm run format:check
+
+  typecheck:
+    name: TypeScript
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      - run: npm ci
+      - name: tsc --noEmit (app and tests)
+        run: npm run typecheck
+
+  test:
+    name: Unit tests & coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      - run: npm ci
+      - name: Karma (ChromeHeadless), coverage floor enforced
+        run: npm run test:ci
+      - name: Coverage report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage
+          path: coverage/judo-master/
+          retention-days: 7
+
+  checks:
+    name: Data & icons
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Seed data (ids, required fields, video links, images)
+        run: npm run check:data
+      - name: Icons used × icons requested from the font
+        run: npm run check:icons
+
+  security:
+    name: Security — npm audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      - run: npm ci
+      # What reaches the users' browsers must have no high vulnerability.
+      - name: Production dependencies — block on "high"
+        run: npm audit --omit=dev --audit-level=high
+      # Build and test tooling: block on "critical"; the rest is reported below.
+      - name: All dependencies — block on "critical"
+        run: npm audit --audit-level=critical
+      - name: Report (high+)
+        if: always()
+        run: npm audit --audit-level=high || true
+
+  dependency-review:
+    name: Security — dependency review
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high
+
+  e2e:
+    name: E2E — Playwright + axe
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      - run: npm ci
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Flows, dialogs, keyboard and accessibility (desktop and mobile)
+        run: npm run test:e2e
+      - name: Playwright report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+  build:
+    name: Build & bundle size
+    runs-on: ubuntu-latest
+    needs: [lint, typecheck, checks]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      - run: npm ci
+      - name: Production build
+        run: npm run build
+      - name: Bundle size
+        run: npm run check:bundle

@@ -1,335 +1,234 @@
-<div
+<section
   class="card p-3 sm:p-6"
   role="tabpanel"
-  [attr.id]="'belt-panel-' + belt.id"
-  [attr.aria-labelledby]="'belt-tab-' + belt.id"
+  [id]="'belt-panel-' + belt().id"
+  [attr.aria-labelledby]="'belt-tab-' + belt().id"
 >
-  <!-- Belt info header -->
-  <div class="border-b border-gray-200 dark:border-gray-700 pb-3 mb-4">
+  <!-- Belt information -->
+  <div class="mb-4 border-b border-gray-200 pb-3 dark:border-gray-700">
     <div class="flex items-start gap-3">
-      <div class="hidden sm:flex flex-shrink-0">
-        <img
-          [src]="belt.beltImage"
-          [alt]="belt.name"
-          class="h-12 sm:h-16 w-auto object-contain"
-          loading="lazy"
-          width="80"
-          height="64"
-          (error)="onImageError($event)"
-        />
-      </div>
-      <div class="flex-1 min-w-0">
-        <h2 class="text-lg sm:text-2xl font-bold flex items-center gap-2">
+      <img
+        [src]="belt().beltImage"
+        alt=""
+        class="hidden h-16 w-auto shrink-0 object-contain sm:block"
+        width="80"
+        height="64"
+        (error)="onImageError($event)"
+      />
+      <div class="min-w-0 flex-1">
+        <h2 class="flex items-center gap-2 text-lg font-bold sm:text-2xl">
           <span
-            [class]="belt.color"
-            class="inline-block w-4 h-4 rounded-full border-2 border-gray-400 dark:border-gray-500 flex-shrink-0"
+            class="inline-block h-4 w-4 shrink-0 rounded-full border-2 border-gray-400 dark:border-gray-500"
+            [class]="belt().color"
             aria-hidden="true"
           ></span>
-          <span class="truncate">{{ belt.name }}</span>
+          <span class="truncate">{{ belt().name }}</span>
         </h2>
-        <p
-          class="mt-1 text-xs sm:text-sm text-theme leading-relaxed line-clamp-2 sm:line-clamp-none"
-        >
-          {{ belt.information }}
-        </p>
-        <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs sm:text-sm">
-          <p class="text-theme">
-            <strong class="font-semibold high-contrast-text"
-              >Faixa Etária:</strong
-            >
-            {{ belt.ageGroup }}
-          </p>
-          <p class="text-theme">
-            <strong class="font-semibold high-contrast-text"
-              >Pré-requisitos:</strong
-            >
-            {{ belt.prerequisites }}
-          </p>
-        </div>
+        <p class="text-theme mt-1 text-xs leading-relaxed sm:text-sm">{{ belt().information }}</p>
+        <dl class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs sm:text-sm">
+          <div class="text-theme flex gap-1">
+            <dt class="high-contrast-text font-semibold">Faixa etária:</dt>
+            <dd>{{ belt().ageGroup }}</dd>
+          </div>
+          <div class="text-theme flex gap-1">
+            <dt class="high-contrast-text font-semibold">Pré-requisitos:</dt>
+            <dd>{{ belt().prerequisites }}</dd>
+          </div>
+        </dl>
       </div>
     </div>
   </div>
 
-  <!-- Section header: título + botão Adicionar (padrão JudoKan) -->
-  <div class="flex items-center justify-between gap-2 mb-3">
-    <h3
-      class="text-base sm:text-xl font-bold high-contrast-text tracking-tight"
-    >
-      Técnicas para Exame
-    </h3>
-    <button
-      type="button"
-      class="inline-flex items-center gap-1.5 px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl btn-accent text-xs sm:text-sm font-semibold shadow-lg transition-all hover:shadow-xl active:scale-[0.98] shrink-0"
-      aria-label="Adicionar Técnica"
-      (click)="addTechnique.emit()"
-    >
-      <span
-        class="material-symbols-rounded text-base sm:text-lg"
-        aria-hidden="true"
-        >add</span
-      >
-      Adicionar Técnica
+  <!-- Title and add button -->
+  <div class="mb-3 flex items-center justify-between gap-2">
+    <h3 class="high-contrast-text text-base font-bold tracking-tight sm:text-xl">Técnicas para exame</h3>
+    <button type="button" class="btn btn-accent shrink-0 text-xs shadow-lg sm:text-sm" (click)="addTechnique.emit()">
+      <span class="material-symbols-rounded text-base sm:text-lg" aria-hidden="true">add</span>
+      Adicionar técnica
     </button>
   </div>
 
-  <!-- Export toolbar — estilo JudoKan (botões tintados com borda) -->
-  <div
-    class="flex flex-wrap items-center gap-2 p-3 bg-white/60 dark:bg-gray-800/40 backdrop-blur-sm rounded-xl border border-gray-100 dark:border-gray-700/50 mb-4"
-  >
-    <button
-      type="button"
-      (click)="exportExcel.emit()"
-      class="group inline-flex items-center gap-2 px-3.5 py-2 text-xs font-semibold rounded-lg bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 border border-emerald-200/80 dark:border-emerald-800/50 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 hover:border-emerald-300 dark:hover:border-emerald-700 transition-all hover:shadow-sm active:scale-[0.97]"
-      aria-label="Baixar Excel"
+  <!-- Search and downloads -->
+  <div class="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center">
+    <div
+      class="relative flex-1 rounded-2xl border border-gray-200 bg-white/80 shadow-xs backdrop-blur-sm dark:border-gray-700/60 dark:bg-[#111827]/80"
     >
       <span
-        class="material-symbols-rounded text-[16px] group-hover:scale-110 transition-transform"
-        aria-hidden="true"
-        >table_view</span
-      >
-      Baixar Excel
-    </button>
-    <button
-      type="button"
-      (click)="exportPdf.emit()"
-      class="group inline-flex items-center gap-2 px-3.5 py-2 text-xs font-semibold rounded-lg bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-400 border border-red-200/80 dark:border-red-800/50 hover:bg-red-100 dark:hover:bg-red-900/40 hover:border-red-300 dark:hover:border-red-700 transition-all hover:shadow-sm active:scale-[0.97]"
-      aria-label="Baixar PDF"
-    >
-      <span
-        class="material-symbols-rounded text-[16px] group-hover:scale-110 transition-transform"
-        aria-hidden="true"
-        >picture_as_pdf</span
-      >
-      Baixar PDF
-    </button>
-  </div>
-
-  <!-- Search filter — estilo JudoKan -->
-  <div
-    class="bg-white/80 dark:bg-[#111827]/80 backdrop-blur-sm p-1.5 rounded-2xl shadow-sm border border-gray-100/80 dark:border-gray-800/50 flex mb-4"
-  >
-    <div class="relative flex-1">
-      <span
-        class="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500"
+        class="material-symbols-rounded pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-gray-500 dark:text-gray-400"
         aria-hidden="true"
         >search</span
       >
+      <label for="technique-search" class="sr-only">Buscar técnica</label>
       <input
+        id="technique-search"
         type="search"
-        [value]="filterTerm"
-        placeholder="Buscar técnica por nome ou tradução..."
-        class="w-full pl-12 pr-4 py-3 bg-transparent border-none focus:ring-0 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 outline-none text-sm"
-        aria-label="Buscar técnica por nome ou tradução"
+        class="search-input w-full rounded-2xl bg-transparent py-3 pr-4 pl-12 text-sm text-gray-900 placeholder-gray-500 dark:text-white dark:placeholder-gray-400"
+        placeholder="Buscar por nome, tradução, descrição ou categoria…"
+        autocomplete="off"
+        enterkeyhint="search"
+        [value]="filterTerm()"
         (input)="onFilterInput($event)"
       />
     </div>
+    <div class="flex gap-2" role="group" aria-label="Baixar técnicas da faixa">
+      <button
+        type="button"
+        class="export-btn border-emerald-200 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 dark:border-emerald-800/60 dark:bg-emerald-950/40 dark:text-emerald-300 dark:hover:bg-emerald-900/40"
+        [disabled]="exporting() || belt().techniques.length === 0"
+        (click)="exportExcel.emit()"
+      >
+        <span class="material-symbols-rounded text-[18px]" aria-hidden="true">table_view</span>
+        Excel
+      </button>
+      <button
+        type="button"
+        class="export-btn border-red-200 bg-red-50 text-red-800 hover:bg-red-100 dark:border-red-800/60 dark:bg-red-950/40 dark:text-red-300 dark:hover:bg-red-900/40"
+        [disabled]="exporting() || belt().techniques.length === 0"
+        (click)="exportPdf.emit()"
+      >
+        <span class="material-symbols-rounded text-[18px]" aria-hidden="true">picture_as_pdf</span>
+        PDF
+      </button>
+    </div>
   </div>
 
-  <!-- Tabela única — container glassmorphism estilo JudoKan -->
+  <p class="text-theme-muted mb-2 text-xs" aria-live="polite">
+    @if (filterTerm()) {
+      {{ visibleCount() }} de {{ belt().techniques.length }} técnicas
+    } @else {
+      {{ belt().techniques.length }} técnicas
+    }
+  </p>
+
   <div
-    class="bg-white/80 dark:bg-[#111827]/80 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-100/80 dark:border-gray-800/50 overflow-hidden"
+    class="overflow-hidden rounded-2xl border border-gray-200 bg-white/80 shadow-xs backdrop-blur-sm dark:border-gray-700/60 dark:bg-[#111827]/80"
   >
-    @if (groupedTechniques.length > 0) {
+    @if (groupedTechniques().length > 0) {
       <div class="overflow-x-auto">
-        <table
-          class="w-full text-left border-collapse"
-          role="table"
-          aria-label="Técnicas para exame"
-        >
+        <table class="w-full border-collapse text-left">
+          <caption class="sr-only">
+            Técnicas para exame da
+            {{ belt().name }}
+          </caption>
           <thead>
-            <tr
-              class="bg-gray-50/50 dark:bg-gray-800/30 border-b border-gray-100 dark:border-gray-800"
-            >
-              <th
-                scope="col"
-                class="px-5 py-3.5 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider w-1/4"
-              >
-                Nome
-              </th>
-              <th
-                scope="col"
-                class="px-5 py-3.5 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider w-1/5 hidden sm:table-cell"
-              >
-                Tradução
-              </th>
-              <th
-                scope="col"
-                class="px-5 py-3.5 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden md:table-cell"
-              >
-                Descrição
-              </th>
-              <th
-                scope="col"
-                class="px-5 py-3.5 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-center w-36"
-              >
-                Ações
-              </th>
+            <tr class="border-b border-gray-200 bg-gray-50/60 dark:border-gray-800 dark:bg-gray-800/30">
+              <th scope="col" class="table-head w-1/4">Nome</th>
+              <th scope="col" class="table-head hidden w-1/5 sm:table-cell">Tradução</th>
+              <th scope="col" class="table-head hidden md:table-cell">Descrição</th>
+              <th scope="col" class="table-head w-36 text-center">Ações</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
-            @for (group of groupedTechniques; track group.category) {
-              <!-- Linha separadora de categoria -->
+          @for (group of groupedTechniques(); track group.category) {
+            <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
               <tr>
-                <td
+                <th
+                  scope="colgroup"
                   colspan="4"
-                  class="px-5 py-2 bg-gray-50/40 dark:bg-gray-800/20 text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500 border-b border-gray-100 dark:border-gray-800"
+                  class="border-b border-gray-200 bg-gray-50/50 px-5 py-2 text-[11px] font-bold tracking-widest text-gray-600 uppercase dark:border-gray-800 dark:bg-gray-800/20 dark:text-gray-400"
                 >
                   {{ group.category }}
-                </td>
+                </th>
               </tr>
               @for (tech of group.techniques; track tech.id) {
-                <tr
-                  class="hover:bg-blue-50/30 dark:hover:bg-blue-900/5 transition-colors duration-200 group"
-                >
-                  <!-- Nome + avatar de iniciais -->
-                  <td class="px-5 py-4 whitespace-nowrap">
+                <tr class="group transition-colors duration-200 hover:bg-sky-50/40 dark:hover:bg-sky-900/10">
+                  <td class="px-3 py-3 sm:px-5 sm:py-4">
                     <div class="flex items-center gap-3">
-                      <div
-                        class="w-8 h-8 rounded-full bg-gradient-to-br from-primary-100 to-primary-200 dark:from-primary-900/40 dark:to-primary-800/40 text-primary-700 dark:text-primary-300 flex items-center justify-center font-bold text-[10px] shrink-0 select-none"
-                        aria-hidden="true"
-                      >
-                        {{ tech.name.substring(0, 2).toUpperCase() }}
-                      </div>
                       <span
-                        class="font-semibold text-sm text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"
+                        class="from-primary-100 to-primary-200 dark:from-primary-900/40 dark:to-primary-800/40 text-primary-700 dark:text-primary-300 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-linear-to-br text-[10px] font-bold select-none"
+                        aria-hidden="true"
+                        >{{ initials(tech.name) }}</span
                       >
-                        {{ tech.name }}
-                      </span>
-                    </div>
-                  </td>
-                  <!-- Tradução -->
-                  <td class="px-5 py-4 hidden sm:table-cell">
-                    <span
-                      class="text-xs text-gray-500 dark:text-gray-400 italic"
-                      >{{ tech.translation }}</span
-                    >
-                  </td>
-                  <!-- Descrição -->
-                  <td class="px-5 py-4 hidden md:table-cell">
-                    <span
-                      class="text-xs text-gray-600 dark:text-gray-400 line-clamp-2"
-                      >{{ tech.description }}</span
-                    >
-                  </td>
-                  <!-- Ações -->
-                  <td class="px-5 py-4">
-                    <div
-                      class="flex items-center justify-center gap-1"
-                      [attr.aria-label]="'Ações para ' + tech.name"
-                    >
-                      <!-- Video -->
                       <button
                         type="button"
-                        [disabled]="!tech.demoUrl || tech.demoUrl === '#'"
-                        [class]="
-                          tech.demoUrl && tech.demoUrl !== '#'
-                            ? 'w-8 h-8 flex items-center justify-center rounded-lg icon-blue hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors'
-                            : 'w-8 h-8 flex items-center justify-center rounded-lg text-gray-300 dark:text-gray-600 cursor-not-allowed'
-                        "
-                        [attr.aria-label]="
-                          tech.demoUrl && tech.demoUrl !== '#'
-                            ? 'Assistir demonstração de ' + tech.name
-                            : 'Demonstração de ' + tech.name + ' não disponível'
-                        "
-                        (click)="showVideo.emit(tech)"
-                      >
-                        <span
-                          class="material-symbols-rounded text-[18px]"
-                          aria-hidden="true"
-                          >play_circle</span
-                        >
-                      </button>
-                      <!-- Detalhe -->
-                      <button
-                        type="button"
-                        class="w-8 h-8 flex items-center justify-center rounded-lg icon-indigo hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors"
-                        [attr.aria-label]="'Ver detalhes de ' + tech.name"
+                        class="group-hover:text-primary-600 dark:group-hover:text-primary-300 cursor-pointer text-left text-sm font-semibold text-gray-900 transition-colors hover:underline dark:text-white"
                         (click)="showDetail.emit(tech)"
                       >
-                        <span
-                          class="material-symbols-rounded text-[18px]"
-                          aria-hidden="true"
-                          >visibility</span
-                        >
+                        {{ tech.name }}
                       </button>
-                      <!-- Editar -->
+                    </div>
+                  </td>
+                  <td class="hidden px-5 py-4 sm:table-cell">
+                    <span class="text-xs text-gray-600 italic dark:text-gray-400">{{ tech.translation }}</span>
+                  </td>
+                  <td class="hidden px-5 py-4 md:table-cell">
+                    <span class="line-clamp-2 text-xs text-gray-700 dark:text-gray-400">{{ tech.description }}</span>
+                  </td>
+                  <td class="px-2 py-3 sm:px-5 sm:py-4">
+                    <div
+                      class="flex items-center justify-center gap-1"
+                      role="group"
+                      [attr.aria-label]="'Ações para ' + tech.name"
+                    >
+                      @if (hasVideo(tech)) {
+                        <button
+                          type="button"
+                          class="icon-btn icon-blue"
+                          [attr.aria-label]="'Assistir demonstração de ' + tech.name"
+                          title="Assistir demonstração"
+                          (click)="showVideo.emit(tech)"
+                        >
+                          <span class="material-symbols-rounded text-[20px]" aria-hidden="true">play_circle</span>
+                        </button>
+                      } @else {
+                        <span class="icon-btn cursor-not-allowed text-gray-300 dark:text-gray-600" title="Sem vídeo">
+                          <span class="material-symbols-rounded text-[20px]" aria-hidden="true">play_circle</span>
+                          <span class="sr-only">Sem demonstração em vídeo</span>
+                        </span>
+                      }
                       <button
                         type="button"
-                        class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+                        class="icon-btn icon-indigo"
+                        [attr.aria-label]="'Ver detalhes de ' + tech.name"
+                        title="Ver detalhes"
+                        (click)="showDetail.emit(tech)"
+                      >
+                        <span class="material-symbols-rounded text-[20px]" aria-hidden="true">visibility</span>
+                      </button>
+                      <button
+                        type="button"
+                        class="icon-btn text-gray-600 dark:text-gray-400"
                         [attr.aria-label]="'Editar ' + tech.name"
+                        title="Editar"
                         (click)="editTechnique.emit(tech)"
                       >
-                        <span
-                          class="material-symbols-rounded text-[18px]"
-                          aria-hidden="true"
-                          >edit</span
-                        >
+                        <span class="material-symbols-rounded text-[20px]" aria-hidden="true">edit</span>
                       </button>
-                      <!-- Excluir -->
                       <button
                         type="button"
-                        class="w-8 h-8 flex items-center justify-center rounded-lg icon-red hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                        class="icon-btn icon-red"
                         [attr.aria-label]="'Remover ' + tech.name"
+                        title="Remover"
                         (click)="deleteTechnique.emit(tech)"
                       >
-                        <span
-                          class="material-symbols-rounded text-[18px]"
-                          aria-hidden="true"
-                          >delete</span
-                        >
+                        <span class="material-symbols-rounded text-[20px]" aria-hidden="true">delete</span>
                       </button>
                     </div>
                   </td>
                 </tr>
               }
-            }
-          </tbody>
+            </tbody>
+          }
         </table>
       </div>
     } @else {
-      <!-- Empty state -->
-      <div class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
-        @if (filterTerm) {
-          <span
-            class="material-symbols-rounded text-5xl mb-3 block"
-            aria-hidden="true"
-            >search_off</span
-          >
-          <p class="text-base mb-1">
-            Nenhum resultado para "<strong>{{ filterTerm }}</strong
-            >".
+      <div class="px-6 py-12 text-center text-gray-600 dark:text-gray-400">
+        @if (filterTerm()) {
+          <span class="material-symbols-rounded mb-3 block text-5xl" aria-hidden="true">search_off</span>
+          <p class="mb-1 text-base">
+            Nenhum resultado para "<strong>{{ filterTerm() }}</strong>".
           </p>
-          <button
-            type="button"
-            class="btn btn-ghost mt-3 text-sm"
-            aria-label="Limpar busca"
-            (click)="filterChange.emit('')"
-          >
+          <button type="button" class="btn btn-ghost mt-3 text-sm" (click)="filterChange.emit('')">
             Limpar busca
           </button>
         } @else {
-          <span
-            class="material-symbols-rounded text-5xl mb-3 block"
-            aria-hidden="true"
-            >inbox</span
-          >
-          <p class="text-base mb-1">
-            Nenhuma técnica cadastrada para esta faixa.
-          </p>
-          <button
-            type="button"
-            class="btn btn-secondary mt-3 text-sm"
-            (click)="addTechnique.emit()"
-          >
-            <span
-              class="material-symbols-rounded text-[18px]"
-              aria-hidden="true"
-              >add</span
-            >
-            Adicionar primeira técnica
+          <span class="material-symbols-rounded mb-3 block text-5xl" aria-hidden="true">inbox</span>
+          <p class="mb-1 text-base">Nenhuma técnica cadastrada para esta faixa.</p>
+          <button type="button" class="btn mt-3 text-sm" (click)="addTechnique.emit()">
+            <span class="material-symbols-rounded text-[18px]" aria-hidden="true">add</span>
+            Adicionar a primeira técnica
           </button>
         }
       </div>
     }
   </div>
-</div>
+</section>

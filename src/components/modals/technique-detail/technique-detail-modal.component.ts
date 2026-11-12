@@ -1,43 +1,24 @@
-﻿import {
-    ChangeDetectionStrategy,
-    Component,
-    ElementRef,
-    EventEmitter,
-    Injector,
-    Input,
-    OnChanges,
-    Output,
-    SimpleChanges,
-    afterNextRender,
-    inject,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 
 import { Technique } from '../../../models/judo.model';
-import { focusFirstFocusable } from '../../../utils/modal-focus.util';
+import { isYouTubeUrl } from '../../../utils/youtube.util';
+import { ModalComponent } from '../../modal/modal.component';
 
 @Component({
-    selector: 'app-technique-detail-modal',
-    standalone: true,
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    templateUrl: './technique-detail-modal.component.html',
-    styleUrl: './technique-detail-modal.component.scss',
+  selector: 'app-technique-detail-modal',
+  imports: [ModalComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './technique-detail-modal.component.html',
 })
-export class TechniqueDetailModalComponent implements OnChanges {
-    private readonly elementRef = inject(ElementRef);
-    private readonly injector = inject(Injector);
+export class TechniqueDetailModalComponent {
+  public readonly technique = input.required<Technique>();
+  public readonly hasPrevious = input(false);
+  public readonly hasNext = input(false);
 
-    @Input() public technique: Technique | null = null;
-    @Output() public readonly closed = new EventEmitter<void>();
-    @Output() public readonly nextTechnique = new EventEmitter<void>();
-    @Output() public readonly previousTechnique = new EventEmitter<void>();
+  public readonly closed = output<void>();
+  public readonly previous = output<void>();
+  public readonly next = output<void>();
+  public readonly watchVideo = output<void>();
 
-    public ngOnChanges(changes: SimpleChanges): void {
-        if (changes['technique'] && this.technique !== null) {
-            afterNextRender(() => { this.focusFirst(); }, { injector: this.injector });
-        }
-    }
-
-    private focusFirst(): void {
-        focusFirstFocusable(this.elementRef.nativeElement as HTMLElement);
-    }
+  protected readonly hasVideo = computed(() => isYouTubeUrl(this.technique().demoUrl));
 }

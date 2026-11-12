@@ -1,45 +1,34 @@
-﻿import {
-    ChangeDetectionStrategy,
-    Component,
-    ElementRef,
-    EventEmitter,
-    Injector,
-    Input,
-    OnChanges,
-    Output,
-    SimpleChanges,
-    afterNextRender,
-    inject,
-} from '@angular/core';
-import { SafeResourceUrl } from '@angular/platform-browser';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 import { Technique } from '../../../models/judo.model';
-import { focusFirstFocusable } from '../../../utils/modal-focus.util';
+import { youTubeEmbedUrl, youTubeWatchUrl } from '../../../utils/youtube.util';
+import { ModalComponent } from '../../modal/modal.component';
 
 @Component({
-    selector: 'app-video-player-modal',
-    standalone: true,
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    templateUrl: './video-player-modal.component.html',
-    styleUrl: './video-player-modal.component.scss',
+  selector: 'app-video-player-modal',
+  imports: [ModalComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './video-player-modal.component.html',
 })
-export class VideoPlayerModalComponent implements OnChanges {
-    private readonly elementRef = inject(ElementRef);
-    private readonly injector = inject(Injector);
+export class VideoPlayerModalComponent {
+  private readonly sanitizer = inject(DomSanitizer);
 
-    @Input() public technique: Technique | null = null;
-    @Input() public safeUrl: SafeResourceUrl | null = null;
-    @Output() public readonly closed = new EventEmitter<void>();
-    @Output() public readonly nextVideo = new EventEmitter<void>();
-    @Output() public readonly previousVideo = new EventEmitter<void>();
+  public readonly technique = input.required<Technique>();
+  public readonly hasPrevious = input(false);
+  public readonly hasNext = input(false);
 
-    public ngOnChanges(changes: SimpleChanges): void {
-        if (changes['technique'] && this.technique !== null) {
-            afterNextRender(() => { this.focusFirst(); }, { injector: this.injector });
-        }
-    }
+  public readonly closed = output<void>();
+  public readonly previous = output<void>();
+  public readonly next = output<void>();
 
-    private focusFirst(): void {
-        focusFirstFocusable(this.elementRef.nativeElement as HTMLElement);
-    }
+  protected readonly embedUrl = computed<SafeResourceUrl | null>(() => {
+    const url = youTubeEmbedUrl(this.technique().demoUrl);
+    // Safe: built from a fixed YouTube origin and an id validated against
+    // /^[\w-]{11}$/ — nothing from the user reaches the URL unchecked.
+    // eslint-disable-next-line sonarjs/no-angular-bypass-sanitization
+    return url === null ? null : this.sanitizer.bypassSecurityTrustResourceUrl(url);
+  });
+
+  protected readonly watchUrl = computed(() => youTubeWatchUrl(this.technique().demoUrl));
 }

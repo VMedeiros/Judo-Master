@@ -1,91 +1,98 @@
-﻿import {
-    ChangeDetectionStrategy,
-    Component,
-    ElementRef,
-    EventEmitter,
-    Injector,
-    Input,
-    OnChanges,
-    Output,
-    SimpleChanges,
-    afterNextRender,
-    inject,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
 
-import { TECHNIQUE_CATEGORIES } from '../../../constants/app.constants';
-import { focusFirstFocusable } from '../../../utils/modal-focus.util';
-import { FormMode, FormSaveEvent, Technique, TechniqueFormData } from '../../../models/judo.model';
+import { FormMode, FormSaveEvent, TechniqueDraft } from '../../../models/judo.model';
+import { isYouTubeUrl } from '../../../utils/youtube.util';
+import { ModalComponent } from '../../modal/modal.component';
+
+type Field =
+  'name' | 'translation' | 'category' | 'description' | 'execution' | 'application' | 'demoUrl';
+type Errors = Partial<Record<Field, string>>;
+
+export const FIELD_LIMITS = {
+  name: 120,
+  translation: 120,
+  description: 500,
+  execution: 1000,
+  application: 500,
+  demoUrl: 300,
+} as const;
 
 @Component({
-    selector: 'app-technique-form-modal',
-    standalone: true,
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    templateUrl: './technique-form-modal.component.html',
-    styleUrl: './technique-form-modal.component.scss',
+  selector: 'app-technique-form-modal',
+  imports: [ModalComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './technique-form-modal.component.html',
 })
-export class TechniqueFormModalComponent implements OnChanges {
-    private readonly elementRef = inject(ElementRef);
-    private readonly injector = inject(Injector);
+export class TechniqueFormModalComponent {
+  public readonly technique = input.required<TechniqueDraft>();
+  public readonly mode = input<FormMode>('add');
+  /** The categories to choose from. */
+  public readonly categories = input<readonly string[]>([]);
 
-    @Input() public technique: Technique | null = null;
-    @Input() public mode: FormMode = 'add';
-    @Output() public readonly closed = new EventEmitter<void>();
-    @Output() public readonly saved = new EventEmitter<FormSaveEvent>();
+  public readonly closed = output<void>();
+  public readonly saved = output<FormSaveEvent>();
 
-    protected readonly categories: ReadonlyArray<string> = TECHNIQUE_CATEGORIES;
+  protected readonly limits = FIELD_LIMITS;
+  protected readonly errors = signal<Errors>({});
+  protected readonly title = computed(() =>
+    this.mode() === 'add' ? 'Adicionar técnica' : 'Editar técnica'
+  );
 
-    public ngOnChanges(changes: SimpleChanges): void {
-        if (changes['technique'] && this.technique !== null) {
-            afterNextRender(() => { this.focusFirst(); }, { injector: this.injector });
-        }
+  /** The technique's own category is always offered, even if no other technique uses it. */
+  protected readonly categoryOptions = computed(() => {
+    const current = this.technique().category;
+    const list = this.categories();
+    return current && !list.includes(current) ? [current, ...list] : list;
+  });
+
+  protected onSubmit(event: SubmitEvent): void {
+    event.preventDefault();
+    const form = event.target as HTMLFormElement;
+    const data = new FormData(form);
+    const value = (field: Field): string => String(data.get(field) ?? '').trim();
+
+    const draft: TechniqueDraft = {
+      ...(this.mode() === 'edit' && this.technique().id !== undefined
+        ? { id: this.technique().id }
+        : {}),
+      name: value('name'),
+      translation: value('translation'),
+      category: value('category'),
+      description: value('description'),
+      execution: value('execution'),
+      application: value('application'),
+      demoUrl: value('demoUrl'),
+    };
+
+    const errors = validate(draft);
+    this.errors.set(errors);
+    const firstInvalid = Object.keys(errors)[0];
+    if (firstInvalid) {
+      (form.elements.namedItem(firstInvalid) as HTMLElement | null)?.focus();
+      return;
     }
+    this.saved.emit({ data: draft, mode: this.mode() });
+  }
 
-    private focusFirst(): void {
-        focusFirstFocusable(this.elementRef.nativeElement as HTMLElement);
-    }
+  /** Clears a field's error as soon as the user changes it. */
+  protected clearError(field: Field): void {
+    if (!this.errors()[field]) return;
+    this.errors.update(({ [field]: _removed, ...rest }) => rest);
+  }
 
-    protected onSubmit(event: Event): void {
-        event.preventDefault();
-        const form = event.target as HTMLFormElement;
-        if (!form.checkValidity()) {
-            form.reportValidity();
-            return;
-        }
-        const fd = new FormData(form);
-        const demoUrl = (fd.get('demoUrl') as string).trim();
+  protected describedBy(field: Field, hint?: string): string | null {
+    const ids = [hint, this.errors()[field] ? `${field}-error` : undefined].filter(Boolean);
+    return ids.length > 0 ? ids.join(' ') : null;
+  }
+}
 
-        if (demoUrl && !this.isYouTubeUrl(demoUrl)) {
-            form.elements.namedItem('demoUrl') instanceof HTMLInputElement &&
-                (form.elements.namedItem('demoUrl') as HTMLInputElement).setCustomValidity(
-                    'URL deve ser do YouTube (youtube.com ou youtu.be)',
-                );
-            form.reportValidity();
-            return;
-        }
-
-        const data: TechniqueFormData = {
-            id: this.technique?.id,
-            name: (fd.get('name') as string).trim(),
-            translation: (fd.get('translation') as string).trim(),
-            description: (fd.get('description') as string).trim(),
-            execution: (fd.get('execution') as string).trim(),
-            application: (fd.get('application') as string).trim(),
-            demoUrl,
-            category: fd.get('category') as string,
-        };
-        this.saved.emit({ data, mode: this.mode });
-    }
-
-    private isYouTubeUrl(url: string): boolean {
-        try {
-            const { hostname } = new URL(url);
-            return hostname === 'www.youtube.com' || hostname === 'youtube.com' || hostname === 'youtu.be';
-        } catch {
-            return false;
-        }
-    }
-
-    protected clearUrlValidity(event: Event): void {
-        (event.target as HTMLInputElement).setCustomValidity('');
-    }
+function validate(draft: TechniqueDraft): Errors {
+  const errors: Errors = {};
+  if (draft.name.length < 2) errors.name = 'Informe o nome da técnica (ao menos 2 caracteres).';
+  if (!draft.category) errors.category = 'Escolha uma categoria.';
+  if (!draft.description) errors.description = 'Descreva a técnica.';
+  if (draft.demoUrl && !isYouTubeUrl(draft.demoUrl)) {
+    errors.demoUrl = 'Use um link do YouTube (youtube.com ou youtu.be).';
+  }
+  return errors;
 }
