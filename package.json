@@ -26,7 +26,7 @@
     "check:bundle": "node scripts/check-bundle-size.mjs",
     "check:icons": "node scripts/check-icons.mjs",
     "check:data": "node scripts/validate-data.mjs",
-    "icons": "node scripts/generate-icons.mjs",
+    "icons": "npm install --no-save sharp@^0.35.5 && node scripts/generate-icons.mjs",
     "start:e2e": "ng serve --port 3100"
   },
   "dependencies": {
@@ -65,7 +65,6 @@
     "lint-staged": "^17.6.0",
     "postcss": "^8.5.15",
     "prettier": "^3.5.3",
-    "sharp": "^0.35.5",
     "tailwindcss": "^4.3.0",
     "typescript": "~5.9.3",
     "typescript-eslint": "8.72.0"
