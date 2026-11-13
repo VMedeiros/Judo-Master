@@ -17,7 +17,18 @@ describe('AppComponent', () => {
     unrecoverable = new Subject();
     configure(
       [AppComponent],
-      [{ provide: SwUpdate, useValue: { isEnabled: swEnabled, versionUpdates, unrecoverable } }]
+      [
+        {
+          provide: SwUpdate,
+          useValue: {
+            isEnabled: swEnabled,
+            versionUpdates,
+            unrecoverable,
+            checkForUpdate: jasmine.createSpy('checkForUpdate').and.resolveTo(false),
+            activateUpdate: jasmine.createSpy('activateUpdate').and.resolveTo(true),
+          },
+        },
+      ]
     );
     const fixture = TestBed.createComponent(AppComponent);
     const root = fixture.nativeElement as HTMLElement;
@@ -162,7 +173,7 @@ describe('AppComponent', () => {
     });
     expect(toasts.toasts()[0]?.action?.label).toBe('Atualizar');
     unrecoverable.next({ type: 'UNRECOVERABLE_STATE', reason: 'x' });
-    expect(toasts.toasts()[1]?.type).toBe('error');
+    expect(toasts.toasts()[1]?.action?.label).toBe('Recarregar');
   });
 
   it('works without a service worker', async () => {
