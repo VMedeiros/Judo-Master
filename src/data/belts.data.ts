@@ -1,6 +1,6 @@
-﻿import type { Belt } from '../models/judo.model';
+import type { Belt } from '../models/judo.model';
 
-export const INITIAL_BELTS: Belt[] = [
+export const INITIAL_BELTS: readonly Belt[] = [
   {
     "id": 1,
     "name": "11º Kyu - Faixa Branca",

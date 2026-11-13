@@ -1,0 +1,10 @@
+dist
+node_modules
+coverage
+out-tsc
+playwright-report
+test-results
+.angular
+package-lock.json
+*.html
+src/data/belts.data.ts

@@ -16,8 +16,8 @@
               "base": "./dist",
               "browser": "."
             },
-            "browser": "index.tsx",
-            "tsConfig": "tsconfig.json",
+            "browser": "src/main.ts",
+            "tsConfig": "tsconfig.app.json",
             "styles": ["src/styles.css"],
             "assets": [
               {
@@ -29,29 +29,35 @@
                 "glob": "manifest.webmanifest",
                 "input": "src",
                 "output": "/"
-              },
-              {
-                "glob": "ngsw-worker.js",
-                "input": "src",
-                "output": "/"
               }
             ],
-            "allowedCommonJsDependencies": [
-              "xlsx",
-              "jspdf",
-              "jspdf-autotable",
-              "html2canvas",
-              "canvg",
-              "dompurify",
-              "core-js",
-              "raf",
-              "rgbcolor"
-            ]
+            "allowedCommonJsDependencies": ["html2canvas", "canvg", "core-js", "rgbcolor", "raf"]
           },
           "configurations": {
             "production": {
+              "baseHref": "/Judo-Master/",
               "outputHashing": "all",
-              "baseHref": "/Judo-Master/"
+              "serviceWorker": "ngsw-config.json",
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "800kB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ],
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": false
+                },
+                "fonts": false
+              }
             },
             "development": {
               "optimization": false,
@@ -75,6 +81,21 @@
             }
           },
           "defaultConfiguration": "development"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "tsconfig.spec.json",
+            "karmaConfig": "karma.conf.cjs",
+            "styles": ["src/styles.css"],
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "assets"
+              }
+            ]
+          }
         }
       }
     }

@@ -1,17 +1,13 @@
-﻿import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-export interface CommemorativeDate {
-    readonly name: string;
-    readonly icon: string;
-}
+import { CommemorativeDate } from '../../services/celebration.service';
 
 @Component({
-    selector: 'app-celebration-banner',
-    standalone: true,
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    templateUrl: './celebration-banner.component.html',
-    styleUrl: './celebration-banner.component.scss',
+  selector: 'app-celebration-banner',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './celebration-banner.component.html',
+  styleUrl: './celebration-banner.component.scss',
 })
 export class CelebrationBannerComponent {
-    @Input() public celebration: CommemorativeDate | null = null;
+  public readonly celebration = input<CommemorativeDate | null>(null);
 }

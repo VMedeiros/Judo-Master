@@ -1,0 +1,13 @@
+# Judô Master — CODEOWNERS
+# Quem revisa PRs em cada área do código.
+
+* @VMedeiros
+
+# Infraestrutura e CI/CD
+/.github/ @VMedeiros
+angular.json @VMedeiros
+ngsw-config.json @VMedeiros
+index.html @VMedeiros
+
+# Dados das faixas e técnicas
+/src/data/ @VMedeiros

@@ -2,11 +2,11 @@
  * Generate PNG icons from SVG for all platforms (Android, iOS, Web/PWA).
  * Uses sharp to render SVG → PNG at various sizes.
  */
-import sharp from "sharp";
-import { mkdirSync } from "node:fs";
-import { join } from "node:path";
+import sharp from 'sharp';
+import { mkdirSync } from 'node:fs';
+import { join } from 'node:path';
 
-const ICONS_DIR = join(import.meta.dirname, "..", "src", "assets", "icons");
+const ICONS_DIR = join(import.meta.dirname, '..', 'src', 'assets', 'icons');
 
 // SVG source at 512x512 for max quality rendering — light theme (blue bg, dark symbol)
 const svgSource = `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
@@ -81,9 +81,7 @@ const sizes = {
 };
 
 // Deduplicate all sizes
-const allSizes = [
-  ...new Set([...sizes.android, ...sizes.ios, ...sizes.web]),
-].sort((a, b) => a - b);
+const allSizes = [...new Set([...sizes.android, ...sizes.ios, ...sizes.web])].sort((a, b) => a - b);
 
 mkdirSync(ICONS_DIR, { recursive: true });
 
@@ -120,10 +118,7 @@ for (const size of maskableSizes) {
   console.log(`  ✓ ${size}x${size}-maskable.png`);
 
   const darkMaskSvg = Buffer.from(createDarkMaskableSvg(size));
-  const darkMaskPath = join(
-    ICONS_DIR,
-    `icon-${size}x${size}-maskable-dark.png`,
-  );
+  const darkMaskPath = join(ICONS_DIR, `icon-${size}x${size}-maskable-dark.png`);
   await sharp(darkMaskSvg)
     .resize(size, size)
     .png({ quality: 100, compressionLevel: 9 })
@@ -132,7 +127,7 @@ for (const size of maskableSizes) {
 }
 
 // Generate Apple Touch Icon (180x180 is the standard)
-const appleTouchPath = join(ICONS_DIR, "..", "apple-touch-icon.png");
+const appleTouchPath = join(ICONS_DIR, '..', 'apple-touch-icon.png');
 await sharp(svgBuffer)
   .resize(180, 180)
   .png({ quality: 100, compressionLevel: 9 })
@@ -140,18 +135,18 @@ await sharp(svgBuffer)
 console.log(`  ✓ apple-touch-icon.png (180x180)`);
 
 // Generate favicon.ico equivalent as 32x32 PNG
-const faviconPath = join(ICONS_DIR, "..", "favicon-32x32.png");
+const faviconPath = join(ICONS_DIR, '..', 'favicon-32x32.png');
 await sharp(svgBuffer)
   .resize(32, 32)
   .png({ quality: 100, compressionLevel: 9 })
   .toFile(faviconPath);
 console.log(`  ✓ favicon-32x32.png`);
 
-const favicon16Path = join(ICONS_DIR, "..", "favicon-16x16.png");
+const favicon16Path = join(ICONS_DIR, '..', 'favicon-16x16.png');
 await sharp(svgBuffer)
   .resize(16, 16)
   .png({ quality: 100, compressionLevel: 9 })
   .toFile(favicon16Path);
 console.log(`  ✓ favicon-16x16.png`);
 
-console.log("\n✅ All icons generated successfully!");
+console.log('\n✅ All icons generated successfully!');

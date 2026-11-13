@@ -1,269 +1,555 @@
 /* =========================================================
-   Judo-Master — Design System alinhado à identidade JudoKan
-   Paleta: Sky Blue accent (#0ea5e9) + Navy primary (#334e68)
-   Fontes: Inter + Noto Sans JP + Noto Serif JP (auto-hospedadas)
+   Judô Master — design system alinhado à identidade JudoKan
+   Paleta: sky blue (accent, #0ea5e9) + navy (primary, #334e68)
+   Fontes: Inter, Noto Serif JP e Noto Sans JP, carregadas em index.html
    ========================================================= */
 
-/* Fontes auto-hospedadas via fontsource (sem dependência CDN) */
-@import '@fontsource-variable/inter';
-@import '@fontsource/noto-sans-jp/400.css';
-@import '@fontsource/noto-sans-jp/500.css';
-@import '@fontsource/noto-sans-jp/700.css';
-@import '@fontsource/noto-serif-jp/400.css';
-@import '@fontsource/noto-serif-jp/700.css';
-@import '@fontsource-variable/roboto-mono';
-@import 'material-symbols/rounded.css';
+@import 'tailwindcss';
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Class-based dark mode (Tailwind v4 defaults to the media query). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: 'Inter', 'Noto Sans JP', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'Noto Serif JP', ui-serif, Georgia, serif;
+
+  --color-primary-50: #f0f4f8;
+  --color-primary-100: #d9e2ec;
+  --color-primary-200: #bcccdc;
+  --color-primary-300: #9fb3c8;
+  --color-primary-400: #627d98;
+  --color-primary-500: #334e68;
+  --color-primary-600: #243b53;
+  --color-primary-700: #192a3e;
+  --color-primary-800: #102a43;
+  --color-primary-900: #0a1929;
+
+  --color-accent-50: #f0f9ff;
+  --color-accent-100: #e0f2fe;
+  --color-accent-200: #bae6fd;
+  --color-accent-300: #7dd3fc;
+  --color-accent-400: #38bdf8;
+  --color-accent-500: #0ea5e9;
+  --color-accent-600: #0284c7;
+  --color-accent-700: #0369a1;
+  --color-accent-800: #075985;
+  --color-accent-900: #0c4a6e;
+}
 
 /* ----------------------------------------------------------
-   Variáveis de tema — modo claro
+   Theme variables
    ---------------------------------------------------------- */
 :root {
-  /* Fundo */
-  --color-bg:       #f8fafc;
-  --color-bg-alt:   #f1f5f9;
-  --color-surface:  #ffffff;
-
-  /* Texto */
-  --color-text:       #0f172a;
+  --color-bg: #f8fafc;
+  --color-bg-alt: #f1f5f9;
+  --color-surface: #ffffff;
+  --color-text: #0f172a;
   --color-text-muted: #475569;
-
-  /* Borda */
   --color-border: #e2e8f0;
-
-  /* Accent sky (JudoKan) */
-  --color-accent:     #0ea5e9;
-  --color-accent-alt: #0284c7;
-  --color-accent-bg:  rgba(14, 165, 233, 0.10);
-
-  /* Primary navy */
-  --color-primary:     #334e68;
-  --color-primary-alt: #243b53;
-
-  /* Semânticas */
-  --success: #16a34a;
-  --warning: #f59e0b;
-  --danger:  #dc2626;
+  /* Accent text must reach 4.5:1 on the light surfaces. */
+  --color-accent: #0369a1;
+  --color-accent-strong: #0284c7;
+  --color-accent-bg: rgb(14 165 233 / 0.1);
+  --danger: #dc2626;
 }
 
-/* ----------------------------------------------------------
-   Variáveis de tema — modo escuro
-   ---------------------------------------------------------- */
 .dark {
-  --color-bg:       #0a1929;
-  --color-bg-alt:   #111827;
-  --color-surface:  #1e293b;
-
-  --color-text:       #f1f5f9;
+  --color-bg: #0a1929;
+  --color-bg-alt: #111827;
+  --color-surface: #1e293b;
+  --color-text: #f1f5f9;
   --color-text-muted: #94a3b8;
+  --color-border: rgb(255 255 255 / 0.1);
+  --color-accent: #38bdf8;
+  --color-accent-strong: #0ea5e9;
+  --color-accent-bg: rgb(56 189 248 / 0.12);
+  --danger: #f87171;
+}
 
-  --color-border: rgba(255, 255, 255, 0.08);
-
-  --color-accent:     #38bdf8;
-  --color-accent-alt: #0ea5e9;
-  --color-accent-bg:  rgba(56, 189, 248, 0.12);
-
-  --color-primary:     #627d98;
-  --color-primary-alt: #829ab1;
-
-  --success: #22c55e;
-  --warning: #fbbf24;
-  --danger:  #f87171;
+@media (prefers-contrast: more) {
+  :root {
+    --color-text: #000000;
+    --color-text-muted: #1e293b;
+    --color-border: #000000;
+  }
+  .dark {
+    --color-text: #ffffff;
+    --color-text-muted: #e2e8f0;
+    --color-border: #ffffff;
+  }
 }
 
 /* ----------------------------------------------------------
-   Base — corpo transparente sobre o background do index.html
+   Base
    ---------------------------------------------------------- */
-html, body {
-  background-color: transparent;
-  color: var(--color-text);
-  font-family: 'Inter', 'Noto Sans JP', ui-sans-serif, system-ui, sans-serif;
-  line-height: 1.6;
-  overflow-x: hidden;
-  transition: color 0.3s ease;
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    color-scheme: light;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
+
+  body {
+    min-height: 100dvh;
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    /* `clip` (not `hidden`) so the body never becomes a scroll container,
+       which would break `position: sticky` on the header. */
+    overflow-x: clip;
+    background-color: #7aa8c4;
+  }
+  .dark body {
+    background-color: #0a1422;
+  }
+
+  /* Dojo photo behind everything, under a theme-coloured veil. */
+  body::before,
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+  }
+  body::before {
+    z-index: -2;
+    background-image: url('./images/dojo-1280.webp');
+    background-image: image-set(
+      url('./images/dojo-768.webp') 1x,
+      url('./images/dojo-1920.webp') 2x
+    );
+    background-position: center;
+    background-size: cover;
+  }
+  @media (min-width: 768px) {
+    body::before {
+      background-image: image-set(
+        url('./images/dojo-1280.webp') 1x,
+        url('./images/dojo-1920.webp') 2x
+      );
+    }
+  }
+  body::after {
+    z-index: -1;
+    background: rgb(235 242 248 / 0.72);
+  }
+  .dark body::after {
+    background: linear-gradient(
+      to right,
+      rgb(10 30 60 / 0.88) 0%,
+      rgb(10 30 60 / 0.6) 40%,
+      rgb(10 30 60 / 0.4) 100%
+    );
+  }
+
+  ::selection {
+    background: rgb(14 165 233 / 0.2);
+    color: inherit;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-accent-strong);
+    outline-offset: 2px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    overflow-wrap: anywhere;
+  }
+
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+
+  /* iOS zooms the page when a focused control has a font size below 16px. */
+  @media (max-width: 639px) {
+    input,
+    select,
+    textarea {
+      font-size: max(16px, 1em);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  @media print {
+    body::before,
+    body::after,
+    app-header,
+    app-toast,
+    footer,
+    .btn,
+    .export-btn {
+      display: none !important;
+    }
+    body {
+      background: white !important;
+      color: black !important;
+    }
+  }
 }
 
-body { font-family: inherit; }
-
-/* ----------------------------------------------------------
-   Font family helpers (controlados pelo AppComponent)
-   ---------------------------------------------------------- */
-.font-sans  { font-family: 'Inter', 'Noto Sans JP', ui-sans-serif, system-ui, sans-serif; }
-.font-serif { font-family: 'Noto Serif JP', ui-serif, Georgia, serif; }
-.font-mono  { font-family: 'Roboto Mono', ui-monospace, monospace; }
-
-/* ----------------------------------------------------------
-   Utilidades de tema (classes semânticas usadas no template)
-   ---------------------------------------------------------- */
-.border-theme  { border-color: var(--color-border); }
-.bg-theme      { background-color: var(--color-bg); }
-.bg-theme-alt  { background-color: var(--color-bg-alt); }
-.text-theme    { color: var(--color-text); }
-.text-theme-muted { color: var(--color-text-muted); }
-.accent-text   { color: var(--color-accent); }
-.accent-bg     { background-color: var(--color-accent); }
-.accent-bg:hover { background-color: var(--color-accent-alt); }
-
-/* Headings de alto contraste */
-.accessible-heading {
-  color: var(--color-text);
-  font-weight: 700;
-  letter-spacing: 0.01em;
-}
-.high-contrast-text { color: var(--color-text); }
-.brand-subtle       { color: var(--color-text-muted); }
-
-/* ----------------------------------------------------------
-   Card — identidade JudoKan (rounded-2xl + backdrop-blur sobre foto)
-   ---------------------------------------------------------- */
-.card {
-  background-color: rgba(255, 255, 255, 0.88);
-  color: var(--color-text);
-  border: 1px solid rgba(255, 255, 255, 0.50);
-  border-radius: 1rem;          /* rounded-2xl */
-  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.14);
-  backdrop-filter: blur(20px) saturate(150%);
-  -webkit-backdrop-filter: blur(20px) saturate(150%);
-}
-.dark .card {
-  background-color: rgba(10, 20, 40, 0.72);
-  border-color: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 40px rgba(0, 0, 0, 0.50);
-}
-
-/* ----------------------------------------------------------
-   Tabela — estilo JudoKan
-   ---------------------------------------------------------- */
-.table-header {
-  background-color: rgba(241, 245, 249, 0.50);
-  color: var(--color-text-muted);
-}
-.dark .table-header {
-  background-color: rgba(30, 41, 59, 0.30);
-}
-.table-row { border-color: var(--color-border); }
-
-/* Zebra suave */
-.table-zebra tbody tr:nth-child(odd)  { background-color: rgba(241, 245, 249, 0.40); }
-.table-zebra tbody tr:hover           { background-color: rgba(14, 165, 233, 0.06); }
-.dark .table-zebra tbody tr:nth-child(odd) { background-color: rgba(30, 41, 59, 0.30); }
-.dark .table-zebra tbody tr:hover          { background-color: rgba(56, 189, 248, 0.06); }
-
-/* ----------------------------------------------------------
-   Input — estilo JudoKan
-   ---------------------------------------------------------- */
-.input {
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  color: var(--color-text);
-  border-radius: 0.75rem;       /* rounded-xl */
-  min-height: 2.5rem;
-  padding: 0.5rem 0.875rem;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-.dark .input {
-  background-color: #111827;
-  border-color: rgba(255, 255, 255, 0.08);
-}
-.input::placeholder { color: var(--color-text-muted); opacity: 0.7; }
-.input:focus {
-  outline: none;
-  border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px var(--color-accent-bg);
-}
-
-/* Select — remover aparência nativa */
-select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.625rem center; background-size: 1.25em; padding-right: 2.5rem; }
-
-/* ----------------------------------------------------------
-   Button — estilo JudoKan
-   ---------------------------------------------------------- */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  font-weight: 600;
-  font-size: 0.875rem;
-  padding: 0.5rem 1rem;
-  border-radius: 0.75rem;       /* rounded-xl */
-  border: 1px solid var(--color-border);
-  background-color: var(--color-surface);
-  color: var(--color-text);
-  cursor: pointer;
-  transition: transform 0.06s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-  white-space: nowrap;
-}
-.dark .btn {
-  background-color: #1e293b;
-  border-color: rgba(255, 255, 255, 0.08);
-}
-.btn:hover    { background-color: var(--color-bg-alt); }
-.btn:active   { transform: translateY(1px); }
-.btn:focus-visible { outline: 3px solid var(--color-accent); outline-offset: 2px; }
-
-/* Botão primário — gradiente JudoKan */
-.btn-accent {
-  background: linear-gradient(135deg, #0369a1 0%, #0284c7 50%, #0ea5e9 100%);
-  color: white;
-  border-color: transparent;
-  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.30);
-}
-.btn-accent:hover {
-  background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%);
-  box-shadow: 0 4px 16px rgba(14, 165, 233, 0.40);
-}
-.btn-accent:active { transform: translateY(1px); }
-
-/* Botão secundário — navy/primary */
-.btn-secondary {
-  background: linear-gradient(135deg, #243b53 0%, #334e68 100%);
-  color: white;
-  border-color: transparent;
-}
-.btn-secondary:hover { background: linear-gradient(135deg, #192a3e 0%, #243b53 100%); }
-
-/* Botão ghost */
-.btn-ghost {
-  background-color: transparent;
-  border-color: transparent;
-  color: var(--color-text);
-}
-.btn-ghost:hover { background-color: var(--color-bg-alt); }
-
-/* ----------------------------------------------------------
-   Pills / tabs de faixa — estilo JudoKan
-   ---------------------------------------------------------- */
-.pill-active {
-  background-color: var(--color-accent-bg);
-  color: var(--color-accent);
-  border: 1px solid rgba(14, 165, 233, 0.30);
-  font-weight: 600;
-  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.15);
-}
-.dark .pill-active {
-  background-color: #1e3a4e; /* solid dark blue — contraste 11.7:1 com texto branco */
-  color: #ffffff;
-  border-color: rgba(56, 189, 248, 0.40);
+/* The page behind a dialog does not scroll. */
+html.scroll-locked,
+html.scroll-locked body {
+  overflow: hidden;
 }
 
 /* ----------------------------------------------------------
-   Ícones de ação coloridos
+   Components — in a layer, so Tailwind utilities can override them
    ---------------------------------------------------------- */
-.icon-blue   { color: #0284c7; }
-.icon-indigo { color: #4f46e5; }
-.icon-yellow { color: #b45309; }
-.icon-red    { color: var(--danger); }
-.dark .icon-blue   { color: #38bdf8; }
-.dark .icon-yellow { color: #fbbf24; }
-.dark .icon-red    { color: #f87171; }
+@layer components {
+  .font-serif {
+    font-family: var(--font-serif);
+  }
 
-/* ----------------------------------------------------------
-   Material Symbols helper
-   ---------------------------------------------------------- */
+  /* Theme helpers used across the templates */
+  .border-theme {
+    border-color: var(--color-border);
+  }
+  .bg-theme-alt {
+    background-color: var(--color-bg-alt);
+  }
+  .text-theme {
+    color: var(--color-text);
+  }
+  .text-theme-muted {
+    color: var(--color-text-muted);
+  }
+  .accent-text {
+    color: var(--color-accent);
+  }
+  .accessible-heading,
+  .high-contrast-text {
+    color: var(--color-text);
+  }
+  .accessible-heading {
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+  .quote-border {
+    border-color: var(--color-accent-strong);
+  }
+
+  .skip-link {
+    position: fixed;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 999;
+    padding: 0.5rem 1rem;
+    border-radius: 0.75rem;
+    background: #0369a1;
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 600;
+    translate: 0 -200%;
+    transition: translate 0.15s ease;
+  }
+  .skip-link:focus {
+    translate: 0 0;
+  }
+
+  /* Card: frosted glass over the dojo photo */
+  .card {
+    color: var(--color-text);
+    background-color: rgb(255 255 255 / 0.9);
+    border: 1px solid rgb(255 255 255 / 0.5);
+    border-radius: 1rem;
+    box-shadow: 0 4px 32px rgb(0 0 0 / 0.14);
+    backdrop-filter: blur(20px) saturate(150%);
+  }
+  .dark .card {
+    background-color: rgb(10 20 40 / 0.78);
+    border-color: rgb(255 255 255 / 0.08);
+    box-shadow: 0 4px 40px rgb(0 0 0 / 0.5);
+  }
+
+  .header-premium {
+    background-color: rgb(255 255 255 / 0.9);
+    border-bottom: 1px solid rgb(14 165 233 / 0.18);
+    backdrop-filter: blur(16px) saturate(140%);
+  }
+  .dark .header-premium {
+    background-color: rgb(10 25 41 / 0.97);
+    border-bottom-color: var(--color-border);
+    backdrop-filter: none;
+  }
+
+  .app-footer {
+    background-color: rgb(241 245 249 / 0.94);
+    border-color: var(--color-border);
+    backdrop-filter: blur(12px);
+  }
+  .dark .app-footer {
+    background-color: rgb(10 25 41 / 0.95);
+  }
+
+  /* Form fields */
+  .input {
+    min-height: 2.75rem;
+    padding: 0.5rem 0.875rem;
+    color: var(--color-text);
+    background-color: var(--color-surface);
+    border: 1px solid #cbd5e1;
+    border-radius: 0.75rem;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+  .dark .input {
+    background-color: #111827;
+    border-color: rgb(255 255 255 / 0.16);
+  }
+  .input::placeholder {
+    color: var(--color-text-muted);
+  }
+  .input:focus {
+    outline: none;
+    border-color: var(--color-accent-strong);
+    box-shadow: 0 0 0 3px var(--color-accent-bg);
+  }
+  .input[aria-invalid='true'] {
+    border-color: var(--danger);
+  }
+  select.input {
+    appearance: none;
+    padding-right: 2.75rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%234b5563' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.875rem center;
+    background-size: 1.25rem;
+  }
+  .dark select.input {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23d1d5db' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
+  }
+  .search-input {
+    outline: none;
+  }
+  .field-label {
+    display: block;
+    margin-bottom: 0.25rem;
+    color: var(--color-text);
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  .field-error {
+    margin-top: 0.25rem;
+    color: var(--danger);
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  .settings-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-text-muted);
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .about-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-accent);
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 2.5rem;
+    padding: 0.5rem 1rem;
+    color: var(--color-text);
+    font-size: 0.875rem;
+    font-weight: 600;
+    white-space: nowrap;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    transition:
+      transform 0.06s ease,
+      box-shadow 0.2s ease,
+      background-color 0.2s ease;
+  }
+  .dark .btn {
+    background-color: #1e293b;
+  }
+  .btn:hover:not(:disabled) {
+    background-color: var(--color-bg-alt);
+  }
+  .btn:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+  .btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+  .btn-accent,
+  .dark .btn-accent {
+    color: #fff;
+    background: linear-gradient(135deg, #0369a1 0%, #0284c7 60%, #0ea5e9 100%);
+    border-color: transparent;
+    box-shadow: 0 2px 8px rgb(14 165 233 / 0.3);
+  }
+  .btn-accent:hover:not(:disabled),
+  .dark .btn-accent:hover:not(:disabled) {
+    background: linear-gradient(135deg, #075985 0%, #0369a1 100%);
+    box-shadow: 0 4px 16px rgb(14 165 233 / 0.4);
+  }
+  .btn-secondary,
+  .dark .btn-secondary {
+    color: #fff;
+    background: linear-gradient(135deg, #243b53 0%, #334e68 100%);
+    border-color: transparent;
+  }
+  .btn-secondary:hover:not(:disabled),
+  .dark .btn-secondary:hover:not(:disabled) {
+    background: linear-gradient(135deg, #192a3e 0%, #243b53 100%);
+  }
+  .btn-danger,
+  .dark .btn-danger {
+    color: #fff;
+    background-color: #dc2626;
+    border-color: #dc2626;
+  }
+  .btn-danger:hover:not(:disabled),
+  .dark .btn-danger:hover:not(:disabled) {
+    background-color: #b91c1c;
+    border-color: #b91c1c;
+  }
+  .btn-ghost,
+  .dark .btn-ghost {
+    background-color: transparent;
+    border-color: transparent;
+  }
+
+  .icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.625rem;
+    transition: background-color 0.2s ease;
+  }
+  button.icon-btn:hover {
+    background-color: rgb(100 116 139 / 0.12);
+  }
+
+  .export-btn {
+    display: inline-flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0.5rem 0.875rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    border-width: 1px;
+    border-radius: 0.75rem;
+    transition:
+      background-color 0.2s ease,
+      transform 0.06s ease;
+  }
+  .export-btn:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+  .export-btn:disabled {
+    opacity: 0.5;
+    cursor: progress;
+  }
+
+  .menu-item {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 2.75rem;
+    padding: 0.5rem 0.75rem;
+    color: var(--color-text);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-align: left;
+    border-radius: 0.75rem;
+    transition: background-color 0.2s ease;
+  }
+  .menu-item:hover:not(:disabled) {
+    background-color: var(--color-bg-alt);
+  }
+  .menu-item:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  /* Belt tabs */
+  .pill-active {
+    color: var(--color-accent);
+    font-weight: 600;
+    background-color: var(--color-accent-bg);
+    border: 1px solid rgb(14 165 233 / 0.3);
+    box-shadow: 0 2px 8px rgb(14 165 233 / 0.15);
+  }
+  .dark .pill-active {
+    color: #fff;
+    background-color: #1e3a4e;
+    border-color: rgb(56 189 248 / 0.4);
+  }
+
+  .table-head {
+    padding: 0.875rem 1.25rem;
+    color: #475569;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .dark .table-head {
+    color: #94a3b8;
+  }
+
+  /* Action icon colours, with 4.5:1 contrast in both themes */
+  .icon-blue {
+    color: #0369a1;
+  }
+  .icon-indigo {
+    color: #4f46e5;
+  }
+  .icon-red {
+    color: #dc2626;
+  }
+  .dark .icon-blue {
+    color: #38bdf8;
+  }
+  .dark .icon-indigo {
+    color: #a5b4fc;
+  }
+  .dark .icon-red {
+    color: #f87171;
+  }
+}
+
+/* Icon font: decorative glyphs, never selectable text. */
 .material-symbols-rounded {
   font-family: 'Material Symbols Rounded', sans-serif;
   font-weight: normal;
@@ -277,216 +563,173 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
   word-wrap: normal;
   direction: ltr;
   -webkit-font-smoothing: antialiased;
-  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
   vertical-align: middle;
   user-select: none;
 }
 
-/* ----------------------------------------------------------
-   Header premium — JudoKan
-   ---------------------------------------------------------- */
-.header-premium {
-  background-color: rgba(255, 255, 255, 0.88);
-  border-bottom: 1px solid rgba(14, 165, 233, 0.18);
-  backdrop-filter: blur(16px) saturate(140%);
-  -webkit-backdrop-filter: blur(16px) saturate(140%);
-}
-.dark .header-premium {
-  background-color: rgba(10, 25, 41, 0.97);
-  border-bottom-color: var(--color-border);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
+/* ===== MODAL (native <dialog>, see components/modal/modal.component.ts) ===== */
 
-/* ----------------------------------------------------------
-   Toast / mensagens de feedback
-   ---------------------------------------------------------- */
-.toast-success {
-  background-color: #dcfce7;
-  border: 1px solid #86efac;
-  color: #166534;
-  border-radius: 0.75rem;
-  padding: 0.75rem 1rem;
-}
-.toast-error {
-  background-color: #fee2e2;
-  border: 1px solid #fca5a5;
-  color: #991b1b;
-  border-radius: 0.75rem;
-  padding: 0.75rem 1rem;
-}
-
-/* ----------------------------------------------------------
-   Switch de tema — alinhado à paleta sky blue
-   ---------------------------------------------------------- */
-.theme-switch {
-  position: relative;
-  display: inline-block;
-  width: 52px;
-  height: 28px;
-}
-.theme-switch input { opacity: 0; width: 0; height: 0; }
-.theme-slider {
-  position: absolute;
-  cursor: pointer;
+dialog.app-modal {
+  position: fixed;
   inset: 0;
-  background-color: #cbd5e1;
-  transition: 0.3s;
-  border-radius: 28px;
-}
-.theme-slider::before {
-  position: absolute;
-  content: "";
-  height: 20px;
-  width: 20px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  transition: 0.3s;
-  border-radius: 50%;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
-}
-input:checked + .theme-slider {
-  background: linear-gradient(135deg, #0284c7, #0ea5e9);
-}
-input:checked + .theme-slider::before { transform: translateX(24px); }
-.theme-slider:hover        { background-color: #94a3b8; }
-input:checked + .theme-slider:hover { background: linear-gradient(135deg, #0369a1, #0284c7); }
-.theme-switch input:focus-visible + .theme-slider {
-  outline: 3px solid var(--color-accent);
-  outline-offset: 2px;
-}
-
-/* ----------------------------------------------------------
-   Scroll horizontal com sombra indicadora
-   ---------------------------------------------------------- */
-.shadow-inner-x {
-  background:
-    linear-gradient(to right, var(--color-bg-alt) 30%, transparent),
-    linear-gradient(to right, rgba(0,0,0,0.04), transparent 4%),
-    linear-gradient(to left,  var(--color-bg-alt) 30%, transparent),
-    linear-gradient(to left,  rgba(0,0,0,0.04), transparent 4%);
-  background-position: left center, left center, right center, right center;
-  background-repeat: no-repeat;
-  background-color: var(--color-bg-alt);
-  background-size: 30px 100%, 6px 100%, 30px 100%, 6px 100%;
-  background-attachment: local, scroll, local, scroll;
-}
-
-/* ----------------------------------------------------------
-   Custom scrollbar — estilo JudoKan
-   ---------------------------------------------------------- */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 99px;
-}
-.dark ::-webkit-scrollbar-thumb { background: #334155; }
-::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-.dark ::-webkit-scrollbar-thumb:hover { background: #475569; }
-
-/* ----------------------------------------------------------
-   Responsividade mobile
-   ---------------------------------------------------------- */
-@media (max-width: 640px) {
-  .btn, button { min-height: 44px; min-width: 44px; }
-  table { font-size: 0.875rem; }
-}
-
-/* Performance */
-.theme-slider, .btn, .pill-active { will-change: transform, background-color; }
-
-/* Suporte a modo de alto contraste */
-@media (prefers-contrast: high) {
-  .btn   { border-width: 2px; }
-  .card  { border-width: 2px; }
-  .input { border-width: 2px; }
-
-  :root {
-    --color-text:   #000000;
-    --color-border: #000000;
-  }
-  .dark {
-    --color-text:   #ffffff;
-    --color-border: #ffffff;
-  }
-}
-
-/* Global focus-visible — acessibilidade teclado */
-:focus-visible {
-  outline: 3px solid var(--color-accent);
-  outline-offset: 2px;
-  border-radius: 4px;
-}
-
-/* Print */
-@media print {
-  .header-premium,
-  footer,
-  .btn,
-  app-toast,
-  app-about-modal,
-  app-technique-detail-modal,
-  app-technique-form-modal,
-  app-delete-confirm-modal,
-  app-video-player-modal {
-    display: none !important;
-  }
-  body {
-    background: white !important;
-    color: black !important;
-  }
-  .card {
-    box-shadow: none !important;
-    border: 1px solid #ccc !important;
-  }
-}
-
-/* Reduzir movimento para quem prefere */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-/* Ocultar scrollbar mantendo funcionalidade */
-.scrollbar-hide {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;     /* Firefox */
-}
-
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;  /* Chrome, Safari and Opera */
-}
-
-/* ----------------------------------------------------------
-   <dialog> element reset — deixa Tailwind/CSS customizado
-   controlar o layout. Posicionamento padrão do UA é sobrescrito
-   pela classe utilitária `static` do Tailwind aplicada inline.
-   ---------------------------------------------------------- */
-dialog {
-  padding: 0;
-  border: none;
-  background: transparent;
+  width: 100%;
   max-width: none;
+  height: 100%;
   max-height: none;
-  overflow: visible;
+  margin: 0;
+  padding: 1rem;
+  border: 0;
+  background: transparent;
   color: inherit;
+  overflow: hidden;
+}
+dialog.app-modal[open] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: modal-fade 0.15s ease-out;
+}
+dialog.app-modal::backdrop {
+  background: rgb(3 7 18 / 0.7);
 }
 
-dialog::backdrop {
+.app-modal__panel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 32rem;
+  max-height: 100%;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  animation: modal-rise 0.2s ease-out;
+  @apply border border-gray-200 bg-white text-gray-900 shadow-2xl dark:border-gray-700 dark:bg-[#111827] dark:text-gray-100;
+}
+.app-modal--sm .app-modal__panel {
+  max-width: 26rem;
+}
+.app-modal--lg .app-modal__panel {
+  max-width: 44rem;
+}
+.app-modal--xl .app-modal__panel {
+  max-width: 60rem;
+}
+.app-modal__header {
+  @apply flex shrink-0 items-start justify-between gap-3 border-b border-gray-200 px-5 py-4 dark:border-gray-800;
+}
+.app-modal__title {
+  @apply font-serif text-lg leading-snug font-bold text-gray-900 outline-none sm:text-xl dark:text-white;
+}
+.app-modal__subtitle {
+  @apply mt-0.5 text-sm text-gray-600 italic dark:text-gray-400;
+}
+.app-modal__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  /* Scrolling past the end must not move the page behind the dialog. */
+  overscroll-behavior: contain;
+  @apply px-5 py-5;
+}
+.app-modal__footer {
+  @apply flex shrink-0 flex-col-reverse gap-2 border-t border-gray-200 bg-gray-50 px-5 py-4 sm:flex-row sm:justify-end dark:border-gray-800 dark:bg-gray-900/40;
+}
+.app-modal__footer:empty {
   display: none;
 }
 
-/* Settings panel no header: mantém position absolute */
-dialog.settings-panel {
-  position: absolute;
-  inset: auto;
+/* Settings: a card anchored under the header's gear button. */
+dialog.app-modal--popover[open] {
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 4.5rem 1rem 1rem;
+}
+.app-modal--popover .app-modal__panel {
+  max-width: 24rem;
+  border-radius: 1rem;
+  animation-name: modal-slide;
+}
+.app-modal--popover .app-modal__header {
+  align-items: center;
+  background: linear-gradient(90deg, rgb(51 78 104 / 0.1), rgb(14 165 233 / 0.1));
+}
+.app-modal--popover .app-modal__body {
+  padding: 0;
+}
+
+/* Phones: a bottom sheet that never hides its footer behind the URL bar. */
+@media (max-width: 639px) {
+  dialog.app-modal:not(.app-modal--popover)[open] {
+    align-items: flex-end;
+    padding: 0;
+  }
+  dialog.app-modal:not(.app-modal--popover) .app-modal__panel {
+    max-width: none;
+    max-height: 92dvh;
+    border-radius: 1.25rem 1.25rem 0 0;
+    border-bottom-width: 0;
+  }
+  .app-modal__footer {
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  }
+  dialog.app-modal--popover[open] {
+    padding: 0;
+  }
+  .app-modal--popover .app-modal__panel {
+    max-width: none;
+    height: 100%;
+    border-width: 0;
+    border-radius: 0;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+@keyframes modal-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes modal-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+@keyframes modal-slide {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+}
+
+/* ===== TOASTS (top layer via the Popover API, above any open dialog) ===== */
+
+.app-toasts {
+  position: fixed;
+  inset: auto 1rem calc(1rem + env(safe-area-inset-bottom)) auto;
+  width: min(24rem, calc(100vw - 2rem));
   margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  overflow: visible;
+}
+.app-toasts:not(:popover-open) {
+  /* Browsers without the Popover API show the region as a fixed element. */
+  display: block;
+  z-index: 200;
+}
+.app-toasts li {
+  animation: toast-in 0.22s ease-out;
+}
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
 }

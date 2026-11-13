@@ -1,5 +1,12 @@
 {
   "css.lint.unknownAtRules": "ignore",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "[html]": {
+    "editor.formatOnSave": false
+  },
+  "eslint.validate": ["typescript", "html"],
+  "typescript.tsdk": "node_modules/typescript/lib",
   "sonarlint.rules": {
     "Web:S5725": {
       "level": "off"

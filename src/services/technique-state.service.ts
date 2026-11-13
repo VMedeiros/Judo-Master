@@ -1,202 +1,207 @@
+import { Injectable, computed, inject, signal } from '@angular/core';
+
+import { LEGACY_STORAGE_KEYS, STORAGE_KEYS } from '../constants/app.constants';
 import {
-    Injectable,
-    WritableSignal,
-    computed,
-    inject,
-    signal,
-} from '@angular/core';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-
-import { TECHNIQUE_CATEGORIES } from '../constants/app.constants';
-import { STORAGE_KEYS } from '../constants/storage-keys.constants';
-import { FormMode, FormSaveEvent, GroupedTechnique, Technique } from '../models/judo.model';
+  ActiveModal,
+  Belt,
+  FormSaveEvent,
+  GroupedTechnique,
+  Technique,
+} from '../models/judo.model';
+import { normalizeForSearch } from '../utils/text.util';
+import { isYouTubeUrl } from '../utils/youtube.util';
 import { JudoDataService } from './judo-data.service';
-import { NotificationService } from './notification.service';
 import { StorageService } from './storage.service';
+import { ToastService } from './toast.service';
 
+const SAVE_FAILED =
+  'Não foi possível salvar neste dispositivo. Verifique o espaço de armazenamento do navegador.';
+
+/** Screen state: the selected belt, the search, the open dialog and the actions on techniques. */
 @Injectable({ providedIn: 'root' })
 export class TechniqueStateService {
-    private readonly dataService = inject(JudoDataService);
-    private readonly notification = inject(NotificationService);
-    private readonly storage = inject(StorageService);
-    private readonly sanitizer = inject(DomSanitizer);
+  private readonly data = inject(JudoDataService);
+  private readonly toast = inject(ToastService);
+  private readonly storage = inject(StorageService);
 
-    public readonly belts = this.dataService.belts;
-    public readonly selectedBeltIndex = signal(
-        this.storage.get<number>(STORAGE_KEYS.SELECTED_BELT, 0),
-    );
-    public readonly filterTerm = signal('');
+  public readonly belts = this.data.belts;
+  public readonly hasChanges = this.data.hasChanges;
+  public readonly filterTerm = signal('');
+  public readonly modal = signal<ActiveModal>({ kind: 'none' });
 
-    // Modal state
-    public readonly techniqueForDetail = signal<Technique | null>(null);
-    public readonly techniqueForForm = signal<Technique | null>(null);
-    public readonly formMode = signal<FormMode>('add');
-    public readonly techniqueToDelete = signal<Technique | null>(null);
-    public readonly techniqueForVideo = signal<Technique | null>(null);
-    public readonly isAboutOpen = signal(false);
+  private readonly selectedBeltId = signal(this.restoreSelectedBelt());
 
-    public readonly selectedBelt = computed(() => this.belts()[this.selectedBeltIndex()]);
+  public readonly selectedBeltIndex = computed(() =>
+    Math.max(
+      0,
+      this.belts().findIndex(belt => belt.id === this.selectedBeltId())
+    )
+  );
+  public readonly selectedBelt = computed<Belt | undefined>(
+    () => this.belts()[this.selectedBeltIndex()]
+  );
 
-    public readonly groupedTechniques = computed<GroupedTechnique[]>(() => {
-        const belt = this.selectedBelt();
-        if (!belt?.techniques?.length) return [];
+  /** The selected belt's techniques that match the search, grouped by category in order of first appearance. */
+  public readonly groupedTechniques = computed<readonly GroupedTechnique[]>(() => {
+    const techniques = this.selectedBelt()?.techniques ?? [];
+    const term = normalizeForSearch(this.filterTerm());
+    const groups = new Map<string, Technique[]>();
+    for (const technique of techniques) {
+      if (term && !matches(technique, term)) continue;
+      const group = groups.get(technique.category);
+      if (group) group.push(technique);
+      else groups.set(technique.category, [technique]);
+    }
+    return Array.from(groups, ([category, list]) => ({ category, techniques: list }));
+  });
 
-        const term = this.filterTerm().trim().toLowerCase();
-        const filtered = term
-            ? belt.techniques.filter(
-                t =>
-                    t.name.toLowerCase().includes(term) ||
-                    t.translation.toLowerCase().includes(term),
-            )
-            : belt.techniques;
+  /** The techniques in the order they are shown, for previous/next navigation. */
+  public readonly visibleTechniques = computed(() =>
+    this.groupedTechniques().flatMap(g => g.techniques)
+  );
 
-        if (!filtered.length) return [];
+  public readonly visibleCount = computed(() => this.visibleTechniques().length);
 
-        const groups = new Map<string, Technique[]>();
-        for (const tech of filtered) {
-            const existing = groups.get(tech.category);
-            if (existing) {
-                existing.push(tech);
-            } else {
-                groups.set(tech.category, [tech]);
-            }
-        }
-        return Array.from(groups.entries()).map(([category, techniques]) => ({
-            category,
-            techniques,
-        }));
+  /** Every category in use, for the form. Sorted, without duplicates. */
+  public readonly categories = computed(() =>
+    [...new Set(this.belts().flatMap(b => b.techniques.map(t => t.category)))].sort((a, b) =>
+      a.localeCompare(b, 'pt-BR')
+    )
+  );
+
+  public selectBelt(index: number): void {
+    const belt = this.belts()[index];
+    if (!belt) return;
+    this.selectedBeltId.set(belt.id);
+    this.filterTerm.set('');
+    this.storage.write(STORAGE_KEYS.SELECTED_BELT, belt.id);
+  }
+
+  // ── Dialogs ────────────────────────────────────────────────────────────────
+
+  public openSettings(): void {
+    this.modal.set({ kind: 'settings' });
+  }
+
+  public openAbout(): void {
+    this.modal.set({ kind: 'about' });
+  }
+
+  public openReset(): void {
+    this.modal.set({ kind: 'reset' });
+  }
+
+  public openDetail(technique: Technique): void {
+    this.modal.set({ kind: 'detail', technique });
+  }
+
+  public openVideo(technique: Technique): void {
+    if (isYouTubeUrl(technique.demoUrl)) this.modal.set({ kind: 'video', technique });
+  }
+
+  public openDelete(technique: Technique): void {
+    this.modal.set({ kind: 'delete', technique });
+  }
+
+  public openAddForm(): void {
+    const belt = this.selectedBelt();
+    const category = belt?.techniques[0]?.category ?? this.categories()[0] ?? '';
+    this.modal.set({
+      kind: 'form',
+      mode: 'add',
+      technique: {
+        name: '',
+        translation: '',
+        description: '',
+        execution: '',
+        application: '',
+        demoUrl: '',
+        category,
+      },
     });
+  }
 
-    public readonly safeVideoUrl = computed<SafeResourceUrl | null>(() => {
-        const tech = this.techniqueForVideo();
-        if (!tech?.demoUrl || tech.demoUrl === '#') return null;
+  public openEditForm(technique: Technique): void {
+    this.modal.set({ kind: 'form', mode: 'edit', technique });
+  }
 
-        const embedUrl = this.toYouTubeEmbedUrl(tech.demoUrl);
-        if (!embedUrl) return null;
-        // URL is constructed from a validated YouTube video ID — safe to bypass Angular sanitization
-        return this.sanitizer.bypassSecurityTrustResourceUrl(embedUrl); // NOSONAR
-    });
+  public closeModal(): void {
+    this.modal.set({ kind: 'none' });
+  }
 
-    public readonly hasAnyModalOpen = computed(() =>
-        this.techniqueForDetail() !== null ||
-        this.techniqueForForm() !== null ||
-        this.techniqueToDelete() !== null ||
-        this.techniqueForVideo() !== null ||
-        this.isAboutOpen(),
-    );
+  // ── Previous / next inside the detail and video dialogs ─────────────────────
 
-    public selectBelt(index: number): void {
-        this.selectedBeltIndex.set(index);
-        this.filterTerm.set('');
-        this.storage.set(STORAGE_KEYS.SELECTED_BELT, index);
+  /** The technique before or after `current` in the visible list; videos skip techniques without one. */
+  public neighbor(current: Technique, delta: 1 | -1, withVideo = false): Technique | null {
+    const list = withVideo
+      ? this.visibleTechniques().filter(t => t.id === current.id || isYouTubeUrl(t.demoUrl))
+      : this.visibleTechniques();
+    const index = list.findIndex(t => t.id === current.id);
+    return index === -1 ? null : (list[index + delta] ?? null);
+  }
+
+  public goTo(delta: 1 | -1): void {
+    const modal = this.modal();
+    if (modal.kind !== 'detail' && modal.kind !== 'video') return;
+    const next = this.neighbor(modal.technique, delta, modal.kind === 'video');
+    if (next) this.modal.set({ kind: modal.kind, technique: next });
+  }
+
+  // ── Actions ────────────────────────────────────────────────────────────────
+
+  public saveTechnique(event: FormSaveEvent): void {
+    const belt = this.selectedBelt();
+    if (!belt) return;
+    const { id, ...fields } = event.data;
+    if (event.mode === 'edit' && id !== undefined) {
+      if (!this.data.updateTechnique(belt.id, { ...fields, id })) {
+        this.toast.error(SAVE_FAILED);
+        return;
+      }
+      this.toast.success('Técnica atualizada.');
+    } else {
+      if (!this.data.addTechnique(belt.id, fields)) {
+        this.toast.error(SAVE_FAILED);
+        return;
+      }
+      // A search that hides the new technique would make it look lost.
+      this.filterTerm.set('');
+      this.toast.success('Técnica adicionada.');
     }
+    this.closeModal();
+  }
 
-    public openAddForm(): void {
-        this.formMode.set('add');
-        this.techniqueForForm.set({
-            id: 0,
-            name: '',
-            translation: '',
-            description: '',
-            execution: '',
-            application: '',
-            demoUrl: '',
-            category: TECHNIQUE_CATEGORIES[0],
-        });
+  public confirmDelete(): void {
+    const modal = this.modal();
+    const belt = this.selectedBelt();
+    if (modal.kind !== 'delete' || !belt) return;
+    if (!this.data.deleteTechnique(belt.id, modal.technique.id)) {
+      this.toast.error(SAVE_FAILED);
+      return;
     }
+    this.toast.success(`"${modal.technique.name}" removida.`);
+    this.closeModal();
+  }
 
-    public openEditForm(technique: Technique): void {
-        this.formMode.set('edit');
-        this.techniqueForForm.set({ ...technique });
-    }
+  public confirmReset(): void {
+    this.data.resetToDefaults();
+    this.toast.success('Técnicas originais restauradas.');
+    this.closeModal();
+  }
 
-    public onSaveTechnique(event: FormSaveEvent): void {
-        const belt = this.selectedBelt();
-        if (!belt) {
-            this.notification.showError('Erro ao identificar a faixa selecionada.');
-            return;
-        }
-        try {
-            if (event.mode === 'edit' && event.data.id) {
-                this.dataService.updateTechnique(belt.id, event.data as Technique);
-                this.notification.showSuccess('Técnica atualizada com sucesso!');
-            } else {
-                const { id: _omit, ...rest } = event.data;
-                this.dataService.addTechnique(belt.id, rest);
-                this.notification.showSuccess('Técnica adicionada com sucesso!');
-            }
-            this.techniqueForForm.set(null);
-        } catch {
-            this.notification.showError('Erro ao salvar. Tente novamente.');
-        }
-    }
+  private restoreSelectedBelt(): number {
+    const belts = this.data.belts();
+    const stored = this.storage.read(STORAGE_KEYS.SELECTED_BELT);
+    if (typeof stored === 'number' && belts.some(b => b.id === stored)) return stored;
+    // Versions before 2.1 stored the tab index instead of the belt id.
+    const legacyIndex = this.storage.read(LEGACY_STORAGE_KEYS.SELECTED_BELT_INDEX);
+    if (typeof legacyIndex === 'number' && belts[legacyIndex]) return belts[legacyIndex].id;
+    return belts[0]?.id ?? 0;
+  }
+}
 
-    public onConfirmDelete(): void {
-        const technique = this.techniqueToDelete();
-        const belt = this.selectedBelt();
-        if (!technique || !belt) {
-            this.notification.showError('Erro ao identificar técnica ou faixa.');
-            return;
-        }
-        try {
-            this.dataService.deleteTechnique(belt.id, technique.id);
-            this.notification.showSuccess('Técnica removida com sucesso!');
-            this.techniqueToDelete.set(null);
-        } catch {
-            this.notification.showError('Erro ao remover. Tente novamente.');
-        }
-    }
-
-    public closeAllModals(): void {
-        if (this.techniqueForDetail()) { this.techniqueForDetail.set(null); return; }
-        if (this.techniqueForForm()) { this.techniqueForForm.set(null); return; }
-        if (this.techniqueToDelete()) { this.techniqueToDelete.set(null); return; }
-        if (this.techniqueForVideo()) { this.techniqueForVideo.set(null); return; }
-        if (this.isAboutOpen()) { this.isAboutOpen.set(false); }
-    }
-
-    public goToNextDetail(): void { this.navigate(this.techniqueForDetail, 1); }
-    public goToPrevDetail(): void { this.navigate(this.techniqueForDetail, -1); }
-    public goToNextVideo(): void { this.navigate(this.techniqueForVideo, 1); }
-    public goToPrevVideo(): void { this.navigate(this.techniqueForVideo, -1); }
-
-    private navigate(target: WritableSignal<Technique | null>, delta: number): void {
-        const current = target();
-        if (!current) return;
-        const all = this.getAllTechniques();
-        const idx = all.findIndex(t => t.id === current.id);
-        const next = all[idx + delta];
-        if (next) target.set(next);
-    }
-
-    private toYouTubeEmbedUrl(rawUrl: string): string | null {
-        const ytIdPattern = /^[A-Za-z0-9_-]{11}$/;
-        try {
-            if (rawUrl.includes('youtube.com/watch')) {
-                const videoId = new URL(rawUrl).searchParams.get('v');
-                if (videoId && ytIdPattern.test(videoId)) {
-                    return `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-                }
-            } else if (rawUrl.includes('youtu.be/')) {
-                const id = rawUrl.split('youtu.be/')[1]?.split('?')[0];
-                if (id && ytIdPattern.test(id)) {
-                    return `https://www.youtube.com/embed/${id}?autoplay=1`;
-                }
-            }
-        } catch {
-            return null;
-        }
-        return null;
-    }
-
-    private getAllTechniques(): Technique[] {
-        const belt = this.selectedBelt();
-        if (!belt?.techniques) return [];
-        const term = this.filterTerm().trim().toLowerCase();
-        return term
-            ? belt.techniques.filter(
-                t => t.name.toLowerCase().includes(term) || t.translation.toLowerCase().includes(term),
-            )
-            : [...belt.techniques];
-    }
+function matches(technique: Technique, term: string): boolean {
+  return [technique.name, technique.translation, technique.description, technique.category].some(
+    field => normalizeForSearch(field).includes(term)
+  );
 }

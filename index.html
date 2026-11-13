@@ -1,167 +1,71 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"
-    />
+    <base href="/" />
+    <title>Judô Master — Técnicas de Judô por faixa</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta
       name="description"
-      content="Sistema de gerenciamento de técnicas de Judô por graduação de faixas"
+      content="Estude as técnicas de Judô de cada faixa: descrição, execução, aplicação e vídeos de demonstração. Funciona offline."
     />
+    <meta name="author" content="Victor Medeiros" />
+    <!-- GitHub Pages cannot send headers: the policy goes in a meta tag. Scripts
+         only from this origin (no inline script anywhere), the YouTube player
+         as the only frame, fonts from Google Fonts. -->
     <meta
-      name="theme-color"
-      content="#1e3a5f"
-      media="(prefers-color-scheme: light)"
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; frame-src https://www.youtube-nocookie.com; connect-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'"
     />
-    <meta
-      name="theme-color"
-      content="#0a1929"
-      media="(prefers-color-scheme: dark)"
-    />
-    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
-    <meta
-      http-equiv="Referrer-Policy"
-      content="strict-origin-when-cross-origin"
-    />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <!-- Kept in sync with the active theme by assets/theme-init.js and ThemeService. -->
+    <meta name="theme-color" content="#e8f0f7" />
+
+    <!-- PWA -->
     <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta
-      name="apple-mobile-web-app-status-bar-style"
-      content="black-translucent"
-    />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Judô Master" />
+    <meta name="application-name" content="Judô Master" />
+    <meta name="format-detection" content="telephone=no" />
     <link rel="manifest" href="manifest.webmanifest" />
-    <!-- Favicon premium: kanji 柔 com gradiente azul (identidade JudoKan) -->
-    <link rel="icon" type="image/svg+xml" href="assets/icon.svg" />
-    <link rel="mask-icon" href="assets/icon.svg" color="#0ea5e9" />
-    <!-- Inline SVG favicon fallback (browsers que não suportam SVG) -->
-    <link
-      rel="icon"
-      sizes="any"
-      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%230ea5e9'/%3E%3Cstop offset='100%25' style='stop-color:%230284c7'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='6' fill='url(%23g)'/%3E%3Ctext x='16' y='16' font-family='sans-serif' font-size='18' font-weight='700' fill='%23102a43' text-anchor='middle' dominant-baseline='central'%3E%E6%9F%94%3C/text%3E%3C/svg%3E"
-    />
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png" />
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+
+    <!-- Applies the saved theme before the first paint. External and
+         render-blocking on purpose: the CSP forbids inline scripts, and
+         deferring it would flash the light theme at dark-mode users. -->
+    <script src="assets/theme-init.js"></script>
+
+    <!-- Fonts. Material Symbols only for the icons in use: keep `icon_names`
+         sorted and in sync with the templates (npm run check:icons). -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      rel="apple-touch-icon"
-      sizes="152x152"
-      href="assets/icons/icon-152x152.png"
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400..900&family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@400;700&display=swap"
     />
     <link
-      rel="apple-touch-icon"
-      sizes="167x167"
-      href="assets/icons/icon-167x167.png"
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=add,check,check_circle,chevron_left,chevron_right,close,dark_mode,delete,edit,error,format_size,inbox,info,light_mode,open_in_new,palette,picture_as_pdf,play_circle,restart_alt,save,search,search_off,settings,sports_martial_arts,table_view,target,tune,videocam_off,visibility,warning&display=block"
     />
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="assets/icons/icon-180x180.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="assets/favicon-32x32.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="assets/favicon-16x16.png"
-    />
-    <title>Judô Master - Gerenciamento de Técnicas</title>
 
     <style>
-      /* ============================================================
-         Custom Scrollbar
-         ============================================================ */
-      ::-webkit-scrollbar {
-        width: 6px;
-        height: 6px;
-      }
-      ::-webkit-scrollbar-track {
-        background: transparent;
-      }
-      ::-webkit-scrollbar-thumb {
-        background-color: rgba(156, 163, 175, 0.4);
-        border-radius: 20px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background-color: rgba(156, 163, 175, 0.6);
-      }
-      .dark ::-webkit-scrollbar-thumb {
-        background-color: rgba(75, 85, 99, 0.4);
-      }
-
-      /* ============================================================
-         Background — foto de judô com overlay (igual tela de login JudoKan)
-         ============================================================ */
-      body {
-        font-family: "Inter", "Noto Sans JP", sans-serif;
-        background-color: #0a1422;
-      }
-
-      body::before {
-        content: "";
+      /* Splash: shown inside <app-root> until Angular renders over it. Inline
+         so it paints before any stylesheet arrives. */
+      .app-splash {
         position: fixed;
         inset: 0;
-        background-image: url("https://images.unsplash.com/photo-1656653121475-e33829581294?q=80&w=1170&auto=format&fit=crop");
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
-        z-index: -3;
-      }
-
-      body::after {
-        content: "";
-        position: fixed;
-        inset: 0;
-        background: linear-gradient(
-          to right,
-          rgba(10, 30, 60, 0.88) 0%,
-          rgba(10, 30, 60, 0.6) 40%,
-          rgba(10, 30, 60, 0.4) 100%
-        );
-        z-index: -2;
-      }
-
-      /* Tema claro — overlay e fundo adaptados */
-      html:not(.dark) body {
-        background-color: #7aa8c4;
-      }
-      html:not(.dark) body::after {
-        background: rgba(235, 242, 248, 0.72);
-      }
-
-      /* ============================================================
-         Premium Splash Screen (identidade JudoKan)
-         ============================================================ */
-      #app-splash {
-        position: fixed;
-        inset: 0;
-        width: 100vw;
-        height: 100vh;
-        height: 100dvh;
-        background: linear-gradient(
-          135deg,
-          #0a1929 0%,
-          #102a43 50%,
-          #192a3e 100%
-        );
         z-index: 9999;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        transition:
-          opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
-          visibility 0.8s,
-          transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         overflow: hidden;
+        background: linear-gradient(135deg, #0a1929 0%, #102a43 50%, #192a3e 100%);
+        font-family: 'Inter', system-ui, sans-serif;
       }
-
-      /* Partículas flutuantes */
       .splash-particles {
         position: absolute;
         inset: 0;
@@ -172,65 +76,29 @@
         position: absolute;
         width: 4px;
         height: 4px;
-        background: rgba(14, 165, 233, 0.3);
         border-radius: 50%;
+        background: rgb(14 165 233 / 0.3);
         animation: float-particle 8s infinite ease-in-out;
       }
-      .splash-particle:nth-child(1) {
-        left: 10%;
-        top: 20%;
-        animation-delay: 0s;
-        animation-duration: 6s;
+      .splash-particle:nth-child(1) { left: 10%; top: 20%; animation-duration: 6s; }
+      .splash-particle:nth-child(2) { left: 20%; top: 80%; animation-delay: 1s; }
+      .splash-particle:nth-child(3) { left: 30%; top: 40%; animation-delay: 2s; animation-duration: 7s; }
+      .splash-particle:nth-child(4) { left: 50%; top: 60%; animation-delay: 0.5s; animation-duration: 9s; }
+      .splash-particle:nth-child(5) { left: 70%; top: 30%; animation-delay: 1.5s; animation-duration: 6s; }
+      .splash-particle:nth-child(6) { left: 80%; top: 70%; animation-delay: 2.5s; }
+      .splash-particle:nth-child(7) { left: 90%; top: 50%; animation-delay: 0.7s; animation-duration: 7s; }
+      .splash-particle:nth-child(8) { left: 40%; top: 10%; animation-delay: 1.2s; animation-duration: 9s; }
+      .splash-logo-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
-      .splash-particle:nth-child(2) {
-        left: 20%;
-        top: 80%;
-        animation-delay: 1s;
-        animation-duration: 8s;
-      }
-      .splash-particle:nth-child(3) {
-        left: 30%;
-        top: 40%;
-        animation-delay: 2s;
-        animation-duration: 7s;
-      }
-      .splash-particle:nth-child(4) {
-        left: 50%;
-        top: 60%;
-        animation-delay: 0.5s;
-        animation-duration: 9s;
-      }
-      .splash-particle:nth-child(5) {
-        left: 70%;
-        top: 30%;
-        animation-delay: 1.5s;
-        animation-duration: 6s;
-      }
-      .splash-particle:nth-child(6) {
-        left: 80%;
-        top: 70%;
-        animation-delay: 2.5s;
-        animation-duration: 8s;
-      }
-      .splash-particle:nth-child(7) {
-        left: 90%;
-        top: 50%;
-        animation-delay: 0.7s;
-        animation-duration: 7s;
-      }
-      .splash-particle:nth-child(8) {
-        left: 40%;
-        top: 10%;
-        animation-delay: 1.2s;
-        animation-duration: 9s;
-      }
-
-      /* Rings pulsantes atrás do logo */
       .splash-rings {
         position: absolute;
+        display: flex;
         width: 200px;
         height: 200px;
-        display: flex;
         align-items: center;
         justify-content: center;
       }
@@ -238,528 +106,140 @@
         position: absolute;
         width: 120px;
         height: 120px;
-        border: 1px solid rgba(14, 165, 233, 0.2);
+        border: 1px solid rgb(14 165 233 / 0.2);
         border-radius: 50%;
         animation: ring-expand 3s infinite ease-out;
       }
-      .splash-ring:nth-child(1) {
-        animation-delay: 0s;
-      }
-      .splash-ring:nth-child(2) {
-        animation-delay: 1s;
-      }
-      .splash-ring:nth-child(3) {
-        animation-delay: 2s;
-      }
-
-      .splash-logo-container {
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
+      .splash-ring:nth-child(2) { animation-delay: 1s; }
+      .splash-ring:nth-child(3) { animation-delay: 2s; }
       .splash-logo {
         position: relative;
         z-index: 1;
+        display: flex;
         width: 100px;
         height: 100px;
-        background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
-        border-radius: 24px;
-        display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow:
-          0 0 60px rgba(14, 165, 233, 0.3),
-          0 20px 40px rgba(0, 0, 0, 0.3);
-        animation:
-          pulse-glow-splash 2s infinite,
-          entrance-bounce 0.6s ease-out;
         overflow: hidden;
-      }
-      .splash-logo::before {
-        content: "";
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: linear-gradient(
-          45deg,
-          transparent,
-          rgba(255, 255, 255, 0.15),
-          transparent
-        );
-        animation: shine-logo 3s infinite;
+        border-radius: 24px;
+        background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+        box-shadow: 0 0 60px rgb(14 165 233 / 0.3), 0 20px 40px rgb(0 0 0 / 0.3);
+        animation: entrance-bounce 0.6s ease-out;
       }
       .splash-kanji {
-        font-family: "Noto Sans JP", serif;
+        color: #102a43;
+        font-family: 'Noto Sans JP', sans-serif;
         font-size: 42px;
         font-weight: 700;
-        color: #102a43;
-        animation: kanji-appear 0.8s ease-out 0.3s both;
       }
-
-      .splash-title {
+      .splash-text {
         margin-top: 24px;
-        font-family: "Inter", sans-serif;
-        color: white;
+        color: #fff;
         font-size: 32px;
         font-weight: 800;
         letter-spacing: -1px;
-        text-shadow: 0 2px 20px rgba(14, 165, 233, 0.3);
-        animation: text-slide-up 0.6s ease-out 0.4s both;
+        text-shadow: 0 2px 20px rgb(14 165 233 / 0.3);
       }
-      .splash-subtitle {
+      .splash-sub {
         margin-top: 8px;
-        color: #0ea5e9;
+        color: #38bdf8;
         font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 4px;
         font-weight: 600;
-        animation: text-slide-up 0.6s ease-out 0.5s both;
-      }
-
-      .loader-container {
-        margin-top: 48px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 12px;
-        animation: text-slide-up 0.6s ease-out 0.6s both;
+        letter-spacing: 4px;
+        text-transform: uppercase;
       }
       .loader-bar {
         width: 240px;
         height: 4px;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 4px;
+        margin-top: 48px;
         overflow: hidden;
+        border-radius: 4px;
+        background: rgb(255 255 255 / 0.1);
       }
       .loader-progress {
         width: 100%;
         height: 100%;
-        background: linear-gradient(
-          90deg,
-          #0284c7,
-          #38bdf8,
-          #0ea5e9,
-          #38bdf8,
-          #0284c7
-        );
-        background-size: 300% 100%;
         border-radius: 4px;
+        background: linear-gradient(90deg, #0284c7, #38bdf8, #0ea5e9, #38bdf8, #0284c7);
+        background-size: 300% 100%;
         animation: loading-bar 1.5s ease-in-out infinite;
       }
-      .loader-dots {
-        display: flex;
-        gap: 4px;
-        margin-top: 4px;
+      .app-splash__noscript {
+        max-width: 28rem;
+        margin-top: 2rem;
+        padding: 0 1rem;
+        color: #f1f5f9;
+        text-align: center;
       }
-      .loader-dot {
-        width: 6px;
-        height: 6px;
-        background: rgba(14, 165, 233, 0.4);
-        border-radius: 50%;
-        animation: dot-pulse 1.4s ease-in-out infinite;
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
       }
-      .loader-dot:nth-child(1) {
-        animation-delay: 0s;
-      }
-      .loader-dot:nth-child(2) {
-        animation-delay: 0.2s;
-      }
-      .loader-dot:nth-child(3) {
-        animation-delay: 0.4s;
-      }
-      .loader-text {
-        font-size: 11px;
-        color: rgba(255, 255, 255, 0.5);
-        font-weight: 500;
-        letter-spacing: 1px;
-      }
-
-      .splash-hidden {
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-        transform: scale(1.05);
-      }
-
-      /* ============================================================
-         Keyframes
-         ============================================================ */
       @keyframes float-particle {
-        0%,
-        100% {
-          transform: translateY(0) scale(1);
-          opacity: 0.3;
-        }
-        50% {
-          transform: translateY(-30px) scale(1.2);
-          opacity: 0.6;
-        }
+        0%, 100% { transform: translateY(0) scale(1); opacity: 0.3; }
+        50% { transform: translateY(-30px) scale(1.2); opacity: 0.6; }
       }
       @keyframes ring-expand {
-        0% {
-          transform: scale(1);
-          opacity: 0.4;
-        }
-        100% {
-          transform: scale(2);
-          opacity: 0;
-        }
+        0% { transform: scale(1); opacity: 0.4; }
+        100% { transform: scale(2); opacity: 0; }
       }
       @keyframes entrance-bounce {
-        0% {
-          transform: scale(0.5);
-          opacity: 0;
-        }
-        60% {
-          transform: scale(1.1);
-        }
-        100% {
-          transform: scale(1);
-          opacity: 1;
-        }
-      }
-      @keyframes kanji-appear {
-        0% {
-          transform: scale(0.8);
-          opacity: 0;
-        }
-        100% {
-          transform: scale(1);
-          opacity: 1;
-        }
-      }
-      @keyframes text-slide-up {
-        0% {
-          transform: translateY(20px);
-          opacity: 0;
-        }
-        100% {
-          transform: translateY(0);
-          opacity: 1;
-        }
-      }
-      @keyframes pulse-glow-splash {
-        0%,
-        100% {
-          box-shadow:
-            0 0 30px rgba(14, 165, 233, 0.3),
-            0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-        50% {
-          box-shadow:
-            0 0 60px rgba(14, 165, 233, 0.5),
-            0 25px 50px rgba(0, 0, 0, 0.4);
-        }
-      }
-      @keyframes shine-logo {
-        0% {
-          transform: translateX(-100%) rotate(45deg);
-        }
-        100% {
-          transform: translateX(100%) rotate(45deg);
-        }
+        0% { transform: scale(0.5); opacity: 0; }
+        60% { transform: scale(1.1); }
+        100% { transform: scale(1); opacity: 1; }
       }
       @keyframes loading-bar {
-        0% {
-          background-position: 100% 0;
-        }
-        100% {
-          background-position: -100% 0;
-        }
+        0% { background-position: 100% 0; }
+        100% { background-position: -100% 0; }
       }
-      @keyframes dot-pulse {
-        0%,
-        80%,
-        100% {
-          transform: scale(0.6);
-          opacity: 0.4;
-        }
-        40% {
-          transform: scale(1);
-          opacity: 1;
-        }
-      }
-
-      /* ============================================================
-         Skeleton
-         ============================================================ */
-      .skeleton {
-        background: linear-gradient(
-          90deg,
-          #e5e7eb 25%,
-          #f3f4f6 50%,
-          #e5e7eb 75%
-        );
-        background-size: 200% 100%;
-        animation: skeleton-anim 1.5s infinite;
-        border-radius: 8px;
-      }
-      .dark .skeleton {
-        background: linear-gradient(
-          90deg,
-          #374151 25%,
-          #4b5563 50%,
-          #374151 75%
-        );
-        background-size: 200% 100%;
-      }
-      @keyframes skeleton-anim {
-        0% {
-          background-position: 200% 0;
-        }
-        100% {
-          background-position: -200% 0;
-        }
-      }
-
-      /* ============================================================
-         Responsive
-         ============================================================ */
       @media (max-width: 480px) {
-        .splash-logo {
-          width: 80px;
-          height: 80px;
-          border-radius: 20px;
-        }
-        .splash-kanji {
-          font-size: 34px;
-        }
-        .splash-title {
-          font-size: 24px;
-          margin-top: 20px;
-        }
-        .splash-subtitle {
-          font-size: 10px;
-          letter-spacing: 3px;
-        }
-        .loader-bar {
-          width: 200px;
-        }
-        .loader-container {
-          margin-top: 36px;
-        }
+        .splash-logo { width: 80px; height: 80px; border-radius: 20px; }
+        .splash-kanji { font-size: 34px; }
+        .splash-text { margin-top: 20px; font-size: 24px; }
+        .splash-sub { font-size: 10px; letter-spacing: 3px; }
+        .loader-bar { width: 200px; margin-top: 36px; }
       }
-
-      /* Prefers reduced motion */
       @media (prefers-reduced-motion: reduce) {
-        *,
-        *::before,
-        *::after {
-          animation-duration: 0.01ms !important;
-          animation-iteration-count: 1 !important;
-          transition-duration: 0.01ms !important;
-        }
+        .app-splash * { animation: none !important; }
       }
     </style>
-    <script type="importmap">
-      {
-        "imports": {
-          "rxjs": "https://aistudiocdn.com/rxjs@^7.8.2?conditions=es2015",
-          "rxjs/operators": "https://aistudiocdn.com/rxjs@^7.8.2/operators?conditions=es2015",
-          "rxjs/ajax": "https://aistudiocdn.com/rxjs@^7.8.2/ajax?conditions=es2015",
-          "rxjs/webSocket": "https://aistudiocdn.com/rxjs@^7.8.2/webSocket?conditions=es2015",
-          "rxjs/testing": "https://aistudiocdn.com/rxjs@^7.8.2/testing?conditions=es2015",
-          "rxjs/fetch": "https://aistudiocdn.com/rxjs@^7.8.2/fetch?conditions=es2015",
-          "@angular/compiler": "https://next.esm.sh/@angular/compiler@^21.0.1?external=rxjs",
-          "@angular/core": "https://next.esm.sh/@angular/core@^21.0.1?external=rxjs",
-          "@angular/common": "https://next.esm.sh/@angular/common@^21.0.1?external=rxjs",
-          "@angular/common/http": "https://next.esm.sh/@angular/common@^21.0.1/http?external=rxjs",
-          "@angular/platform-browser": "https://next.esm.sh/@angular/platform-browser@^21.0.1?external=rxjs"
-        }
-      }
-    </script>
-    <script type="module">
-      if ("serviceWorker" in navigator) {
-        const _isLocalDev = ["localhost", "127.0.0.1", "0.0.0.0"].includes(
-          location.hostname,
-        );
-        if (_isLocalDev) {
-          const regs = await navigator.serviceWorker.getRegistrations();
-          regs.forEach((r) => r.unregister());
-        } else {
-          window.addEventListener("load", async () => {
-            try {
-              await navigator.serviceWorker.register("ngsw-worker.js");
-            } catch (err) {
-              console.warn("SW registration failed:", err);
-            }
-            let reloaded = false;
-            navigator.serviceWorker.addEventListener("controllerchange", () => {
-              if (reloaded) return;
-              reloaded = true;
-              globalThis.location.reload();
-            });
-          });
-        }
-      }
-    </script>
   </head>
   <body>
-    <!-- Skip to main content -->
-    <a
-      href="#main-content"
-      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[999] focus:px-4 focus:py-2 focus:bg-accent-500 focus:text-white focus:rounded-xl focus:text-sm focus:font-semibold focus:shadow-lg"
-    >
-      Ir para o conteúdo principal
-    </a>
-
-    <!-- Premium Splash Screen -->
-    <div id="app-splash" aria-label="Carregando Judô Master" aria-busy="true">
-      <div class="splash-particles" aria-hidden="true">
-        <div class="splash-particle"></div>
-        <div class="splash-particle"></div>
-        <div class="splash-particle"></div>
-        <div class="splash-particle"></div>
-        <div class="splash-particle"></div>
-        <div class="splash-particle"></div>
-        <div class="splash-particle"></div>
-        <div class="splash-particle"></div>
-      </div>
-
-      <div class="splash-logo-container">
-        <div class="splash-rings" aria-hidden="true">
-          <div class="splash-ring"></div>
-          <div class="splash-ring"></div>
-          <div class="splash-ring"></div>
+    <!-- Angular replaces this placeholder as soon as it renders. -->
+    <app-root>
+      <div class="app-splash" role="status">
+        <div class="splash-particles" aria-hidden="true">
+          <div class="splash-particle"></div>
+          <div class="splash-particle"></div>
+          <div class="splash-particle"></div>
+          <div class="splash-particle"></div>
+          <div class="splash-particle"></div>
+          <div class="splash-particle"></div>
+          <div class="splash-particle"></div>
+          <div class="splash-particle"></div>
         </div>
-        <div class="splash-logo">
-          <span class="splash-kanji" aria-hidden="true">柔</span>
+        <div class="splash-logo-container" aria-hidden="true">
+          <div class="splash-rings">
+            <div class="splash-ring"></div>
+            <div class="splash-ring"></div>
+            <div class="splash-ring"></div>
+          </div>
+          <div class="splash-logo"><span class="splash-kanji">柔</span></div>
         </div>
-      </div>
-
-      <div class="splash-title">Judô Master</div>
-      <div class="splash-subtitle">Gerenciamento de Técnicas</div>
-
-      <div class="loader-container" aria-hidden="true">
-        <div class="loader-bar">
-          <div class="loader-progress"></div>
-        </div>
-        <div class="loader-dots">
-          <div class="loader-dot"></div>
-          <div class="loader-dot"></div>
-          <div class="loader-dot"></div>
-        </div>
-        <span class="loader-text">Carregando recursos...</span>
-      </div>
-
-      <output class="sr-only" aria-live="polite" id="splash-status"
-        >Carregando aplicação Judô Master. Por favor, aguarde.</output
-      >
-    </div>
-
-    <noscript>
-      <div
-        style="
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          min-height: 100vh;
-          font-family: system-ui, sans-serif;
-          text-align: center;
-          padding: 2rem;
-          background: #0a1929;
-          color: #f1f5f9;
-        "
-      >
-        <div>
-          <h1 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem">
-            Judô Master
-          </h1>
-          <p>Esta aplicação requer JavaScript para funcionar.</p>
-          <p>Por favor, habilite o JavaScript no seu navegador.</p>
-        </div>
-      </div>
-    </noscript>
-
-    <app-root id="main-content" role="main">
-      <div
-        style="
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          min-height: 100vh;
-          padding: 2rem;
-        "
-      >
-        <div style="width: 100%; max-width: 400px">
-          <div
-            class="skeleton"
-            style="
-              height: 60px;
-              width: 100%;
-              margin-bottom: 2rem;
-              border-radius: 12px;
-            "
-          ></div>
-          <div
-            class="skeleton"
-            style="
-              height: 180px;
-              width: 100%;
-              margin-bottom: 1rem;
-              border-radius: 16px;
-            "
-          ></div>
-          <div
-            class="skeleton"
-            style="
-              height: 180px;
-              width: 100%;
-              margin-bottom: 1rem;
-              border-radius: 16px;
-            "
-          ></div>
-        </div>
+        <p class="splash-text">Judô Master</p>
+        <p class="splash-sub">Técnicas por faixa</p>
+        <div class="loader-bar" aria-hidden="true"><div class="loader-progress"></div></div>
+        <span class="sr-only">Carregando o Judô Master…</span>
+        <noscript>
+          <p class="app-splash__noscript">
+            O Judô Master precisa de JavaScript para funcionar. Ative-o no navegador e recarregue a página.
+          </p>
+        </noscript>
       </div>
     </app-root>
-
-    <script>
-      (function () {
-        const splash = document.getElementById("app-splash");
-        const splashStatus = document.getElementById("splash-status");
-        const loaderText = splash && splash.querySelector(".loader-text");
-        if (!splash) return;
-
-        const messages = [
-          "Carregando recursos...",
-          "Preparando interface...",
-          "Quase pronto...",
-        ];
-        let idx = 0;
-        const interval = setInterval(() => {
-          idx = (idx + 1) % messages.length;
-          if (loaderText) loaderText.textContent = messages[idx];
-          if (splashStatus) splashStatus.textContent = messages[idx];
-        }, 800);
-
-        const hideSplash = () => {
-          clearInterval(interval);
-          if (loaderText) loaderText.textContent = "Pronto!";
-          if (splashStatus)
-            splashStatus.textContent = "Aplicação carregada com sucesso.";
-          requestAnimationFrame(() => {
-            splash.classList.add("splash-hidden");
-            splash.setAttribute("aria-hidden", "true");
-            splash.setAttribute("aria-busy", "false");
-            setTimeout(() => {
-              if (splash.parentNode) splash.remove();
-            }, 800);
-          });
-        };
-
-        globalThis.addEventListener("angular-ready", hideSplash, {
-          once: true,
-        });
-        globalThis.addEventListener("DOMContentLoaded", () =>
-          setTimeout(hideSplash, 2000),
-        );
-        setTimeout(hideSplash, 5000);
-      })();
-    </script>
   </body>
 </html>
