@@ -19,7 +19,7 @@
 
 <p align="center">
   <a href="https://github.com/VMedeiros/Judo-Master/actions/workflows/ci.yml"><img src="https://github.com/VMedeiros/Judo-Master/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <img src="https://img.shields.io/badge/Angular-21-DD0031?logo=angular&logoColor=white" alt="Angular 21">
+  <img src="https://img.shields.io/badge/Angular-22-DD0031?logo=angular&logoColor=white" alt="Angular 22">
   <img src="https://img.shields.io/badge/TypeScript-5.9_strict-3178C6?logo=typescript&logoColor=white" alt="TypeScript strict">
   <img src="https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white" alt="Tailwind CSS 4">
   <img src="https://img.shields.io/badge/WCAG-2.1_AA-2E7D32" alt="WCAG 2.1 AA">
@@ -65,8 +65,8 @@ automaticamente na primeira abertura.
 
 | Área       | Escolha                                                                              |
 | ---------- | ------------------------------------------------------------------------------------ |
-| Framework  | Angular 21 — componentes standalone, signals, zoneless, controle de fluxo nativo     |
-| Linguagem  | TypeScript 5.9 em modo `strict` + `strictTemplates`                                  |
+| Framework  | Angular 22 — componentes standalone, signals, zoneless, controle de fluxo nativo     |
+| Linguagem  | TypeScript 6.0 em modo `strict` + `strictTemplates`                                  |
 | Estilo     | Tailwind CSS 4, tokens de tema em CSS, modo escuro por classe                        |
 | PWA        | `@angular/service-worker` (cache do app, das fontes e das imagens)                   |
 | Exportação | SheetJS (Excel) e jsPDF + AutoTable (PDF), carregados só no primeiro download        |
@@ -75,7 +75,7 @@ automaticamente na primeira abertura.
 
 ## 💻 Desenvolvimento
 
-Pré-requisito: **Node.js 22.12+** (veja `.nvmrc`).
+Pré-requisito: **Node.js 22.22.3+** (veja `.nvmrc`).
 
 ```bash
 npm install        # instala as dependências e o hook de pre-commit

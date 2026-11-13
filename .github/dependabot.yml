@@ -19,16 +19,18 @@ updates:
     ignore:
       - dependency-name: 'xlsx'
     groups:
+      # Angular packages pin each other as peers (and pin the TypeScript
+      # range), so every update, majors included, must land in one PR.
+      # Bumping them one at a time makes `npm ci` fail with ERESOLVE.
       angular:
         patterns:
           - '@angular/*'
           - '@angular-devkit/*'
-        update-types:
-          - 'minor'
-          - 'patch'
+          - '@angular-eslint/*'
+          - 'angular-eslint'
+          - 'typescript'
       typescript:
         patterns:
-          - 'typescript'
           - '@types/*'
       testing:
         patterns:
@@ -41,7 +43,6 @@ updates:
           - 'eslint*'
           - '@eslint/*'
           - 'typescript-eslint'
-          - 'angular-eslint'
           - 'prettier*'
       tailwind:
         patterns:

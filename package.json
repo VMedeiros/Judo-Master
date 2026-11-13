@@ -5,7 +5,7 @@
   "description": "Judô Master - Técnicas de Judô por graduação de faixa",
   "type": "module",
   "engines": {
-    "node": ">=22.12"
+    "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
   },
   "scripts": {
     "prestart": "node scripts/generate-version.mjs",
@@ -30,20 +30,20 @@
     "start:e2e": "ng serve --port 3100"
   },
   "dependencies": {
-    "@angular/common": "^21.2.25",
-    "@angular/compiler": "^21.2.25",
-    "@angular/core": "^21.2.25",
-    "@angular/platform-browser": "^21.2.25",
-    "@angular/service-worker": "^21.2.25",
+    "@angular/common": "^22.2.6",
+    "@angular/compiler": "^22.2.6",
+    "@angular/core": "^22.2.6",
+    "@angular/platform-browser": "^22.2.6",
+    "@angular/service-worker": "^22.2.6",
     "jspdf": "^4.2.1",
     "jspdf-autotable": "^5.0.8",
     "rxjs": "^7.8.2",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
   },
   "devDependencies": {
-    "@angular/build": "^21.2.26",
-    "@angular/cli": "^21.2.26",
-    "@angular/compiler-cli": "^21.2.25",
+    "@angular/build": "^22.2.7",
+    "@angular/cli": "^22.2.7",
+    "@angular/compiler-cli": "^22.2.6",
     "@axe-core/playwright": "^4.13.0",
     "@emnapi/core": "^1.11.3",
     "@emnapi/runtime": "^1.11.3",
@@ -52,12 +52,13 @@
     "@tailwindcss/postcss": "^4.3.0",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^22.14.0",
-    "angular-eslint": "21.4.0",
+    "angular-eslint": "22.6.0",
     "eslint": "10.13.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-sonarjs": "4.2.2",
     "globals": "17.13.0",
     "husky": "^9.1.7",
+    "istanbul-lib-instrument": "^6.0.3",
     "jasmine-core": "~5.5.0",
     "karma": "^6.4.4",
     "karma-chrome-launcher": "^3.2.0",
@@ -68,7 +69,7 @@
     "postcss": "^8.5.15",
     "prettier": "^3.5.3",
     "tailwindcss": "^4.3.0",
-    "typescript": "~5.9.3",
+    "typescript": "~6.0.3",
     "typescript-eslint": "8.72.0"
   },
   "author": {
