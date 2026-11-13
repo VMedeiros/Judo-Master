@@ -2,7 +2,11 @@ import { DOCUMENT } from '@angular/common';
 import { TestBed } from '@angular/core/testing';
 import { SwUpdate } from '@angular/service-worker';
 
-import { AppUpdateService, UPDATE_CHECK_MIN_GAP_MS } from './app-update.service';
+import {
+  AUTO_APPLY_WINDOW_MS,
+  AppUpdateService,
+  UPDATE_CHECK_MIN_GAP_MS,
+} from './app-update.service';
 
 describe('AppUpdateService', () => {
   let sw: { isEnabled: boolean; checkForUpdate: jasmine.Spy; activateUpdate: jasmine.Spy };
@@ -57,6 +61,19 @@ describe('AppUpdateService', () => {
     create().start();
     jasmine.clock().tick(30 * 60 * 1000);
     expect(sw.checkForUpdate).toHaveBeenCalledTimes(1);
+  });
+
+  it('knows the app was just opened or brought back, not when it stayed open', () => {
+    const service = create();
+    service.start();
+    expect(service.justArrived()).toBeTrue();
+    jasmine.clock().tick(AUTO_APPLY_WINDOW_MS + 1);
+    expect(service.justArrived()).toBeFalse();
+    // The half-hour check alone is not an arrival.
+    jasmine.clock().tick(30 * 60 * 1000);
+    expect(service.justArrived()).toBeFalse();
+    document.dispatchEvent(new Event('visibilitychange'));
+    expect(service.justArrived()).toBeTrue();
   });
 
   it('survives a failed check', async () => {

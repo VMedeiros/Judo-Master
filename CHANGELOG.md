@@ -3,6 +3,15 @@
 Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/); versões seguem
 [SemVer](https://semver.org/lang/pt-BR/).
 
+## [2.2.1] — 2026-11-13
+
+### Corrigido
+
+- O app continuava na versão antiga depois de cada publicação: baixava a nova em segundo plano e
+  esperava um toque em "Atualizar". Agora, se a versão nova chega logo depois de o app ser aberto
+  ou trazido de volta, ele troca sozinho. O aviso só aparece quando a pessoa já está usando o app
+  ou está com um diálogo aberto, para não interromper nada.
+
 ## [2.2.0] — 2026-11-13
 
 ### Corrigido

@@ -98,7 +98,11 @@ export class AppComponent {
     if (modal.kind === 'detail') this.state.openVideo(modal.technique);
   }
 
-  /** When a new version has been downloaded in the background, offer to switch to it. */
+  /**
+   * When a new version has been downloaded in the background, switch to it
+   * right away if the app was just opened and nothing is in progress;
+   * otherwise offer it, so a reload never interrupts the person.
+   */
   private offerUpdates(updates: SwUpdate, destroyRef: DestroyRef): void {
     if (!updates.isEnabled) return;
     updates.versionUpdates
@@ -106,12 +110,16 @@ export class AppComponent {
         filter((event): event is VersionReadyEvent => event.type === 'VERSION_READY'),
         takeUntilDestroyed(destroyRef)
       )
-      .subscribe(() =>
+      .subscribe(() => {
+        if (this.appUpdate.justArrived() && this.state.modal().kind === 'none') {
+          void this.appUpdate.apply();
+          return;
+        }
         this.toast.info('Uma nova versão do Judô Master está disponível.', {
           sticky: true,
           action: { label: 'Atualizar', run: () => void this.appUpdate.apply() },
-        })
-      );
+        });
+      });
     updates.unrecoverable.pipe(takeUntilDestroyed(destroyRef)).subscribe(() =>
       this.toast.info('Esta versão do app ficou desatualizada. Recarregue para continuar.', {
         sticky: true,

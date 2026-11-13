@@ -1,7 +1,7 @@
 {
   "name": "judo-master",
   "private": true,
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Judô Master - Técnicas de Judô por graduação de faixa",
   "type": "module",
   "engines": {

@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 
 import { AppComponent } from './app.component';
 import { INITIAL_BELTS } from './data/belts.data';
+import { AppUpdateService } from './services/app-update.service';
 import { ExportService } from './services/export.service';
 import { ToastService } from './services/toast.service';
 import { button, configure, query, settle } from './testing/test-helpers';
@@ -161,17 +162,47 @@ describe('AppComponent', () => {
     expect(button(root, 'PDF').disabled).toBeFalse();
   });
 
-  it('offers to reload when a new version is ready, and warns when the version broke', async () => {
+  const versionReady: VersionEvent = {
+    type: 'VERSION_READY',
+    currentVersion: { hash: 'a' },
+    latestVersion: { hash: 'b' },
+  };
+
+  it('switches to a new version on its own right after the app is opened', async () => {
     await create();
+    const updates = TestBed.inject(AppUpdateService);
+    const apply = spyOn(updates, 'apply').and.resolveTo();
+    spyOn(updates, 'justArrived').and.returnValue(true);
+    versionUpdates.next(versionReady);
+    expect(apply).toHaveBeenCalledTimes(1);
+    expect(TestBed.inject(ToastService).toasts()).toEqual([]);
+  });
+
+  it('asks before switching while a dialog is open', async () => {
+    const { fixture, root } = await create();
+    const updates = TestBed.inject(AppUpdateService);
+    const apply = spyOn(updates, 'apply').and.resolveTo();
+    spyOn(updates, 'justArrived').and.returnValue(true);
+    button(root, 'Configurações').click();
+    await settle(fixture);
+    versionUpdates.next(versionReady);
+    expect(apply).not.toHaveBeenCalled();
+    expect(TestBed.inject(ToastService).toasts()[0]?.action?.label).toBe('Atualizar');
+  });
+
+  it('offers to reload when a new version is ready later, and warns when the version broke', async () => {
+    await create();
+    const updates = TestBed.inject(AppUpdateService);
+    const apply = spyOn(updates, 'apply').and.resolveTo();
+    spyOn(updates, 'justArrived').and.returnValue(false);
     const toasts = TestBed.inject(ToastService);
     versionUpdates.next({ type: 'VERSION_DETECTED', version: { hash: 'b' } });
     expect(toasts.toasts()).toEqual([]);
-    versionUpdates.next({
-      type: 'VERSION_READY',
-      currentVersion: { hash: 'a' },
-      latestVersion: { hash: 'b' },
-    });
+    versionUpdates.next(versionReady);
+    expect(apply).not.toHaveBeenCalled();
     expect(toasts.toasts()[0]?.action?.label).toBe('Atualizar');
+    toasts.toasts()[0]?.action?.run();
+    expect(apply).toHaveBeenCalledTimes(1);
     unrecoverable.next({ type: 'UNRECOVERABLE_STATE', reason: 'x' });
     expect(toasts.toasts()[1]?.action?.label).toBe('Recarregar');
   });

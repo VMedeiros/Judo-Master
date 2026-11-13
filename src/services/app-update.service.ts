@@ -9,11 +9,18 @@ export const UPDATE_CHECK_INTERVAL_MS = 30 * 60 * 1000;
 export const UPDATE_CHECK_MIN_GAP_MS = 60 * 1000;
 
 /**
+ * A new version that finishes downloading this soon after the app is opened or
+ * brought back is switched to right away: the person has barely started, so a
+ * reload loses nothing. Later on, the app asks first.
+ */
+export const AUTO_APPLY_WINDOW_MS = 30 * 1000;
+
+/**
  * Keeps the app looking for new versions. The service worker only looks when
  * the app starts, and an installed app (home-screen PWA, notably on iOS) is
  * mostly resumed rather than started: it could keep an old version for days.
  * So it also looks whenever the app comes back to the foreground, and every
- * half hour while it stays open. Announcing the new version is up to the app.
+ * half hour while it stays open.
  */
 @Injectable({ providedIn: 'root' })
 export class AppUpdateService {
@@ -22,6 +29,7 @@ export class AppUpdateService {
   private readonly destroyRef = inject(DestroyRef);
 
   private lastCheck = 0;
+  private arrivedAt = Date.now();
   private started = false;
 
   public start(): void {
@@ -29,17 +37,24 @@ export class AppUpdateService {
     this.started = true;
 
     const view = this.document.defaultView;
-    const onVisible = (): void => {
-      if (this.document.visibilityState === 'visible') void this.check();
+    const onArrive = (): void => {
+      if (this.document.visibilityState !== 'visible') return;
+      this.arrivedAt = Date.now();
+      void this.check();
     };
-    this.document.addEventListener('visibilitychange', onVisible);
-    view?.addEventListener('pageshow', onVisible);
-    const timer = view?.setInterval(onVisible, UPDATE_CHECK_INTERVAL_MS);
+    this.document.addEventListener('visibilitychange', onArrive);
+    view?.addEventListener('pageshow', onArrive);
+    const timer = view?.setInterval(() => void this.check(), UPDATE_CHECK_INTERVAL_MS);
     this.destroyRef.onDestroy(() => {
-      this.document.removeEventListener('visibilitychange', onVisible);
-      view?.removeEventListener('pageshow', onVisible);
+      this.document.removeEventListener('visibilitychange', onArrive);
+      view?.removeEventListener('pageshow', onArrive);
       if (timer !== undefined) view?.clearInterval(timer);
     });
+  }
+
+  /** Whether the app was opened or brought back a moment ago. */
+  public justArrived(): boolean {
+    return Date.now() - this.arrivedAt <= AUTO_APPLY_WINDOW_MS;
   }
 
   /** Looks for a new version now, unless it just did. */
