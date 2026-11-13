@@ -53,13 +53,13 @@ export const FONT_SIZE_OPTIONS: ReadonlyArray<{
 export const THEME_COLORS = { light: '#e8f0f7', dark: '#0a1422' } as const;
 
 export const QUOTES: readonly string[] = [
-  '"A prática do judô é um processo de aprendizado contínuo; a luta é apenas um meio para o aperfeiçoamento da pessoa." — Jigoro Kano',
-  '"Ceder é o meio mais eficiente de utilizar a energia. Resistir à força com força é fútil; use a flexibilidade para controlar a força." — Jigoro Kano',
-  '"Dominar-se para triunfar. Conhecer-se para se dominar." — Jigoro Kano',
-  '"A gentileza sempre vence a força." — Kyuzo Mifune',
-  '"Se caíres sete vezes, levanta-te oito." — Provérbio Japonês',
-  '"O judô é a arte de usar o mínimo de força para o máximo de efeito." — Yasuhiro Yamashita',
-  '"Não te curves perante as dificuldades, mas sim adapta-te a elas." — Jigoro Kano',
-  '"O judô começa e termina com respeito. O respeito é a base de tudo." — Mitsuyo Maeda',
-  '"A jornada de mil quilômetros começa com o primeiro passo." — Lao-Tzu',
+  '"A prática do judô é um processo de aprendizado contínuo; a luta é apenas um meio para o aperfeiçoamento da pessoa." (Jigoro Kano)',
+  '"Ceder é o meio mais eficiente de utilizar a energia. Resistir à força com força é fútil; use a flexibilidade para controlar a força." (Jigoro Kano)',
+  '"Dominar-se para triunfar. Conhecer-se para se dominar." (Jigoro Kano)',
+  '"A gentileza sempre vence a força." (Kyuzo Mifune)',
+  '"Se caíres sete vezes, levanta-te oito." (Provérbio Japonês)',
+  '"O judô é a arte de usar o mínimo de força para o máximo de efeito." (Yasuhiro Yamashita)',
+  '"Não te curves perante as dificuldades, mas sim adapta-te a elas." (Jigoro Kano)',
+  '"O judô começa e termina com respeito. O respeito é a base de tudo." (Mitsuyo Maeda)',
+  '"A jornada de mil quilômetros começa com o primeiro passo." (Lao-Tzu)',
 ];

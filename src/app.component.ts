@@ -22,6 +22,7 @@ import { VideoPlayerModalComponent } from './components/modals/video-player/vide
 import { TechniqueTableComponent } from './components/technique-table/technique-table.component';
 import { ToastComponent } from './components/toast/toast.component';
 import { APP_NAME } from './constants/app.constants';
+import { AppUpdateService } from './services/app-update.service';
 import { CelebrationService } from './services/celebration.service';
 import { ExportService } from './services/export.service';
 import { LegacyCacheCleanupService } from './services/legacy-cache-cleanup.service';
@@ -52,6 +53,7 @@ export class AppComponent {
   protected readonly celebration = inject(CelebrationService).currentCelebration;
   private readonly exportService = inject(ExportService);
   private readonly toast = inject(ToastService);
+  private readonly appUpdate = inject(AppUpdateService);
 
   protected readonly appName = APP_NAME;
   protected readonly currentYear = new Date().getFullYear();
@@ -73,6 +75,7 @@ export class AppComponent {
     inject(ThemeService);
     void inject(LegacyCacheCleanupService).run();
     this.offerUpdates(inject(SwUpdate), inject(DestroyRef));
+    this.appUpdate.start();
   }
 
   protected async export(format: 'excel' | 'pdf'): Promise<void> {
@@ -106,15 +109,14 @@ export class AppComponent {
       .subscribe(() =>
         this.toast.info('Uma nova versão do Judô Master está disponível.', {
           sticky: true,
-          action: { label: 'Atualizar', run: () => globalThis.location.reload() },
+          action: { label: 'Atualizar', run: () => void this.appUpdate.apply() },
         })
       );
-    updates.unrecoverable
-      .pipe(takeUntilDestroyed(destroyRef))
-      .subscribe(() =>
-        this.toast.error(
-          'Esta versão do app ficou desatualizada. Recarregue a página para continuar.'
-        )
-      );
+    updates.unrecoverable.pipe(takeUntilDestroyed(destroyRef)).subscribe(() =>
+      this.toast.info('Esta versão do app ficou desatualizada. Recarregue para continuar.', {
+        sticky: true,
+        action: { label: 'Recarregar', run: () => globalThis.location.reload() },
+      })
+    );
   }
 }
