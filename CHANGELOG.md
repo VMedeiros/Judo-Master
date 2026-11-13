@@ -3,6 +3,25 @@
 Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/); versões seguem
 [SemVer](https://semver.org/lang/pt-BR/).
 
+## [2.2.0] — 2026-11-13
+
+### Corrigido
+
+- O app instalado na tela inicial (principalmente no iOS) podia ficar dias numa versão antiga, porque
+  só procurava atualizações ao ser aberto do zero. Agora procura também ao voltar para a tela e a
+  cada meia hora enquanto está aberto.
+- "Atualizar" ativa a nova versão antes de recarregar a página.
+- Quando a versão em cache quebra, a mensagem oferece o botão "Recarregar" em vez de pedir que a
+  página seja recarregada manualmente.
+- Citações e título da página sem travessão.
+
+### Dependências
+
+- Angular 22 e TypeScript 6.0.
+- ESLint 10.14, typescript-eslint 8.72.2, jasmine-core 7 e @types/jasmine 7.
+- Dependabot agrupa as atualizações do Angular e não propõe mais versões incompatíveis com o
+  compilador.
+
 ## [2.1.0] — 2026-11-12
 
 Auditoria completa com base nos padrões do JudoKan.
