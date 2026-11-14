@@ -36,7 +36,7 @@ demonstração. É um app instalável (PWA) que funciona sem internet depois da 
 aluno ou professor pode adicionar, corrigir e remover técnicas — as mudanças ficam salvas no próprio
 aparelho.
 
-Faz parte da mesma família visual do [JudoKan](https://github.com/VMedeiros/JudoKan), o sistema de
+Faz parte da mesma família visual do [JudoKan](https://judokan-app.web.app/), o sistema de
 gestão de academias, e segue os mesmos padrões de engenharia.
 
 ## 🚀 Funcionalidades
@@ -148,7 +148,7 @@ O `sitemap.xml` vai junto no build. Num site de projeto do GitHub Pages os busca
 
 ## 📁 Estrutura
 
-A mesma organização do [JudoKan](https://github.com/VMedeiros/JudoKan):
+A mesma organização do [JudoKan](https://judokan-app.web.app/):
 
 ```
 src/
