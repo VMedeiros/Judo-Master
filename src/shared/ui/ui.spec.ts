@@ -243,6 +243,14 @@ describe('TooltipDirective', () => {
   })
   class HostComponent {}
 
+  beforeEach(() => {
+    // A device with a mouse: headless Chrome on a CI runner reports `hover: none`.
+    const matchMedia = globalThis.matchMedia.bind(globalThis);
+    spyOn(globalThis, 'matchMedia').and.callFake((query: string) =>
+      query === '(hover: hover)' ? ({ matches: true } as MediaQueryList) : matchMedia(query)
+    );
+  });
+
   it('shows the hint on hover and keyboard focus, and hides it after', async () => {
     configure([HostComponent]);
     const fixture = TestBed.createComponent(HostComponent);
