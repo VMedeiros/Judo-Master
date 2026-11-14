@@ -5,7 +5,7 @@
   "description": "Técnicas de Judô por faixa: descrição, execução, aplicação e vídeos de demonstração.",
   "lang": "pt-BR",
   "dir": "ltr",
-  "start_url": "/Judo-Master/",
+  "start_url": "/Judo-Master/tecnicas",
   "scope": "/Judo-Master/",
   "display": "standalone",
   "orientation": "any",
