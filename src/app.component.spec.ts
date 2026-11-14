@@ -178,6 +178,23 @@ describe('AppComponent', () => {
     expect(TestBed.inject(ToastService).toasts()).toEqual([]);
   });
 
+  it('recovers from a stuck service worker, asking first when the person is busy', async () => {
+    await create();
+    const updates = TestBed.inject(AppUpdateService);
+    const recover = spyOn(updates, 'recover').and.resolveTo();
+    const justArrived = spyOn(updates, 'justArrived').and.returnValue(true);
+    updates.stalled.next('9.9.9');
+    expect(recover).toHaveBeenCalledOnceWith('9.9.9');
+
+    justArrived.and.returnValue(false);
+    updates.stalled.next('9.9.9');
+    expect(recover).toHaveBeenCalledTimes(1);
+    const toast = TestBed.inject(ToastService).toasts()[0];
+    expect(toast?.action?.label).toBe('Atualizar');
+    toast?.action?.run();
+    expect(recover).toHaveBeenCalledTimes(2);
+  });
+
   it('asks before switching while a dialog is open', async () => {
     const { fixture, root } = await create();
     const updates = TestBed.inject(AppUpdateService);

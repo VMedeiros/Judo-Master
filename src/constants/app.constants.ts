@@ -10,6 +10,8 @@ export const STORAGE_KEYS = {
   SETTINGS: 'judo-master:settings',
   CHANGES: 'judo-master:changes',
   SELECTED_BELT: 'judo-master:selected-belt',
+  /** sessionStorage: the version the app last recovered to (see AppUpdateService). */
+  UPDATE_RECOVERY: 'judo-master:update-recovery',
 } as const;
 
 /** Keys written by versions before 2.1, migrated on first load and then removed. */

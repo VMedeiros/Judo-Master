@@ -99,9 +99,10 @@ export class AppComponent {
   }
 
   /**
-   * When a new version has been downloaded in the background, switch to it
-   * right away if the app was just opened and nothing is in progress;
-   * otherwise offer it, so a reload never interrupts the person.
+   * When a new version is out, switch to it: right away if the app was just
+   * opened and nothing is in progress, otherwise once the person agrees, so a
+   * reload never interrupts them. The new version normally comes through the
+   * service worker; when the worker is stuck, the app recovers on its own.
    */
   private offerUpdates(updates: SwUpdate, destroyRef: DestroyRef): void {
     if (!updates.isEnabled) return;
@@ -110,21 +111,26 @@ export class AppComponent {
         filter((event): event is VersionReadyEvent => event.type === 'VERSION_READY'),
         takeUntilDestroyed(destroyRef)
       )
-      .subscribe(() => {
-        if (this.appUpdate.justArrived() && this.state.modal().kind === 'none') {
-          void this.appUpdate.apply();
-          return;
-        }
-        this.toast.info('Uma nova versão do Judô Master está disponível.', {
-          sticky: true,
-          action: { label: 'Atualizar', run: () => void this.appUpdate.apply() },
-        });
-      });
+      .subscribe(() => this.switchVersion(() => this.appUpdate.apply()));
+    this.appUpdate.stalled
+      .pipe(takeUntilDestroyed(destroyRef))
+      .subscribe(version => this.switchVersion(() => this.appUpdate.recover(version)));
     updates.unrecoverable.pipe(takeUntilDestroyed(destroyRef)).subscribe(() =>
       this.toast.info('Esta versão do app ficou desatualizada. Recarregue para continuar.', {
         sticky: true,
         action: { label: 'Recarregar', run: () => globalThis.location.reload() },
       })
     );
+  }
+
+  private switchVersion(run: () => Promise<void>): void {
+    if (this.appUpdate.justArrived() && this.state.modal().kind === 'none') {
+      void run();
+      return;
+    }
+    this.toast.info('Uma nova versão do Judô Master está disponível.', {
+      sticky: true,
+      action: { label: 'Atualizar', run: () => void run() },
+    });
   }
 }

@@ -3,6 +3,10 @@ import { expect, test, type Page } from '@playwright/test';
 
 /** WCAG 2.1 A and AA: the bar the app is held to. */
 async function expectAccessible(page: Page): Promise<void> {
+  // Mid-fade, text is translucent and fails the contrast check: audit the settled page.
+  await page.waitForFunction(() =>
+    document.getAnimations().every(animation => animation.playState !== 'running')
+  );
   const results = await new AxeBuilder({ page })
     .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
     .analyze();

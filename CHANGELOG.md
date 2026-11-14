@@ -3,6 +3,19 @@
 Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/); versões seguem
 [SemVer](https://semver.org/lang/pt-BR/).
 
+## [2.2.2] — 2026-11-14
+
+### Corrigido
+
+- O app podia ficar preso numa versão antiga sem nenhum aviso: quando o download de uma versão nova
+  falhava (por exemplo, um arquivo desatualizado no cache do GitHub Pages durante a publicação), o
+  service worker parava de buscar atualizações. Agora cada build publica um `version.json`, e o
+  app, ao abrir, ao voltar para a tela e a cada meia hora, compara a própria versão com a publicada.
+  Se a publicada é mais nova e o service worker não conseguiu entregá-la, o app descarta o próprio
+  service worker e cache (só os dele, não os de outros projetos do mesmo domínio) e carrega a
+  versão nova direto da rede.
+- O app passa a procurar uma versão nova assim que abre, sem esperar o service worker ficar ocioso.
+
 ## [2.2.1] — 2026-11-13
 
 ### Corrigido
