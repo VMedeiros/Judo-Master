@@ -36,6 +36,6 @@ Judô Master is a static site with no server and no accounts:
   user-supplied URL ever reaches an iframe.
 - **Stored data is validated** on load; malformed or tampered entries are ignored.
 - **Dependencies.** CI blocks high-severity advisories in production dependencies and critical ones
-  in all dependencies (`npm audit`); Dependabot proposes updates weekly; pull requests run GitHub's
-  dependency review.
+  in all dependencies (`npm audit`); GitHub's vulnerability alerts flag known advisories; pull
+  requests run GitHub's dependency review. Updates are applied by hand, in the owner's commits.
 - **Releases.** Deploys run only after the full CI quality gate passes on `main`.
