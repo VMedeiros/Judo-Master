@@ -3,13 +3,27 @@
   <head>
     <meta charset="UTF-8" />
     <base href="/" />
-    <title>Judô Master: Técnicas de Judô por faixa</title>
+    <title>Técnicas de judô para cada faixa · Judô Master</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta
       name="description"
-      content="Estude as técnicas de Judô de cada faixa: descrição, execução, aplicação e vídeos de demonstração. Funciona offline."
+      content="As técnicas que cada exame de faixa pede, da branca à preta, com explicação, execução e vídeo. Grátis, funciona no celular e sem internet."
     />
     <meta name="author" content="Victor Medeiros" />
+    <!-- Kept in step with each page by PageTitleStrategy. -->
+    <link rel="canonical" href="https://vmedeiros.github.io/Judo-Master/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Judô Master" />
+    <meta property="og:title" content="Técnicas de judô para cada faixa · Judô Master" />
+    <meta
+      property="og:description"
+      content="As técnicas que cada exame de faixa pede, da branca à preta, com explicação, execução e vídeo. Grátis, funciona no celular e sem internet."
+    />
+    <meta property="og:url" content="https://vmedeiros.github.io/Judo-Master/" />
+    <meta property="og:image" content="https://vmedeiros.github.io/Judo-Master/assets/icons/icon-512x512.png" />
+    <meta property="og:image:alt" content="Ícone do Judô Master" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta name="twitter:card" content="summary" />
     <!-- GitHub Pages cannot send headers: the policy goes in a meta tag. Scripts
          only from this origin (no inline script anywhere), the YouTube player
          as the only frame, fonts from Google Fonts. -->
@@ -19,7 +33,7 @@
     />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <!-- Kept in sync with the active theme by assets/theme-init.js and ThemeService. -->
-    <meta name="theme-color" content="#e8f0f7" />
+    <meta name="theme-color" content="#f9fafb" />
 
     <!-- PWA -->
     <meta name="mobile-web-app-capable" content="yes" />
@@ -42,13 +56,17 @@
          sorted and in sync with the templates (npm run check:icons). -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..900&display=swap" />
+    <!-- Noto Sans JP only for the Japanese characters the app shows (`text=`), as
+         JudoKan does: a few KB instead of the whole font. A new character in a
+         template must be added here (npm run check:icons checks it). -->
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400..900&family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@400;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&text=%E3%81%92%E3%82%81%E4%BB%96%E5%85%B1%E5%8A%9B%E5%8B%87%E5%90%8D%E5%96%84%E5%9B%BA%E6%8A%80%E6%8A%95%E6%9F%94%E6%A0%84%E7%94%A8%E7%A4%BC%E7%AF%80%E7%B2%BE%E7%B7%A0%E8%87%AA%E8%AA%89%E8%AA%A0%E9%81%93%E9%96%A2&display=swap"
     />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=add,check,check_circle,chevron_left,chevron_right,close,dark_mode,delete,edit,error,format_size,inbox,info,light_mode,open_in_new,palette,picture_as_pdf,play_circle,restart_alt,save,search,search_off,settings,sports_martial_arts,table_view,target,tune,videocam_off,visibility,warning&display=block"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=accessibility_new,add,arrow_back,arrow_downward,arrow_forward,arrow_upward,balance,bolt,category,check,check_circle,chevron_left,chevron_right,close,contrast,dark_mode,delete,devices,download,edit,error,expand_more,favorite,history_edu,inbox,info,install_mobile,keyboard,light_mode,lock,menu_book,military_tech,open_in_new,picture_as_pdf,play_circle,restart_alt,save,search,search_off,settings,shield,star,table_view,target,unfold_more,verified_user,videocam_off,visibility,warning,wifi_off&display=block"
     />
 
     <style>
@@ -208,7 +226,7 @@
       }
     </style>
   </head>
-  <body>
+  <body class="bg-gray-50 text-gray-900 antialiased dark:bg-canvas-dark dark:text-gray-100">
     <!-- Angular replaces this placeholder as soon as it renders. -->
     <app-root>
       <div class="app-splash" role="status">

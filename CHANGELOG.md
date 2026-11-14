@@ -3,10 +3,62 @@
 Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/); versões seguem
 [SemVer](https://semver.org/lang/pt-BR/).
 
-## [2.2.2] — 2026-11-14
+## [3.0.0] — 2026-11-14
+
+O mesmo design e a mesma estrutura do JudoKan.
+
+### Alterado
+
+- Visual do JudoKan: os mesmos tokens e componentes em `src/styles.css` (botões, campos, cards,
+  tabela, modais, tooltip), o mesmo cabeçalho com a marca, o mesmo rodapé e o mesmo fundo (foto só
+  a partir do tablet; no celular, superfície lisa e mais leve).
+- A faixa escolhida aparece no banner do painel do JudoKan; as técnicas, num card com a barra de
+  ferramentas e a tabela do JudoKan, que vira cartões empilhados no celular.
+- Configurações no formato do JudoKan: tema claro/escuro, alto contraste e tamanho da fonte; a
+  restauração das técnicas; o atalho para o JudoKan; e o "Sobre".
+- O tema começa claro, como no JudoKan, em vez de seguir o sistema (quem já escolheu um tema o
+  mantém).
+- A tabela de técnicas segue a do JudoKan: avatar com as iniciais, ordenação por nome ou tradução,
+  barra com a cor da faixa (as mesmas cores do JudoKan) e mensagens quando a busca não encontra nada.
+- Os ícones do app são os do JudoKan (o kanji 柔), gerados agora pelo Chromium a partir dos SVGs.
+- Os nomes das faixas usam "·" ("11º Kyu · Faixa Branca") e os textos da interface foram
+  reescritos num tom mais natural.
+- O app instalado abre direto nas técnicas (`start_url` em `/tecnicas`), e todos os pedaços do app
+  são baixados na instalação, para funcionar sem internet em qualquer página.
+- Pastas reorganizadas como as do JudoKan: `core/`, `features/techniques/`, `layouts/`,
+  `shared/ui/` e `shared/utils/`. `ThemeService` passou a se chamar `SettingsService`.
+
+### Adicionado
+
+- Modo de alto contraste, aplicado antes da primeira pintura e verificado com axe nos dois temas.
+- Botão "Voltar ao topo" e dicas (tooltips) nos botões de ícone, como no JudoKan.
+- Rodapé com a versão, "Sobre o Judô" e o link para o JudoKan.
+- Página inicial em `/`, no formato da do JudoKan: o que o app faz, as faixas (cada uma abre as
+  técnicas já nela), como funciona, privacidade e dúvidas frequentes. As técnicas foram para
+  `/tecnicas`, com botão de voltar para a página de onde se veio.
+- Título, descrição, Open Graph e endereço canônico próprios para cada página.
+- `404.html` igual ao `index.html` no build, para links diretos funcionarem no GitHub Pages, e uma
+  cópia por rota (`tecnicas.html`), para a página de técnicas responder 200 e poder ser indexada.
+- `sitemap.xml` com as duas páginas.
+- Lighthouse no CI, no celular e no desktop, como no JudoKan: acessibilidade, boas práticas e SEO
+  precisam de 100.
+- O banner da faixa ganhou o símbolo de fundo (道) dos banners do JudoKan, desenhado igual: a fonte
+  japonesa vem no mesmo peso do JudoKan.
+- O dependency review volta a valer no CI: o grafo de dependências e os alertas do Dependabot foram
+  ligados no repositório.
 
 ### Corrigido
 
+- O endereço das técnicas acompanha a faixa na tela (`?faixa=`): recarregar a página ou compartilhar
+  o link abre a mesma faixa, e trocar de faixa não enche o histórico do navegador.
+- O "Voltar" segue o histórico do navegador de verdade: entende quando uma página substitui a atual
+  e, quando não tem certeza do que veio antes, vai para a página inicial em vez de chutar.
+- A página não se mexe mais quando as fontes chegam (CLS 0): os ícones têm o espaço reservado e a
+  Inter tem uma fonte reserva com as mesmas medidas.
+- A fonte japonesa vem só com os caracteres que o app mostra, em vez da fonte inteira;
+  `npm run check:icons` acusa um caractere novo que falte.
+- Dependências de desenvolvimento (`glob` e `minimatch`) fixadas em versões sem as falhas
+  conhecidas; `npm audit` não aponta nenhuma.
 - O app podia ficar preso numa versão antiga sem nenhum aviso: quando o download de uma versão nova
   falhava (por exemplo, um arquivo desatualizado no cache do GitHub Pages durante a publicação), o
   service worker parava de buscar atualizações. Agora cada build publica um `version.json`, e o
@@ -15,6 +67,10 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/); 
   service worker e cache (só os dele, não os de outros projetos do mesmo domínio) e carrega a
   versão nova direto da rede.
 - O app passa a procurar uma versão nova assim que abre, sem esperar o service worker ficar ocioso.
+
+### Removido
+
+- A fonte Noto Serif JP, usada só pelo logotipo antigo.
 
 ## [2.2.1] — 2026-11-13
 

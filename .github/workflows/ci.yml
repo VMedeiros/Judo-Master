@@ -110,9 +110,9 @@ jobs:
     name: Security — dependency review
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
-    # Needs Settings → Code security → Dependency graph. Until it is enabled the
-    # action errors out; the npm audit job above still gates every change.
-    continue-on-error: true
+    # Needs the dependency graph (Settings → Code security), enabled together with
+    # the Dependabot alerts: a pull request adding a dependency with a known high
+    # or critical vulnerability fails here.
     permissions:
       contents: read
       pull-requests: write
@@ -145,7 +145,7 @@ jobs:
           retention-days: 7
 
   build:
-    name: Build & bundle size
+    name: Build, bundle size & Lighthouse
     runs-on: ubuntu-latest
     needs: [lint, typecheck, checks]
     steps:
@@ -159,3 +159,11 @@ jobs:
         run: npm run build
       - name: Bundle size
         run: npm run check:bundle
+      # Every page as a phone and as a desktop see it, as in JudoKan: Accessibility,
+      # Best Practices and SEO must score 100. Performance is reported in the job
+      # summary, not enforced (it varies from run to run); the bundle budget above
+      # is what holds it.
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Lighthouse (mobile and desktop)
+        run: npm run lighthouse

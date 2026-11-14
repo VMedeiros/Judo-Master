@@ -7,4 +7,4 @@ test-results
 .angular
 package-lock.json
 *.html
-src/data/belts.data.ts
+src/core/data/belts.data.ts

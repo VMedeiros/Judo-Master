@@ -1,0 +1,83 @@
+<app-modal title="Configurações" size="popover" (closed)="closed.emit()">
+  <span modalIcon class="material-symbols-rounded text-primary-600 dark:text-accent-400 text-2xl" aria-hidden="true">settings</span>
+
+  <!-- Theme, contrast and text size: the same controls as JudoKan's settings -->
+  <section class="border-b border-gray-100 p-5 dark:border-gray-800" aria-label="Opções de exibição">
+    <app-display-preferences />
+  </section>
+
+  <!-- The techniques this device keeps -->
+  <section class="border-b border-gray-100 p-5 dark:border-gray-800" aria-labelledby="settings-techniques">
+    <h3 id="settings-techniques" class="mb-1 text-xs font-bold tracking-wider text-gray-600 uppercase dark:text-gray-400">
+      Suas técnicas
+    </h3>
+    <p class="mb-3 text-xs text-gray-600 dark:text-gray-400">
+      @if (hasChanges()) {
+        Você alterou técnicas neste aparelho. Restaurar desfaz tudo e volta ao conteúdo original.
+      } @else {
+        As técnicas estão como vieram com o {{ appName }}.
+      }
+    </p>
+    <button type="button" class="btn btn-secondary w-full" [disabled]="!hasChanges()" (click)="resetTechniques.emit()">
+      <span class="material-symbols-rounded" aria-hidden="true">restart_alt</span>
+      Restaurar técnicas originais
+    </button>
+  </section>
+
+  <!-- The dojo management system: JudoKan links back here the same way -->
+  <section class="border-b border-gray-100 p-5 dark:border-gray-800" aria-labelledby="settings-judokan">
+    <h3 id="settings-judokan" class="mb-4 text-xs font-bold tracking-wider text-gray-600 uppercase dark:text-gray-400">
+      Gestão do dojo
+    </h3>
+    <a
+      [href]="judokanUrl"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="group border-accent-200/50 from-accent-500/10 to-accent-600/5 hover:from-accent-500/20 hover:to-accent-600/10 dark:border-accent-800/30 dark:from-accent-900/30 dark:to-accent-800/20 flex items-center gap-4 rounded-xl border bg-linear-to-r p-4 transition-all"
+    >
+      <span
+        class="from-accent-500 to-accent-700 font-japanese flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-linear-to-br text-xl font-bold text-white shadow-lg"
+        aria-hidden="true"
+        >柔</span
+      >
+      <span class="min-w-0 flex-1">
+        <span class="group-hover:text-accent-700 dark:group-hover:text-accent-400 block font-bold text-gray-900 transition-colors dark:text-white">
+          JudoKan
+        </span>
+        <span class="block text-xs text-gray-600 dark:text-gray-400">Alunos, turmas, presença e graduações do dojo</span>
+      </span>
+      <span class="material-symbols-rounded group-hover:text-accent-500 text-gray-500 transition-all" aria-hidden="true">open_in_new</span>
+      <span class="sr-only">(abre em nova aba)</span>
+    </a>
+  </section>
+
+  <!-- About -->
+  <section class="p-5" aria-labelledby="settings-about">
+    <h3 id="settings-about" class="mb-4 text-xs font-bold tracking-wider text-gray-600 uppercase dark:text-gray-400">Sobre</h3>
+    <div
+      class="border-primary-100 from-primary-500/5 to-accent-500/5 dark:border-primary-900/30 dark:from-primary-900/20 dark:to-accent-900/20 rounded-xl border bg-linear-to-br p-4"
+    >
+      <div class="mb-4 flex items-center gap-3">
+        <img
+          [src]="settings.isDarkMode() ? 'assets/icons/icon-app-dark.svg' : 'assets/icons/icon-app-light.svg'"
+          class="h-12 w-12 rounded-xl shadow-lg"
+          alt=""
+          width="48"
+          height="48"
+        />
+        <div>
+          <p class="font-bold text-gray-900 dark:text-white">{{ appName }}</p>
+          <p class="text-xs text-gray-600 dark:text-gray-400">Versão {{ version }}</p>
+        </div>
+      </div>
+      <figure class="border-accent-400 mb-4 border-l-2 pl-3">
+        <blockquote class="text-sm text-gray-700 italic dark:text-gray-300">“{{ quote.text }}”</blockquote>
+        <figcaption class="text-accent-700 dark:text-accent-300 mt-1 text-xs font-bold">{{ quote.author }}</figcaption>
+      </figure>
+      <button type="button" class="btn btn-secondary btn-sm" (click)="openAbout.emit()">
+        <span class="material-symbols-rounded" aria-hidden="true">info</span>
+        Sobre o Judô
+      </button>
+    </div>
+  </section>
+</app-modal>

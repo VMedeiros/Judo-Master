@@ -1,0 +1,84 @@
+<!-- A column with JudoKan's spacing between its parts (a gap, so it holds for
+     components too, which are inline and would ignore a margin). -->
+<div class="flex flex-col gap-5">
+  <!-- JudoKan's page header: title, what the page is for, its main action -->
+  <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+    <div>
+      <h1 class="page-title">Técnicas por faixa</h1>
+      <p class="page-subtitle">O que cada exame pede, da faixa branca à preta.</p>
+    </div>
+    <button type="button" class="btn btn-primary" (click)="state.openAddForm()">
+      <span class="material-symbols-rounded" aria-hidden="true">add</span>
+      Nova técnica
+    </button>
+  </div>
+
+  <!-- Only on a commemorative date: an empty item would still take a gap. -->
+  @if (celebration()) {
+    <app-celebration-banner [celebration]="celebration()" />
+  }
+
+  <app-belt-tabs
+    [belts]="state.belts()"
+    [selectedIndex]="state.selectedBeltIndex()"
+    (beltSelected)="state.selectBelt($event)"
+  />
+
+  @if (state.selectedBelt(); as belt) {
+    <app-technique-table
+      [belt]="belt"
+      [groupedTechniques]="state.groupedTechniques()"
+      [filterTerm]="state.filterTerm()"
+      [visibleCount]="state.visibleCount()"
+      [exporting]="exporting()"
+      (filterChange)="state.filterTerm.set($event)"
+      (showDetail)="state.openDetail($event)"
+      (showVideo)="state.openVideo($event)"
+      (editTechnique)="state.openEditForm($event)"
+      (deleteTechnique)="state.openDelete($event)"
+      (addTechnique)="state.openAddForm()"
+      (exportExcel)="export('excel')"
+      (exportPdf)="export('pdf')"
+    />
+  }
+</div>
+
+@let modal = state.modal();
+@if (modal.kind === 'detail') {
+  <app-technique-detail-modal
+    [technique]="modal.technique"
+    [hasPrevious]="navigation().previous"
+    [hasNext]="navigation().next"
+    (closed)="state.closeModal()"
+    (previous)="state.goTo(-1)"
+    (next)="state.goTo(1)"
+    (watchVideo)="watchVideoFromDetail()"
+  />
+} @else if (modal.kind === 'video') {
+  <app-video-player-modal
+    [technique]="modal.technique"
+    [hasPrevious]="navigation().previous"
+    [hasNext]="navigation().next"
+    (closed)="state.closeModal()"
+    (previous)="state.goTo(-1)"
+    (next)="state.goTo(1)"
+  />
+} @else if (modal.kind === 'form') {
+  <app-technique-form-modal
+    [technique]="modal.technique"
+    [mode]="modal.mode"
+    [categories]="state.categories()"
+    (closed)="state.closeModal()"
+    (saved)="state.saveTechnique($event)"
+  />
+} @else if (modal.kind === 'delete') {
+  <app-confirm-modal
+    title="Remover técnica"
+    confirmLabel="Sim, remover"
+    (closed)="state.closeModal()"
+    (confirmed)="state.confirmDelete()"
+  >
+    Tem certeza que deseja remover <strong class="text-gray-900 dark:text-white">"{{ modal.technique.name }}"</strong>?
+    Você pode trazê-la de volta em Configurações → Restaurar técnicas originais.
+  </app-confirm-modal>
+}

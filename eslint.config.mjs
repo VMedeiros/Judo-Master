@@ -67,7 +67,7 @@ export default defineConfig(
 
   // The seed data is a long literal: size rules do not apply to it.
   {
-    files: ['src/data/**/*.ts'],
+    files: ['src/core/data/**/*.ts'],
     rules: { 'sonarjs/no-duplicate-string': 'off' },
   },
 

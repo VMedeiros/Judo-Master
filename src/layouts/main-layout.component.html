@@ -1,0 +1,88 @@
+<div class="relative flex min-h-dvh flex-col">
+  <!-- JudoKan's backdrop: the dojo on desktop, a flat surface on phones (cheaper to paint). -->
+  <div class="app-backdrop pointer-events-none fixed inset-0 -z-10 hidden md:block" aria-hidden="true"></div>
+  <div
+    class="dark:bg-canvas-dark md:dark:bg-canvas-dark/92 pointer-events-none fixed inset-0 -z-10 bg-gray-50 md:bg-gray-50/95"
+    aria-hidden="true"
+  ></div>
+
+  <!-- JudoKan's header, with its brand block -->
+  <header class="pt-safe dark:bg-canvas-dark/95 sticky top-0 z-30 border-b border-gray-200 bg-white/95 dark:border-gray-800">
+    <!-- JudoKan's header: full width, the way back and the brand at the start,
+         the settings button at the right end. -->
+    <div class="flex h-16 items-center justify-between gap-3 px-3 sm:px-4 lg:px-8">
+      <div class="flex min-w-0 items-center gap-2">
+      @if (history.previousUrl() !== null) {
+        <button
+          type="button"
+          class="icon-btn"
+          aria-label="Voltar"
+          appTooltip="Voltar"
+          tooltipPosition="bottom"
+          (click)="history.back('/')"
+        >
+          <span class="material-symbols-rounded" aria-hidden="true">arrow_back</span>
+        </button>
+      }
+      <a routerLink="/" class="flex min-h-11 min-w-0 items-center gap-3 rounded-xl" [attr.aria-label]="appName + ' Técnicas por faixa, página inicial'">
+        <img
+          [src]="settings.isDarkMode() ? 'assets/icons/icon-app-dark.svg' : 'assets/icons/icon-app-light.svg'"
+          class="h-10 w-10 shrink-0 rounded-xl"
+          alt=""
+          width="40"
+          height="40"
+        />
+        <span class="min-w-0" aria-hidden="true">
+          <span class="block truncate text-lg leading-tight font-bold text-gray-900 dark:text-white">{{ appName }} </span>
+          <span class="text-accent-700 dark:text-accent-300 hidden text-[11px] font-bold tracking-widest uppercase sm:block">Técnicas por faixa</span>
+        </span>
+      </a>
+      </div>
+
+      <button
+        type="button"
+        class="header-btn"
+        aria-haspopup="dialog"
+        aria-label="Configurações"
+        appTooltip="Configurações"
+        tooltipPosition="bottom"
+        (click)="state.openSettings()"
+      >
+        <span class="material-symbols-rounded" aria-hidden="true">settings</span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main-content" tabindex="-1" class="mx-auto w-full max-w-7xl flex-1 p-3 outline-none sm:p-4 lg:p-8">
+    <app-techniques-page />
+  </main>
+
+  <app-footer (openAbout)="state.openAbout()" />
+  <app-scroll-to-top />
+</div>
+
+@switch (state.modal().kind) {
+  @case ('settings') {
+    <app-settings-modal
+      [hasChanges]="state.hasChanges()"
+      (closed)="state.closeModal()"
+      (openAbout)="state.openAbout()"
+      (resetTechniques)="state.openReset()"
+    />
+  }
+  @case ('about') {
+    <app-about-modal (closed)="state.closeModal()" />
+  }
+  @case ('reset') {
+    <app-confirm-modal
+      title="Restaurar técnicas originais"
+      confirmLabel="Restaurar"
+      icon="restart_alt"
+      (closed)="state.closeModal()"
+      (confirmed)="state.confirmReset()"
+    >
+      Todas as técnicas que você adicionou, editou ou removeu voltarão ao conteúdo original do {{ appName }}. Esta ação
+      não pode ser desfeita.
+    </app-confirm-modal>
+  }
+}

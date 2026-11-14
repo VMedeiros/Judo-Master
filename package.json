@@ -1,7 +1,7 @@
 {
   "name": "judo-master",
   "private": true,
-  "version": "2.2.2",
+  "version": "3.0.0",
   "description": "Judô Master - Técnicas de Judô por graduação de faixa",
   "type": "module",
   "engines": {
@@ -13,6 +13,7 @@
     "dev": "ng serve",
     "prebuild": "node scripts/generate-version.mjs",
     "build": "ng build",
+    "postbuild": "node scripts/spa-fallback.mjs",
     "preview": "ng serve --configuration=production",
     "lint": "eslint . --fix",
     "lint:ci": "eslint . --max-warnings=0",
@@ -26,14 +27,16 @@
     "check:bundle": "node scripts/check-bundle-size.mjs",
     "check:icons": "node scripts/check-icons.mjs",
     "check:data": "node scripts/validate-data.mjs",
-    "icons": "npm install --no-save sharp@^0.35.5 && node scripts/generate-icons.mjs",
-    "start:e2e": "ng serve --port 3100"
+    "icons": "node scripts/generate-icons.mjs",
+    "start:e2e": "ng serve --port 3100",
+    "lighthouse": "node scripts/lighthouse-check.mjs"
   },
   "dependencies": {
     "@angular/common": "^22.2.6",
     "@angular/compiler": "^22.2.6",
     "@angular/core": "^22.2.6",
     "@angular/platform-browser": "^22.2.6",
+    "@angular/router": "^22.2.6",
     "@angular/service-worker": "^22.2.6",
     "jspdf": "^4.2.1",
     "jspdf-autotable": "^5.0.8",
@@ -65,6 +68,7 @@
     "karma-coverage": "^2.2.1",
     "karma-jasmine": "^5.1.0",
     "karma-jasmine-html-reporter": "^2.1.0",
+    "lighthouse": "13.6.0",
     "lint-staged": "^17.6.0",
     "postcss": "^8.5.15",
     "prettier": "^3.5.3",
@@ -93,5 +97,9 @@
     "*.{css,json,md,yml}": [
       "prettier --write"
     ]
+  },
+  "overrides": {
+    "glob@>=9.0.0 <=14.0.1": "^14.0.6",
+    "minimatch@>=7.0.0 <11.0.1": "^11.0.8"
   }
 }

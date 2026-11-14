@@ -1,24 +1,32 @@
+import { Location } from '@angular/common';
+import { SpyLocation, provideLocationMocks } from '@angular/common/testing';
 import { TestBed } from '@angular/core/testing';
+import { Router, provideRouter } from '@angular/router';
 import { SwUpdate, VersionEvent } from '@angular/service-worker';
 import { Subject } from 'rxjs';
 
 import { AppComponent } from './app.component';
-import { INITIAL_BELTS } from './data/belts.data';
-import { AppUpdateService } from './services/app-update.service';
-import { ExportService } from './services/export.service';
-import { ToastService } from './services/toast.service';
+import { appRoutes } from './app.routes';
+import { INITIAL_BELTS } from './core/data/belts.data';
+import { AppUpdateService } from './core/services/app-update.service';
+import { ExportService } from './core/services/export.service';
+import { TechniqueStateService } from './core/technique-state.service';
+import { ToastService } from './core/toast.service';
 import { button, configure, query, settle } from './testing/test-helpers';
 
 describe('AppComponent', () => {
   let versionUpdates: Subject<VersionEvent>;
   let unrecoverable: Subject<unknown>;
 
-  async function create(swEnabled = true) {
+  /** The app on `url`: the techniques page unless asked otherwise. */
+  async function create(swEnabled = true, url = '/tecnicas') {
     versionUpdates = new Subject();
     unrecoverable = new Subject();
     configure(
       [AppComponent],
       [
+        provideRouter(appRoutes),
+        provideLocationMocks(),
         {
           provide: SwUpdate,
           useValue: {
@@ -34,6 +42,7 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const root = fixture.nativeElement as HTMLElement;
     document.body.appendChild(root);
+    await TestBed.inject(Router).navigateByUrl(url);
     await settle(fixture);
     return { fixture, root };
   }
@@ -45,7 +54,10 @@ describe('AppComponent', () => {
 
   it('shows the first belt with its techniques and a skip link', async () => {
     const { root } = await create();
-    expect(query(root, '.skip-link').getAttribute('href')).toBe('#main-content');
+    const skip = query<HTMLAnchorElement>(root, 'a[href="#main-content"]');
+    expect(skip.textContent?.trim()).toBe('Ir para o conteúdo principal');
+    skip.click();
+    expect(document.activeElement).toBe(query(root, '#main-content'));
     expect(query(root, '[role="tabpanel"] h2').textContent).toContain(INITIAL_BELTS[0]!.name);
     expect(root.querySelectorAll('tbody tr:not(:first-child)')).toHaveSize(
       INITIAL_BELTS[0]!.techniques.length
@@ -62,14 +74,33 @@ describe('AppComponent', () => {
     search.value = 'zzzz-nada';
     search.dispatchEvent(new Event('input'));
     await settle(fixture);
-    expect(root.textContent).toContain('Nenhum resultado');
+    expect(root.textContent).toContain('Nada encontrado');
+  });
+
+  it('keeps the belt on screen in the address, without adding pages to go back through', async () => {
+    const { fixture, root } = await create();
+    const location = TestBed.inject(Location) as SpyLocation;
+    // The belt picked last time (kept in storage) is the one on screen.
+    const shown = TestBed.inject(TechniqueStateService).selectedBelt()!;
+    expect(location.path()).toBe(`/tecnicas?faixa=${shown.id}`);
+    const before = location.urlChanges.length;
+
+    const other = INITIAL_BELTS.find(belt => belt.id !== shown.id)!;
+    const tabs = root.querySelectorAll<HTMLButtonElement>('[role="tab"]');
+    tabs[INITIAL_BELTS.indexOf(other)]!.click();
+    await settle(fixture);
+    await fixture.whenStable();
+    expect(location.path()).toBe(`/tecnicas?faixa=${other.id}`);
+    // The entry was replaced, not added.
+    expect(location.urlChanges).toHaveSize(before + 1);
+    expect(location.urlChanges.at(-1)).toMatch(/^replace: /);
   });
 
   it('adds, edits and removes a technique through the dialogs', async () => {
     const { fixture, root } = await create();
     const count = INITIAL_BELTS[0]!.techniques.length;
 
-    button(root, 'Adicionar técnica').click();
+    button(root, 'Nova técnica').click();
     await settle(fixture);
     const form = query<HTMLFormElement>(document, '#technique-form');
     query<HTMLInputElement>(form, '[name="name"]').value = 'Técnica de teste';
@@ -107,7 +138,7 @@ describe('AppComponent', () => {
     expect(query(document, 'dialog h2').textContent).toContain(second!.name);
 
     const withVideo = INITIAL_BELTS[0]!.techniques.find(t => t.demoUrl)!;
-    button(root, `Assistir demonstração de ${withVideo.name}`).click();
+    button(root, `Assistir à demonstração de ${withVideo.name}`).click();
     await settle(fixture);
     expect(query(document, 'dialog iframe')).toBeTruthy();
   });
@@ -117,7 +148,7 @@ describe('AppComponent', () => {
     const withVideo = INITIAL_BELTS[0]!.techniques.find(t => t.demoUrl)!;
     button(root, `Ver detalhes de ${withVideo.name}`).click();
     await settle(fixture);
-    button(document.body, 'Assistir demonstração').click();
+    button(document.body, 'Assistir à demonstração').click();
     await settle(fixture);
     expect(query<HTMLIFrameElement>(document, 'dialog iframe').title).toContain(withVideo.name);
   });
@@ -140,6 +171,17 @@ describe('AppComponent', () => {
     button(root, 'Configurações').click();
     await settle(fixture);
     button(document.body, 'Sobre o').click();
+    await settle(fixture);
+    expect(query(document, 'dialog h2').textContent).toContain('Sobre o Judô');
+  });
+
+  it('frames the page like JudoKan: brand, page title, footer with the way to about', async () => {
+    const { fixture, root } = await create();
+    expect(query(root, 'header').textContent).toContain('Técnicas por faixa');
+    expect(query(root, 'main h1').textContent?.trim()).toBe('Técnicas por faixa');
+    expect(root.querySelectorAll('main')).toHaveSize(1);
+
+    button(query(root, 'footer'), 'Sobre o Judô').click();
     await settle(fixture);
     expect(query(document, 'dialog h2').textContent).toContain('Sobre o Judô');
   });

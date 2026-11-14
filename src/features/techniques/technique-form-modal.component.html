@@ -1,0 +1,138 @@
+<app-modal [title]="title()" size="lg" (closed)="closed.emit()">
+  <form id="technique-form" class="space-y-4" novalidate (submit)="onSubmit($event)">
+    <p class="field-hint mt-0">Campos marcados com <span class="field-required">*</span> são obrigatórios.</p>
+
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div>
+        <label for="tech-name" class="field-label">
+          Nome <span class="field-required" aria-hidden="true">*</span>
+        </label>
+        <input
+          id="tech-name"
+          name="name"
+          type="text"
+          class="field-input"
+          required
+          autocomplete="off"
+          [maxLength]="limits.name"
+          [value]="technique().name"
+          [attr.aria-invalid]="!!errors().name"
+          [attr.aria-describedby]="describedBy('name')"
+          (input)="clearError('name')"
+        />
+        @if (errors().name; as message) {
+          <p id="name-error" class="field-error">{{ message }}</p>
+        }
+      </div>
+      <div>
+        <label for="tech-translation" class="field-label">Tradução</label>
+        <input
+          id="tech-translation"
+          name="translation"
+          type="text"
+          class="field-input"
+          autocomplete="off"
+          [maxLength]="limits.translation"
+          [value]="technique().translation"
+        />
+      </div>
+    </div>
+
+    <div>
+      <label for="tech-category" class="field-label">
+        Categoria <span class="field-required" aria-hidden="true">*</span>
+      </label>
+      <select
+        id="tech-category"
+        name="category"
+        class="field-input"
+        required
+        [attr.aria-invalid]="!!errors().category"
+        [attr.aria-describedby]="describedBy('category')"
+        (change)="clearError('category')"
+      >
+        @for (category of categoryOptions(); track category) {
+          <option [value]="category" [selected]="technique().category === category">{{ category }}</option>
+        }
+      </select>
+      @if (errors().category; as message) {
+        <p id="category-error" class="field-error">{{ message }}</p>
+      }
+    </div>
+
+    <div>
+      <label for="tech-description" class="field-label">
+        Descrição <span class="field-required" aria-hidden="true">*</span>
+      </label>
+      <textarea
+        id="tech-description"
+        name="description"
+        rows="3"
+        class="field-input resize-y"
+        required
+        [maxLength]="limits.description"
+        [value]="technique().description"
+        [attr.aria-invalid]="!!errors().description"
+        [attr.aria-describedby]="describedBy('description')"
+        (input)="clearError('description')"
+      ></textarea>
+      @if (errors().description; as message) {
+        <p id="description-error" class="field-error">{{ message }}</p>
+      }
+    </div>
+
+    <div>
+      <label for="tech-execution" class="field-label">Execução</label>
+      <textarea
+        id="tech-execution"
+        name="execution"
+        rows="3"
+        class="field-input resize-y"
+        [maxLength]="limits.execution"
+        [value]="technique().execution"
+      ></textarea>
+    </div>
+
+    <div>
+      <label for="tech-application" class="field-label">Aplicação</label>
+      <textarea
+        id="tech-application"
+        name="application"
+        rows="3"
+        class="field-input resize-y"
+        [maxLength]="limits.application"
+        [value]="technique().application"
+      ></textarea>
+    </div>
+
+    <div>
+      <label for="tech-demoUrl" class="field-label">Vídeo de demonstração (YouTube)</label>
+      <input
+        id="tech-demoUrl"
+        name="demoUrl"
+        type="url"
+        inputmode="url"
+        class="field-input"
+        autocomplete="off"
+        placeholder="https://www.youtube.com/watch?v=…"
+        [maxLength]="limits.demoUrl"
+        [value]="technique().demoUrl"
+        [attr.aria-invalid]="!!errors().demoUrl"
+        [attr.aria-describedby]="describedBy('demoUrl', 'demoUrl-hint')"
+        (input)="clearError('demoUrl')"
+      />
+      <p id="demoUrl-hint" class="field-hint">Aceita links de vídeos, Shorts e youtu.be.</p>
+      @if (errors().demoUrl; as message) {
+        <p id="demoUrl-error" class="field-error">{{ message }}</p>
+      }
+    </div>
+  </form>
+
+  <ng-container modalFooter>
+    <button type="button" class="btn btn-secondary" (click)="closed.emit()">Cancelar</button>
+    <button type="submit" form="technique-form" class="btn btn-primary">
+      <span class="material-symbols-rounded" aria-hidden="true">save</span>
+      Salvar
+    </button>
+  </ng-container>
+</app-modal>

@@ -1,101 +1,46 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  DestroyRef,
-  computed,
-  inject,
-  signal,
-} from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 import { filter } from 'rxjs';
 
-import { AppHeaderComponent } from './components/app-header/app-header.component';
-import { BeltTabsComponent } from './components/belt-tabs/belt-tabs.component';
-import { CelebrationBannerComponent } from './components/celebration-banner/celebration-banner.component';
-import { AboutModalComponent } from './components/modals/about-modal/about-modal.component';
-import { ConfirmModalComponent } from './components/modals/confirm/confirm-modal.component';
-import { SettingsModalComponent } from './components/modals/settings/settings-modal.component';
-import { TechniqueDetailModalComponent } from './components/modals/technique-detail/technique-detail-modal.component';
-import { TechniqueFormModalComponent } from './components/modals/technique-form/technique-form-modal.component';
-import { VideoPlayerModalComponent } from './components/modals/video-player/video-player-modal.component';
-import { TechniqueTableComponent } from './components/technique-table/technique-table.component';
-import { ToastComponent } from './components/toast/toast.component';
-import { APP_NAME } from './constants/app.constants';
-import { AppUpdateService } from './services/app-update.service';
-import { CelebrationService } from './services/celebration.service';
-import { ExportService } from './services/export.service';
-import { LegacyCacheCleanupService } from './services/legacy-cache-cleanup.service';
-import { TechniqueStateService } from './services/technique-state.service';
-import { ThemeService } from './services/theme.service';
-import { ToastService } from './services/toast.service';
+import { AppUpdateService } from './core/services/app-update.service';
+import { LegacyCacheCleanupService } from './core/services/legacy-cache-cleanup.service';
+import { NavigationHistoryService } from './core/services/navigation-history.service';
+import { SettingsService } from './core/settings.service';
+import { ToastService } from './core/toast.service';
+import { ToastComponent } from './shared/ui/toast.component';
 
+/**
+ * What every page shares, as in JudoKan: the skip link, the page itself, the
+ * notifications and the offer to switch to a new version.
+ */
 @Component({
   selector: 'app-root',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './app.component.html',
-  imports: [
-    AppHeaderComponent,
-    BeltTabsComponent,
-    CelebrationBannerComponent,
-    TechniqueTableComponent,
-    ToastComponent,
-    AboutModalComponent,
-    ConfirmModalComponent,
-    SettingsModalComponent,
-    TechniqueDetailModalComponent,
-    TechniqueFormModalComponent,
-    VideoPlayerModalComponent,
-  ],
+  imports: [RouterOutlet, ToastComponent],
 })
 export class AppComponent {
-  protected readonly state = inject(TechniqueStateService);
-  protected readonly celebration = inject(CelebrationService).currentCelebration;
-  private readonly exportService = inject(ExportService);
   private readonly toast = inject(ToastService);
   private readonly appUpdate = inject(AppUpdateService);
-
-  protected readonly appName = APP_NAME;
-  protected readonly currentYear = new Date().getFullYear();
-  protected readonly exporting = signal(false);
-
-  /** Whether the open detail or video dialog can step back or forward. */
-  protected readonly navigation = computed(() => {
-    const modal = this.state.modal();
-    if (modal.kind !== 'detail' && modal.kind !== 'video') return { previous: false, next: false };
-    const withVideo = modal.kind === 'video';
-    return {
-      previous: this.state.neighbor(modal.technique, -1, withVideo) !== null,
-      next: this.state.neighbor(modal.technique, 1, withVideo) !== null,
-    };
-  });
+  private readonly document = inject(DOCUMENT);
 
   constructor() {
-    // Applies the saved theme as soon as the app starts.
-    inject(ThemeService);
+    // Applies the saved theme, contrast and text size as soon as the app starts.
+    inject(SettingsService);
+    // Started now, so the "Voltar" button knows the first page too.
+    inject(NavigationHistoryService);
     void inject(LegacyCacheCleanupService).run();
     this.offerUpdates(inject(SwUpdate), inject(DestroyRef));
     this.appUpdate.start();
   }
 
-  protected async export(format: 'excel' | 'pdf'): Promise<void> {
-    const belt = this.state.selectedBelt();
-    if (!belt || this.exporting()) return;
-    this.exporting.set(true);
-    try {
-      if (format === 'excel') await this.exportService.exportToExcel(belt);
-      else await this.exportService.exportToPdf(belt);
-    } catch (error: unknown) {
-      console.error(error);
-      this.toast.error('Não foi possível gerar o arquivo. Verifique a conexão e tente novamente.');
-    } finally {
-      this.exporting.set(false);
-    }
-  }
-
-  protected watchVideoFromDetail(): void {
-    const modal = this.state.modal();
-    if (modal.kind === 'detail') this.state.openVideo(modal.technique);
+  /** Moves focus to the page itself, so the next Tab starts there. */
+  protected skipToContent(event: Event): void {
+    event.preventDefault();
+    this.document.getElementById('main-content')?.focus();
   }
 
   /**
@@ -124,7 +69,9 @@ export class AppComponent {
   }
 
   private switchVersion(run: () => Promise<void>): void {
-    if (this.appUpdate.justArrived() && this.state.modal().kind === 'none') {
+    // An open dialog means something is in progress, on any page.
+    const busy = this.document.querySelector('dialog[open]') !== null;
+    if (this.appUpdate.justArrived() && !busy) {
       void run();
       return;
     }

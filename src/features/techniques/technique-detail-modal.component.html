@@ -1,0 +1,63 @@
+<app-modal [title]="technique().name" [subtitle]="technique().translation" size="lg" (closed)="closed.emit()">
+  <span class="badge mb-4 bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200">
+    {{ technique().category }}
+  </span>
+
+  <div class="space-y-4 text-sm sm:text-base">
+    <p class="leading-relaxed text-gray-700 dark:text-gray-300">{{ technique().description }}</p>
+
+    @if (technique().execution) {
+      <section>
+        <h3 class="mb-1 flex items-center gap-2 font-semibold text-gray-900 dark:text-white">
+          <!-- The kanji 柔, the "ju" of judo: Material Symbols has no judo icon. -->
+          <span class="font-japanese text-accent-700 dark:text-accent-300 font-bold" aria-hidden="true">柔</span>
+          Execução
+        </h3>
+        <p class="rounded-xl bg-gray-50 p-3 leading-relaxed text-gray-700 dark:bg-gray-800/60 dark:text-gray-300">{{ technique().execution }}</p>
+      </section>
+    }
+
+    @if (technique().application) {
+      <section>
+        <h3 class="mb-1 flex items-center gap-2 font-semibold text-gray-900 dark:text-white">
+          <span class="material-symbols-rounded text-accent-700 dark:text-accent-300 text-[18px]" aria-hidden="true">target</span>
+          Aplicação
+        </h3>
+        <p class="rounded-xl bg-gray-50 p-3 leading-relaxed text-gray-700 dark:bg-gray-800/60 dark:text-gray-300">{{ technique().application }}</p>
+      </section>
+    }
+
+    @if (hasVideo()) {
+      <button type="button" class="btn btn-primary" (click)="watchVideo.emit()">
+        <span class="material-symbols-rounded" aria-hidden="true">play_circle</span>
+        Assistir à demonstração
+      </button>
+    }
+  </div>
+
+  <ng-container modalFooter>
+    <div class="flex w-full items-center justify-between gap-3">
+      <button
+        type="button"
+        class="btn btn-ghost"
+        aria-label="Técnica anterior"
+        [disabled]="!hasPrevious()"
+        (click)="previous.emit()"
+      >
+        <span class="material-symbols-rounded" aria-hidden="true">chevron_left</span>
+        <span class="hidden sm:inline">Anterior</span>
+      </button>
+      <button type="button" class="btn btn-secondary" (click)="closed.emit()">Fechar</button>
+      <button
+        type="button"
+        class="btn btn-ghost"
+        aria-label="Próxima técnica"
+        [disabled]="!hasNext()"
+        (click)="next.emit()"
+      >
+        <span class="hidden sm:inline">Próxima</span>
+        <span class="material-symbols-rounded" aria-hidden="true">chevron_right</span>
+      </button>
+    </div>
+  </ng-container>
+</app-modal>

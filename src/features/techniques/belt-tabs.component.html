@@ -1,0 +1,40 @@
+<nav aria-label="Faixas de graduação">
+  <!-- Phones: a native select -->
+  <div class="sm:hidden">
+    <label for="belt-select" class="field-label">Faixa</label>
+    <select id="belt-select" class="field-input" (change)="onSelectChange($event)">
+      @for (belt of belts(); track belt.id; let i = $index) {
+        <option [value]="i" [selected]="i === selectedIndex()">{{ belt.name }}</option>
+      }
+    </select>
+  </div>
+
+  <!-- Larger screens: tabs you can move through with the arrow keys, drawn like JudoKan's switchers -->
+  <div
+    class="hidden flex-wrap gap-2 sm:flex"
+    role="tablist"
+    aria-label="Faixas de graduação"
+    tabindex="-1"
+    (keydown)="onTablistKeydown($event)"
+  >
+    @for (belt of belts(); track belt.id; let i = $index) {
+      @let selected = i === selectedIndex();
+      <button
+        #tabButton
+        type="button"
+        role="tab"
+        class="btn btn-sm whitespace-nowrap"
+        [class]="selected ? 'btn-primary' : 'btn-secondary'"
+        [id]="'belt-tab-' + belt.id"
+        [attr.aria-selected]="selected"
+        [attr.aria-controls]="'belt-panel-' + belt.id"
+        [attr.tabindex]="selected ? 0 : -1"
+        (click)="beltSelected.emit(i)"
+      >
+        <!-- JudoKan's belt symbol: a short bar in the belt's colour -->
+        <span class="h-2.5 w-6 shrink-0 rounded-full" [class]="beltFill(belt.name)" aria-hidden="true"></span>
+        {{ belt.name }}
+      </button>
+    }
+  </div>
+</nav>
