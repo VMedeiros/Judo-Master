@@ -29,6 +29,16 @@
                 "glob": "manifest.webmanifest",
                 "input": "src",
                 "output": "/"
+              },
+              {
+                "glob": "sitemap.xml",
+                "input": "src",
+                "output": "/"
+              },
+              {
+                "glob": "version.json",
+                "input": "src",
+                "output": "/"
               }
             ],
             "allowedCommonJsDependencies": ["html2canvas", "canvg", "core-js", "rgbcolor", "raf"]

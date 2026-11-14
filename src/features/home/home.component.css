@@ -1,0 +1,15 @@
+/* The home page is built from the app's shared pieces (styles.css), like
+   JudoKan's; only these two things are its own. */
+
+/* Sections below the fold skip layout and paint until they come near the
+   screen. Their content stays in the page: search engines and screen readers
+   read it, and in-page links still reach it. */
+.home-later {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 500px;
+}
+
+/* Native <details>: the chevron replaces the browser's disclosure triangle. */
+.home-faq summary::-webkit-details-marker {
+  display: none;
+}

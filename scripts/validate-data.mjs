@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Checks the seed data in src/data/belts.data.ts: unique ids, required text,
+ * Checks the seed data in src/core/data/belts.data.ts: unique ids, required text,
  * images that exist and demonstration links the player can actually open.
  * A link the app cannot parse shows "não disponível" instead of the video.
  */
@@ -8,11 +8,11 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-const DATA = 'src/data/belts.data.ts';
-const USER_ID_START = 100_000; // USER_TECHNIQUE_ID_START in src/constants/app.constants.ts
+const DATA = 'src/core/data/belts.data.ts';
+const USER_ID_START = 100_000; // USER_TECHNIQUE_ID_START in src/core/constants/app.constants.ts
 const LIMITS = { name: 120, translation: 120, description: 500, execution: 1000, application: 500 };
 const REQUIRED = ['name', 'description', 'category'];
-// Same rules as src/utils/youtube.util.ts.
+// Same rules as src/shared/utils/youtube.util.ts.
 const VIDEO_ID = /^[\w-]{11}$/;
 const ID_PATHS = new Set(['shorts', 'embed', 'live', 'v']);
 

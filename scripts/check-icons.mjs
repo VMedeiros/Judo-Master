@@ -4,6 +4,10 @@
  * icons the app uses (`icon_names=` in index.html). An icon used in a
  * template but missing from that list renders as its name in plain text.
  * This check fails when the two drift apart.
+ *
+ * Noto Sans JP is requested the same way, with only the Japanese characters
+ * the app shows (`text=`): one missing from that list would fall back to
+ * another font. The check covers it too.
  */
 
 import { readFileSync, readdirSync, statSync } from 'node:fs';
@@ -14,10 +18,22 @@ const SRC = 'src';
 
 /** Icon names chosen at runtime, so they never sit next to the class in a template. */
 const DYNAMIC_ICON_PATTERNS = [
+  /icon:\s*'([a-z0-9_]+)'/g, // { icon: 'light_mode' } entries in component classes
   /\bicon="([a-z0-9_]+)"/g, // <app-confirm-modal icon="restart_alt">
   /icon = input\('([a-z0-9_]+)'\)/g, // default of an `icon` input
   /\?\s*'([a-z0-9_]+)'\s*:\s*'([a-z0-9_]+)'\s*\}\}\s*<\/span/g, // {{ cond ? 'a' : 'b' }}</span>
   /(?:success|error|info): '([a-z0-9_]+)'/g, // toast icon map
+];
+
+/** Names that look like icons but are drawn otherwise, as in JudoKan: `judo` is the kanji 柔. */
+const NOT_FONT_ICONS = new Set(['judo']);
+
+/** Icons picked in code in ways the patterns above cannot see, as in JudoKan. Keep in sync by hand. */
+const CODE_ICONS = [
+  // shared/utils/table.ts: the sort arrows of a column header
+  'arrow_upward',
+  'arrow_downward',
+  'unfold_more',
 ];
 
 function walk(dir, files = []) {
@@ -36,7 +52,7 @@ if (!requested) {
   process.exit(1);
 }
 
-const used = new Set();
+const used = new Set(CODE_ICONS);
 for (const file of walk(SRC)) {
   const text = readFileSync(file, 'utf8');
   // Literal icon: <span class="material-symbols-rounded ...">name</span>, across lines.
@@ -49,6 +65,8 @@ for (const file of walk(SRC)) {
         .forEach(n => used.add(n));
   }
 }
+
+for (const name of NOT_FONT_ICONS) used.delete(name);
 
 const missing = [...used].filter(name => !requested.includes(name)).sort();
 const unused = requested.filter(name => !used.has(name));
@@ -65,6 +83,21 @@ if (!isSorted) {
 if (unused.length > 0) {
   console.warn(`⚠️  Requested but not used (safe to remove): ${unused.join(', ')}`);
 }
-if (missing.length > 0 || !isSorted) process.exit(1);
+/** Japanese characters (kana and kanji) shown by the app, against the ones requested. */
+const JAPANESE = /[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}]/gu;
+const requestedText = /family=Noto\+Sans\+JP[^"]*?&text=([^&"]+)/.exec(index)?.[1];
+const shown = new Set(walk(SRC).flatMap(file => readFileSync(file, 'utf8').match(JAPANESE) ?? []));
+const missingText = requestedText
+  ? [...shown].filter(ch => !decodeURIComponent(requestedText).includes(ch))
+  : ['(no Noto Sans JP text= list in index.html)'];
+if (missingText.length > 0) {
+  console.error(
+    `❌ Japanese characters shown but not in Noto Sans JP's text= in ${INDEX}: ${missingText.join(' ')}`
+  );
+}
 
-console.log(`✅ ${requested.length} icons requested, all ${used.size} used icons covered.`);
+if (missing.length > 0 || !isSorted || missingText.length > 0) process.exit(1);
+
+console.log(
+  `✅ ${requested.length} icons requested, all ${used.size} used icons covered; ${shown.size} Japanese characters covered.`
+);

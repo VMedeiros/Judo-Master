@@ -1,0 +1,117 @@
+<app-modal title="Sobre o Judô" subtitle="A arte marcial japonesa" size="lg" (closed)="closed.emit()">
+  <img
+    modalIcon
+    [src]="settings.isDarkMode() ? 'assets/icons/icon-app-dark.svg' : 'assets/icons/icon-app-light.svg'"
+    class="h-10 w-10 shrink-0 rounded-xl"
+    alt=""
+    width="40"
+    height="40"
+  />
+
+  <div class="space-y-6 text-sm text-gray-700 sm:text-base dark:text-gray-300">
+    <section aria-labelledby="about-what">
+      <h3 id="about-what" class="mb-2 flex items-center gap-3 text-base font-bold text-gray-900 dark:text-white">
+        <span class="bg-accent-50 text-accent-700 dark:bg-accent-900/40 dark:text-accent-300 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl" aria-hidden="true"><span class="font-japanese font-bold">柔</span></span>
+        O que é Judô?
+      </h3>
+      <p class="leading-relaxed">
+        Judô (<span lang="ja">柔道</span>), que significa "o caminho da suavidade" em japonês (Jū = suavidade, Dō =
+        caminho), é uma arte marcial moderna criada em 1882 por <strong>Jigoro Kano</strong> no Japão. É um esporte
+        olímpico que combina técnicas de luta com princípios filosóficos centrados em respeito, disciplina e
+        desenvolvimento pessoal.
+      </p>
+    </section>
+
+    <section aria-labelledby="about-history">
+      <h3 id="about-history" class="mb-2 flex items-center gap-3 text-base font-bold text-gray-900 dark:text-white">
+        <span class="bg-accent-50 text-accent-700 dark:bg-accent-900/40 dark:text-accent-300 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl" aria-hidden="true"><span class="material-symbols-rounded text-xl">history_edu</span></span>
+        Origem e história
+      </h3>
+      <ul class="space-y-1.5">
+        <li><strong>1882:</strong> Jigoro Kano funda o Kodokan, a partir do jujutsu tradicional</li>
+        <li><strong>1964:</strong> Estreia como esporte olímpico nos Jogos de Tóquio</li>
+        <li><strong>Hoje:</strong> Praticado em mais de 200 países</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="about-philosophy">
+      <h3 id="about-philosophy" class="mb-2 flex items-center gap-3 text-base font-bold text-gray-900 dark:text-white">
+        <span class="bg-accent-50 text-accent-700 dark:bg-accent-900/40 dark:text-accent-300 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl" aria-hidden="true"><span class="material-symbols-rounded text-xl">balance</span></span>
+        Filosofia do Judô
+      </h3>
+      <ul class="space-y-1.5">
+        <li>
+          <strong>Seiryoku Zen'yō (<span lang="ja">精力善用</span>):</strong> máxima eficiência com o mínimo de esforço
+        </li>
+        <li><strong>Jita Kyōei (<span lang="ja">自他共栄</span>):</strong> benefício mútuo e prosperidade comum</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="about-belts">
+      <h3 id="about-belts" class="mb-2 flex items-center gap-3 text-base font-bold text-gray-900 dark:text-white">
+        <span class="bg-accent-50 text-accent-700 dark:bg-accent-900/40 dark:text-accent-300 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl" aria-hidden="true"><span class="material-symbols-rounded text-xl">military_tech</span></span>
+        Sistema de faixas
+      </h3>
+      <div class="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div class="rounded-xl bg-gray-50 p-3 dark:bg-gray-800/60">
+          <p class="mb-1 text-sm font-semibold text-gray-900 dark:text-white">Faixas coloridas (kyu)</p>
+          <p class="text-xs leading-relaxed">
+            Branca, cinza, azul, amarela, laranja, verde, roxa e marrom: a progressão do iniciante até a preparação para
+            a faixa preta.
+          </p>
+        </div>
+        <div class="rounded-xl bg-gray-50 p-3 dark:bg-gray-800/60">
+          <p class="mb-1 text-sm font-semibold text-gray-900 dark:text-white">Faixa preta (dan)</p>
+          <p class="text-xs leading-relaxed">Domínio técnico e conhecimento profundo, do 1º ao 10º dan.</p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="about-benefits">
+      <h3 id="about-benefits" class="mb-2 flex items-center gap-3 text-base font-bold text-gray-900 dark:text-white">
+        <span class="bg-accent-50 text-accent-700 dark:bg-accent-900/40 dark:text-accent-300 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl" aria-hidden="true"><span class="material-symbols-rounded text-xl">favorite</span></span>
+        Benefícios do Judô
+      </h3>
+      <ul class="grid grid-cols-1 gap-1.5 sm:grid-cols-2">
+        @for (benefit of benefits; track benefit) {
+          <li class="flex items-start gap-2">
+            <span class="material-symbols-rounded text-[18px] text-green-700 dark:text-green-400" aria-hidden="true">check</span>
+            <span>{{ benefit }}</span>
+          </li>
+        }
+      </ul>
+    </section>
+
+    <section aria-labelledby="about-values">
+      <h3 id="about-values" class="mb-2 flex items-center gap-3 text-base font-bold text-gray-900 dark:text-white">
+        <span class="bg-accent-50 text-accent-700 dark:bg-accent-900/40 dark:text-accent-300 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl" aria-hidden="true"><span class="material-symbols-rounded text-xl">star</span></span>
+        Valores fundamentais
+      </h3>
+      <dl class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+        @for (value of values; track value.name) {
+          <div class="flex gap-1 rounded-xl bg-gray-50 p-3 dark:bg-gray-800/60">
+            <dt class="text-accent-700 dark:text-accent-300 font-bold">
+              {{ value.name }} (<span lang="ja">{{ value.kanji }}</span>):
+            </dt>
+            <dd>{{ value.description }}</dd>
+          </div>
+        }
+      </dl>
+    </section>
+
+    <section aria-labelledby="about-techniques">
+      <h3 id="about-techniques" class="mb-2 flex items-center gap-3 text-base font-bold text-gray-900 dark:text-white">
+        <span class="bg-accent-50 text-accent-700 dark:bg-accent-900/40 dark:text-accent-300 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl" aria-hidden="true"><span class="material-symbols-rounded text-xl">category</span></span>
+        Categorias de técnicas
+      </h3>
+      <ul class="space-y-1.5">
+        @for (category of techniqueCategories; track category.name) {
+          <li>
+            <strong>{{ category.name }} (<span lang="ja">{{ category.kanji }}</span>):</strong>
+            {{ category.description }}
+          </li>
+        }
+      </ul>
+    </section>
+  </div>
+</app-modal>

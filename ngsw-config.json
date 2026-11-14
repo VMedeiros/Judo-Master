@@ -13,6 +13,7 @@
           "/*.css",
           "/main-*.js",
           "/polyfills-*.js",
+          "/chunk-*.js",
           "/assets/theme-init.js",
           "/assets/favicon.svg",
           "/assets/icons/icon-192x192*.png"
@@ -24,7 +25,7 @@
       "installMode": "lazy",
       "updateMode": "prefetch",
       "resources": {
-        "files": ["/chunk-*.js", "/media/**", "/assets/**"]
+        "files": ["/media/**", "/assets/**"]
       }
     },
     {

@@ -1,7 +1,7 @@
 import { EnvironmentProviders, Provider, provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Belt, Technique } from '../models/judo.model';
+import { Belt, Technique } from '../core/domain/judo.model';
 
 /** Every key the app writes starts with this prefix. */
 const APP_KEY_PREFIX = 'judo-master:';
@@ -64,7 +64,7 @@ export function technique(overrides: Partial<Technique> = {}): Technique {
 export function belt(overrides: Partial<Belt> = {}): Belt {
   return {
     id: 1,
-    name: '11º Kyu - Faixa Branca',
+    name: '11º Kyu · Faixa Branca',
     color: 'bg-white',
     textColor: 'text-gray-800',
     ageGroup: 'Idade mínima 4 anos',

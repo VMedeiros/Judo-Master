@@ -41,13 +41,14 @@ gestão de academias, e segue os mesmos padrões de engenharia.
 
 ## 🚀 Funcionalidades
 
+- **Página inicial** — apresenta o app, mostra as faixas com o número de técnicas de cada uma e leva direto à faixa escolhida
 - **Faixas** — 8 graduações com faixa etária, pré-requisitos e as técnicas do exame, agrupadas por categoria
 - **Busca** — por nome, tradução, descrição ou categoria, sem distinguir acentos ("projecao" encontra "Projeção")
 - **Detalhes** — execução e aplicação de cada técnica, com navegação para a anterior e a próxima
 - **Vídeos** — player do YouTube no modo de privacidade reforçada (`youtube-nocookie.com`), com links de vídeos, Shorts e youtu.be
 - **Edição** — adicionar, editar e remover técnicas; "Restaurar técnicas originais" desfaz tudo
 - **Downloads** — a faixa em Excel (com filtros) ou PDF
-- **Aparência** — tema claro/escuro (segue o sistema até você escolher) e três tamanhos de fonte
+- **Aparência** — o mesmo visual do JudoKan: tema claro (padrão) ou escuro, alto contraste e três tamanhos de fonte
 - **Offline e instalável** — service worker do Angular; avisa quando há uma versão nova
 - **Acessível** — WCAG 2.1 AA verificado com axe nos dois temas, navegação completa por teclado
 
@@ -56,7 +57,7 @@ O manual de uso está em [docs/MANUAL.md](docs/MANUAL.md).
 ### Dados no aparelho
 
 Nada sai do navegador: não há servidor nem conta. As técnicas que vêm com o app ficam no código
-([src/data/belts.data.ts](src/data/belts.data.ts)) e só as **alterações do usuário** são gravadas no
+([src/core/data/belts.data.ts](src/core/data/belts.data.ts)) e só as **alterações do usuário** são gravadas no
 `localStorage`. Por isso, técnicas incluídas numa versão nova aparecem para todos — inclusive para
 quem já editou alguma coisa. Os dados gravados por versões anteriores à 2.1 são migrados
 automaticamente na primeira abertura.
@@ -95,11 +96,12 @@ npm run preview    # serve o build de produção
 | `npm run check:data`              | Valida os dados das faixas: ids, campos obrigatórios, links e imagens |
 | `npm run check:icons`             | Confere os ícones usados × os pedidos ao Google Fonts                 |
 | `npm run check:bundle`            | Limites de tamanho do JavaScript (rode depois do build)               |
-| `npm run icons`                   | Regera os ícones PNG do PWA a partir do SVG                           |
+| `npm run icons`                   | Regera os ícones PNG do PWA a partir dos SVGs do JudoKan (Chromium)   |
+| `npm run lighthouse`              | Lighthouse no celular e no desktop (rode depois do build)             |
 
 ### Adicionando técnicas ao conteúdo original
 
-Edite [src/data/belts.data.ts](src/data/belts.data.ts) e rode `npm run check:data`. Cada técnica
+Edite [src/core/data/belts.data.ts](src/core/data/belts.data.ts) e rode `npm run check:data`. Cada técnica
 precisa de um `id` inteiro e único (abaixo de 100000 — acima disso ficam as criadas pelos usuários),
 `name`, `description` e `category`. O `demoUrl` aceita links do YouTube ou fica vazio.
 
@@ -107,6 +109,11 @@ precisa de um `id` inteiro e único (abaixo de 100000 — acima disso ficam as c
 
 O Google Fonts entrega só os ícones do Material Symbols listados em `icon_names=` no `index.html`
 (em ordem alfabética). Ao usar um ícone novo, inclua-o ali — `npm run check:icons` acusa o esquecimento.
+O ícone `judo` não vem da fonte: é o kanji 柔, desenhado como no JudoKan.
+
+Os ícones do app (PWA, favicons, Apple) são os mesmos do JudoKan: `npm run icons` renderiza
+`src/assets/icons/icon-app-{light,dark}.svg` no Chromium do Playwright, para o kanji sair com a
+mesma fonte. Se a arte mudar no JudoKan, copie os SVGs e rode o comando de novo.
 
 ## ✅ Qualidade
 
@@ -131,24 +138,48 @@ gera o build de produção e publica `dist/` no branch `gh-pages`, servido pelo 
 <https://vmedeiros.github.io/Judo-Master/>. Detalhes, segurança (CSP) e o funcionamento offline estão
 em [docs/DEPLOY.md](docs/DEPLOY.md).
 
+São duas rotas: `/` (página inicial) e `/tecnicas` (aceita `?faixa=<id>`). Como o GitHub Pages não
+conhece rotas de SPA, o `postbuild` copia `dist/index.html` para `dist/<rota>.html` (cada rota de
+`src/app.routes.ts`, servida com status 200 e, portanto, indexável) e para `dist/404.html` (qualquer
+outro endereço). O app instalado abre em `/tecnicas`.
+
+O `sitemap.xml` vai junto no build. Num site de projeto do GitHub Pages os buscadores não leem um
+`robots.txt` fora da raiz do domínio: envie o sitemap pelo Search Console.
+
 ## 📁 Estrutura
+
+A mesma organização do [JudoKan](https://github.com/VMedeiros/JudoKan):
 
 ```
 src/
-├── main.ts                  # bootstrap: zoneless, service worker, tratamento global de erros
-├── app.component.*          # layout, diálogos e downloads
-├── components/
-│   ├── modal/               # diálogo acessível (<dialog> nativo): foco, Escape, scroll lock
-│   ├── modals/              # sobre, confirmação, configurações, detalhes, formulário, vídeo
-│   ├── app-header/  belt-tabs/  celebration-banner/  technique-table/  toast/
-├── services/                # estado da tela, dados + migração, tema, exportação, toasts…
-├── data/belts.data.ts       # conteúdo original das faixas e técnicas
-├── constants/  models/  utils/  environments/
+├── main.ts                  # bootstrap: zoneless, rotas, service worker, tratamento global de erros
+├── app.routes.ts            # "/" (início) e "/tecnicas", com título e descrição de cada página
+├── app.component.*          # o que é global: link "pular para o conteúdo", toasts, aviso de versão nova
+├── layouts/
+│   └── main-layout.*        # moldura das técnicas: cabeçalho com a marca e o voltar, fundo, rodapé e menus
+├── features/
+│   ├── home/                # página inicial e a visão geral das faixas
+│   └── techniques/          # a página de técnicas: abas das faixas, tabela e diálogos da técnica
+├── core/
+│   ├── judo-data.service.ts       # técnicas originais + alterações do usuário (e a migração)
+│   ├── technique-state.service.ts # estado da tela: faixa, busca, diálogo aberto
+│   ├── settings.service.ts        # tema, alto contraste e tamanho da fonte
+│   ├── toast.service.ts
+│   ├── services/            # armazenamento, exportação, título das páginas, histórico, erros…
+│   ├── domain/  constants/  data/belts.data.ts (conteúdo original das faixas e técnicas)
+├── shared/
+│   ├── ui/                  # componentes do JudoKan: moldura pública, modal, preferências, rodapé…
+│   └── utils/               # texto, YouTube, ordenação da tabela e links para seções
+├── environments/
 ├── assets/                  # ícones, faixas, theme-init.js (tema antes da primeira pintura)
 └── images/                  # foto de fundo (WebP em 3 tamanhos)
 e2e/                         # testes Playwright
 scripts/                     # verificações de qualidade e geradores
 ```
+
+O visual também é o do JudoKan: `src/styles.css` traz os mesmos tokens e componentes (`btn`,
+`icon-btn`, `field-input`, `card`, `page-title`, `data-table`, `badge`…). Mudanças no design devem
+ser feitas nos dois projetos.
 
 ## 🔒 Segurança
 
