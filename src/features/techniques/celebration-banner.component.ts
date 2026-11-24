@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import { CommemorativeDate } from '../../core/services/celebration.service';
+import { CommemorativeDate } from '../../core/domain/celebration.model';
 
 @Component({
   selector: 'app-celebration-banner',

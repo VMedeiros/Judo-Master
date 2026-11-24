@@ -2,19 +2,11 @@ import { DOCUMENT } from '@angular/common';
 import { ErrorHandler, Injectable, inject } from '@angular/core';
 
 import { ToastService } from '../toast.service';
-
-/** How long to stay quiet after reporting, so an error loop cannot flood the screen. */
-const QUIET_PERIOD_MS = 5000;
-
-/**
- * What browsers say when a lazily loaded part of the app is gone: the page was
- * opened before a new version was published.
- */
-const STALE_CHUNK =
-  /Failed to fetch dynamically imported module|Importing a module script failed|error loading dynamically imported module|ChunkLoadError/i;
-
-/** Set while reloading for a new version, so a broken deploy cannot loop. */
-const RELOAD_FLAG = 'judo-master:stale-chunk-reload';
+import {
+  QUIET_PERIOD_MS,
+  RELOAD_FLAG,
+  STALE_CHUNK,
+} from '../constants/global-error-handler.constants';
 
 /** Last line of defence: tells the user something went wrong instead of failing silently. */
 @Injectable()

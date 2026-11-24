@@ -8,8 +8,7 @@ import {
 import { INITIAL_BELTS } from './data/belts.data';
 import { Belt, Technique, UserChanges } from './domain/judo.model';
 import { StorageService } from './services/storage.service';
-
-const NO_CHANGES: UserChanges = { version: 1, added: {}, edited: {}, deleted: [] };
+import { NO_CHANGES, TEXT_FIELDS } from './constants/judo-data.constants';
 
 /**
  * The belts and their techniques: the seed bundled with the app plus the
@@ -154,16 +153,6 @@ export class JudoDataService {
     return { version: 1, added, edited, deleted: [] };
   }
 }
-
-const TEXT_FIELDS = [
-  'name',
-  'translation',
-  'description',
-  'execution',
-  'application',
-  'demoUrl',
-  'category',
-] as const;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);

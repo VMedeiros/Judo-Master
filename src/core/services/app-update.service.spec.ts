@@ -5,13 +5,10 @@ import { Subject } from 'rxjs';
 
 import { STORAGE_KEYS } from '../constants/app.constants';
 import { APP_VERSION } from '../../environments/version';
-import {
-  AUTO_APPLY_WINDOW_MS,
-  AppUpdateService,
-  UPDATE_CHECK_INTERVAL_MS,
-  UPDATE_CHECK_MIN_GAP_MS,
-  isNewerVersion,
-} from './app-update.service';
+import { AppUpdateService, isNewerVersion } from './app-update.service';
+import { AUTO_APPLY_WINDOW_MS } from '../constants/app-update.constants';
+import { UPDATE_CHECK_MIN_GAP_MS } from '../constants/app-update.constants';
+import { UPDATE_CHECK_INTERVAL_MS } from '../constants/app-update.constants';
 
 const BASE = 'https://vmedeiros.github.io/Judo-Master/';
 const [major = 0, minor = 0, patch = 0] = APP_VERSION.split('.').map(Number);

@@ -10,20 +10,11 @@ import { DOCUMENT } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { PublicNavItem, PublicShellComponent } from '../../shared/ui/public-shell.component';
+import { PublicShellComponent } from '../../shared/ui/public-shell.component';
+import { PublicNavItem } from '../../shared/ui/public-shell.model';
 import { goToSection } from '../../shared/utils/in-page';
 import { BeltsOverviewComponent } from './belts-overview.component';
-
-interface Item {
-  icon: string;
-  text: string;
-}
-
-interface Card {
-  icon: string;
-  title: string;
-  text: string;
-}
+import { Card, Item } from './home.model';
 
 /** Only what the app does is promised here. The preview is an illustration, hidden from assistive technology. */
 @Component({

@@ -7,9 +7,7 @@ import { isYouTubeUrl } from '../shared/utils/youtube.util';
 import { JudoDataService } from './judo-data.service';
 import { StorageService } from './services/storage.service';
 import { ToastService } from './toast.service';
-
-const SAVE_FAILED =
-  'Não foi possível salvar neste dispositivo. Verifique o espaço de armazenamento do navegador.';
+import { SAVE_FAILED } from './constants/technique-state.constants';
 
 /** Screen state: the selected belt, the search, the open dialog and the actions on techniques. */
 @Injectable({ providedIn: 'root' })

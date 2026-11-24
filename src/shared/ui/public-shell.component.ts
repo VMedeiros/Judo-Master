@@ -17,12 +17,7 @@ import { AboutModalComponent } from './about-modal.component';
 import { FooterComponent } from './footer.component';
 import { PreferencesMenuComponent } from './preferences-menu.component';
 import { ScrollToTopComponent } from './scroll-to-top.component';
-
-/** A header link to a section of the page, by element id. */
-export interface PublicNavItem {
-  id: string;
-  label: string;
-}
+import { PublicNavItem } from './public-shell.model';
 
 @Component({
   selector: 'app-public-shell',

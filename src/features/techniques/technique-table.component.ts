@@ -5,8 +5,7 @@ import { Belt, GroupedTechnique, Technique } from '../../core/domain/judo.model'
 import { TooltipDirective } from '../../shared/ui/tooltip.directive';
 import { TableState, sortedBy } from '../../shared/utils/table';
 import { isYouTubeUrl } from '../../shared/utils/youtube.util';
-
-type SortColumn = 'name' | 'translation';
+import { SortColumn } from './technique-table.model';
 
 /**
  * The belt and its techniques, laid out as JudoKan's lists: the banner, the

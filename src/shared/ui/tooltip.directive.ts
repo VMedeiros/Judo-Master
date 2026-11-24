@@ -1,12 +1,7 @@
 import { Directive, ElementRef, OnDestroy, inject, input } from '@angular/core';
+import { GAP, LONG_PRESS_MS, TOUCH_LINGER_MS } from './tooltip.constants';
 
 let nextId = 0;
-const GAP = 8;
-/** How long a finger must rest on the control before its hint appears. */
-const LONG_PRESS_MS = 500;
-/** How long a hint opened by touch stays up after the finger lifts. */
-const TOUCH_LINGER_MS = 1500;
-
 /**
  * The same tooltip as JudoKan's (src/shared/ui/tooltip.directive.ts there).
  *

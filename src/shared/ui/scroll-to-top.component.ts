@@ -7,9 +7,7 @@
 import { DOCUMENT } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { TooltipDirective } from './tooltip.directive';
-
-/** How far down the page has to be before the button shows up. */
-export const SCROLL_TOP_THRESHOLD_PX = 320;
+import { SCROLL_TOP_THRESHOLD_PX } from './scroll-to-top.constants';
 
 @Component({
   selector: 'app-scroll-to-top',

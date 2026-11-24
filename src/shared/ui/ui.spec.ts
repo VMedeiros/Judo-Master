@@ -18,7 +18,8 @@ import { TechniqueTableComponent } from '../../features/techniques/technique-tab
 import { ToastComponent } from './toast.component';
 import { DisplayPreferencesComponent } from './display-preferences.component';
 import { FooterComponent } from './footer.component';
-import { ScrollToTopComponent, SCROLL_TOP_THRESHOLD_PX } from './scroll-to-top.component';
+import { ScrollToTopComponent } from './scroll-to-top.component';
+import { SCROLL_TOP_THRESHOLD_PX } from './scroll-to-top.constants';
 import { TooltipDirective } from './tooltip.directive';
 import { JUDOKAN_URL } from '../../core/constants/app.constants';
 import { APP_VERSION } from '../../environments/version';

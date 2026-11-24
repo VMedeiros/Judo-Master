@@ -2,12 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, output } from '@angular/cor
 
 import { SettingsService } from '../../core/settings.service';
 import { ModalComponent } from './modal.component';
-
-interface Term {
-  readonly name: string;
-  readonly kanji: string;
-  readonly description: string;
-}
+import { Term } from './about-modal.model';
 
 @Component({
   selector: 'app-about-modal',

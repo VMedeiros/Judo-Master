@@ -3,26 +3,16 @@ import { Injectable } from '@angular/core';
 import { APP_NAME } from '../constants/app.constants';
 import { Belt, Technique } from '../domain/judo.model';
 import { dateStamp, slugify } from '../../shared/utils/text.util';
-
-type Rgb = [number, number, number];
-
-const COLOR_NAVY: Rgb = [16, 42, 67]; // #102a43
-const COLOR_SKY: Rgb = [14, 165, 233]; // #0ea5e9
-const COLOR_LIGHT: Rgb = [248, 250, 252]; // slate-50
-const COLOR_MUTED: Rgb = [100, 116, 139]; // slate-500
-const COLOR_FOOTER_TEXT: Rgb = [203, 213, 225]; // slate-300, readable on navy
-const COLOR_BORDER: Rgb = [226, 232, 240]; // slate-200
-const COLOR_BODY_TEXT: Rgb = [30, 41, 59]; // slate-800
-
-const SHEET_COLUMNS = [
-  'Categoria',
-  'Nome',
-  'Tradução',
-  'Descrição',
-  'Execução',
-  'Aplicação',
-  'Vídeo',
-];
+import {
+  COLOR_BODY_TEXT,
+  COLOR_BORDER,
+  COLOR_FOOTER_TEXT,
+  COLOR_LIGHT,
+  COLOR_MUTED,
+  COLOR_NAVY,
+  COLOR_SKY,
+  SHEET_COLUMNS,
+} from '../constants/export.constants';
 
 /**
  * Excel and PDF downloads of a belt's techniques. The libraries are large and
