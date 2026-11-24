@@ -1,26 +1,7 @@
 import { Injectable, OnDestroy, signal } from '@angular/core';
 
 import { TOAST_DURATION_MS, TOAST_ERROR_DURATION_MS } from './constants/app.constants';
-
-export type ToastType = 'success' | 'error' | 'info';
-
-export interface ToastAction {
-  readonly label: string;
-  readonly run: () => void;
-}
-
-export interface Toast {
-  readonly id: number;
-  readonly message: string;
-  readonly type: ToastType;
-  readonly action?: ToastAction;
-}
-
-export interface ToastOptions {
-  readonly action?: ToastAction;
-  /** Stays until dismissed: for messages that ask the user to act. */
-  readonly sticky?: boolean;
-}
+import { Toast, ToastOptions, ToastType } from './domain/toast.model';
 
 @Injectable({ providedIn: 'root' })
 export class ToastService implements OnDestroy {

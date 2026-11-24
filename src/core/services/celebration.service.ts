@@ -1,9 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-
-export interface CommemorativeDate {
-  readonly name: string;
-  readonly icon: string;
-}
+import { CommemorativeDate } from '../domain/celebration.model';
 
 /** The commemorative date that `date` falls on, if any. Ranges do not overlap. */
 export function celebrationOn(date: Date): CommemorativeDate | null {

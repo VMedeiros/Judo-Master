@@ -8,7 +8,7 @@
 
 import { Routes } from '@angular/router';
 
-import type { PageMeta } from './core/services/page-title.strategy';
+import type { PageMeta } from './core/domain/page-title.model';
 
 const page = (description: string): PageMeta => ({ description });
 

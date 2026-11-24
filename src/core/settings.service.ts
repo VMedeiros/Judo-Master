@@ -9,20 +9,8 @@ import {
   THEME_COLORS,
 } from './constants/app.constants';
 import { StorageService } from './services/storage.service';
-
-export type ThemeChoice = 'light' | 'dark';
-
-interface StoredSettings {
-  readonly theme?: ThemeChoice;
-  readonly fontSize?: FontSize;
-  readonly highContrast?: boolean;
-}
-
-const LEGACY_FONT_SIZES: Readonly<Record<number, FontSize>> = {
-  14: 'small',
-  16: 'medium',
-  18: 'large',
-};
+import { StoredSettings, ThemeChoice } from './domain/settings.model';
+import { LEGACY_FONT_SIZES } from './constants/settings.constants';
 
 /**
  * Theme, contrast and text size, as in JudoKan: light until someone picks

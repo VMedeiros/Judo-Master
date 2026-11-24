@@ -7,7 +7,9 @@ import {
   viewChild,
 } from '@angular/core';
 
-import { ToastAction, ToastService, ToastType } from '../../core/toast.service';
+import { ToastService } from '../../core/toast.service';
+import { ToastAction } from '../../core/domain/toast.model';
+import { ToastType } from '../../core/domain/toast.model';
 
 @Component({
   selector: 'app-toast',

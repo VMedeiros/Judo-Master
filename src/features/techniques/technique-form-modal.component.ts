@@ -3,19 +3,8 @@ import { ChangeDetectionStrategy, Component, computed, input, output, signal } f
 import { FormMode, FormSaveEvent, TechniqueDraft } from '../../core/domain/judo.model';
 import { isYouTubeUrl } from '../../shared/utils/youtube.util';
 import { ModalComponent } from '../../shared/ui/modal.component';
-
-type Field =
-  'name' | 'translation' | 'category' | 'description' | 'execution' | 'application' | 'demoUrl';
-type Errors = Partial<Record<Field, string>>;
-
-export const FIELD_LIMITS = {
-  name: 120,
-  translation: 120,
-  description: 500,
-  execution: 1000,
-  application: 500,
-  demoUrl: 300,
-} as const;
+import { Errors, Field } from './technique-form-modal.model';
+import { FIELD_LIMITS } from './technique-form-modal.constants';
 
 @Component({
   selector: 'app-technique-form-modal',

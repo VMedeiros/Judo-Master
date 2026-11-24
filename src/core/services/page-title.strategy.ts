@@ -4,11 +4,7 @@ import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRouteSnapshot, RouterStateSnapshot, TitleStrategy } from '@angular/router';
 
 import { APP_NAME, SITE_URL } from '../constants/app.constants';
-
-/** Route `data` read for search engines and link previews. */
-export interface PageMeta {
-  description?: string;
-}
+import { PageMeta } from '../domain/page-title.model';
 
 /**
  * As JudoKan's TranslatedTitleStrategy: the page's name followed by the app's
